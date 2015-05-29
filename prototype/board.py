@@ -3,6 +3,8 @@ import numpy
 class Board(object):
 
     def __init__(self, height, width, blocks):
+        if (height * width) % 3 != 0:
+            raise ValueError('Field size must be a multiple of 3')
         self.data = numpy.zeros((height, width))
         self.blocks = blocks
 
