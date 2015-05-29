@@ -6,6 +6,11 @@ public class Tetris {
     public static void main(String[] args) {
         int m = Integer.parseInt(args[0]);
         int n = Integer.parseInt(args[1]);
+
+        System.out.println(Tetris.solve(m, n));
+    }
+
+    public static long solve(int m, int n) {
         blocks = new Block[6];
         blocks[0] = new Block(new int[][]{
                 {1, 0, 0},
@@ -38,6 +43,6 @@ public class Tetris {
                 {0, 0, 0}
         });
         Board board = new Board(m, n, blocks);
-        System.out.println(board.calculateMutations());
+        return board.calculateMutations();
     }
 }
