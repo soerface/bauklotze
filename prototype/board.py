@@ -7,9 +7,12 @@ class Board(object):
             raise ValueError('Field size must be a multiple of 3')
         self.data = numpy.zeros((height, width))
         self.blocks = blocks
+        self.solutions = set()
 
     def calculate_mutations(self):
+        self.solutions = set()
         self.next_positions((0, 0))
+        return len(self.solutions)
 
     def next_positions(self, *positions):
         for block in self.blocks:
@@ -19,8 +22,13 @@ class Board(object):
             for offset in valid_offsets:
                 self.place_block_at(block, offset)
                 next_pos = self.find_next_positions(block, offset)
-                print 'next pos:', next_pos
-                print self.data
+                if next_pos:
+                    self.next_positions(*next_pos)
+                else:
+                    # could not find a free neighbour; if the board is full we have found one solution
+                    if self.is_full():
+                        self.solutions.add(self.data.tostring())
+                self.remove_block_at(block, offset)
 
     def find_valid_offsets(self, block, pos):
         valid_offsets = set()
@@ -55,6 +63,12 @@ class Board(object):
                 if block.data[i][j] != 0:
                     self.data[i + offset[0]][j + offset[1]] = block.data[i][j]
 
+    def remove_block_at(self, block, offset):
+        for i in range(len(block.data)):
+            for j in range(len(block.data[i])):
+                if block.data[i][j] != 0:
+                    self.data[i + offset[0]][j + offset[1]] = 0
+
     def find_next_positions(self, block, offset):
         next_positions = set()
         for i in range(len(block.data)):
@@ -83,3 +97,10 @@ class Board(object):
                         next_positions.add((a, b))
                     b -= 1
         return next_positions
+
+    def is_full(self):
+        for row in self.data:
+            for value in row:
+                if value == 0:
+                    return False
+        return True
