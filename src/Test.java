@@ -34,6 +34,10 @@ public class Test {
             delta = stop - start;
             if (res == values[2]) {
                 System.out.format("OK (%dms)\n", delta);
+            } else {
+                System.out.println("ERROR");
+                System.out.format("Expected %d, got %d\n", values[2], res);
+                return;
             }
         }
     }
