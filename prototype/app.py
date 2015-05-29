@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import sys
 from board import Board
 from block import Block
 
@@ -58,7 +59,11 @@ if __name__ == '__main__':
             (0, 0, 0),
         ),
     )
-    for inp in INPUTS:
-        board = Board(*inp[0], blocks=blocks)
-        res = board.calculate_mutations()
-        print '{0} {1} {res}'.format(*inp[0], res=res)
+    if len(sys.argv) > 1:
+        board = Board(int(sys.argv[1]), int(sys.argv[2]), blocks=blocks)
+        print board.calculate_mutations()
+    else:
+        for inp in INPUTS:
+            board = Board(*inp[0], blocks=blocks)
+            res = board.calculate_mutations()
+            print '{0} {1} {res}'.format(*inp[0], res=res)

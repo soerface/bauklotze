@@ -104,3 +104,9 @@ class Board(object):
                 if value == 0:
                     return False
         return True
+
+    def __str__(self):
+        rows = []
+        for row in self.data:
+            rows.append(' '.join(str(x) for x in row))
+        return '\n'.join(rows)
