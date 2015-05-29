@@ -36,6 +36,6 @@ if __name__ == '__main__':
             (0, 0, 0),
         ),
     )
-    board = Board(3, 1, blocks)
+    board = Board(3, 2, blocks)
     print board.data
     print board.calculate_mutations()

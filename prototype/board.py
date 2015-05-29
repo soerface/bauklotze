@@ -18,6 +18,8 @@ class Board(object):
                 valid_offsets = valid_offsets.union(self.find_valid_offsets(block, pos))
             for offset in valid_offsets:
                 self.place_block_at(block, offset)
+                next_pos = self.find_next_positions(block, offset)
+                print 'next pos:', next_pos
                 print self.data
 
     def find_valid_offsets(self, block, pos):
@@ -43,7 +45,7 @@ class Board(object):
                 try:
                     if block.data[i][j] != 0 and self.data[i + offset[0]][j + offset[1]] != 0:
                         return False
-                except IndexError, e:
+                except IndexError:
                     return False
         return True
 
@@ -52,3 +54,32 @@ class Board(object):
             for j in range(len(block.data[i])):
                 if block.data[i][j] != 0:
                     self.data[i + offset[0]][j + offset[1]] = block.data[i][j]
+
+    def find_next_positions(self, block, offset):
+        next_positions = set()
+        for i in range(len(block.data)):
+            for j in range(len(block.data[i])):
+                if block.data[i][j] != 0:
+                    a = i + offset[0]
+                    b = j + offset[1]
+                    # above
+                    a -= 1
+                    if a >= 0 and self.data[a][b] == 0:
+                        next_positions.add((a, b))
+                    a += 1
+                    # below
+                    a += 1
+                    if a < len(self.data) and self.data[a][b] == 0:
+                        next_positions.add((a, b))
+                    a -= 1
+                    # left
+                    b -= 1
+                    if b >= 0 and self.data[a][b] == 0:
+                        next_positions.add((a, b))
+                    b += 1
+                    # right
+                    b += 1
+                    if b < len(self.data[a]) and self.data[a][b] == 0:
+                        next_positions.add((a, b))
+                    b -= 1
+        return next_positions
