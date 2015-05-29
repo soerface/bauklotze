@@ -14,7 +14,9 @@ class Board(object):
             valid_offsets = set()
             for pos in positions:
                 valid_offsets = valid_offsets.union(self.find_valid_offsets(block, pos))
-            print valid_offsets
+            for offset in valid_offsets:
+                self.place_block_at(block, offset)
+                print self.data
 
     def find_valid_offsets(self, block, pos):
         valid_offsets = set()
@@ -42,3 +44,9 @@ class Board(object):
                 except IndexError, e:
                     return False
         return True
+
+    def place_block_at(self, block, offset):
+        for i in range(len(block.data)):
+            for j in range(len(block.data[i])):
+                if block.data[i][j] != 0:
+                    self.data[i + offset[0]][j + offset[1]] = block.data[i][j]
