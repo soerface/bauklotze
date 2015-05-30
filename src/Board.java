@@ -21,11 +21,11 @@ public class Board {
 
     void nextPosition(int[] position) {
         for (Block block : this.blocks) {
-            HashSet<ArrayList<Integer>> validOffsets = this.findValidOffsets(block, position);
-            for (ArrayList<Integer> offset : validOffsets) {
+            ArrayList<Integer[]> validOffsets = this.findValidOffsets(block, position);
+            for (Integer[] offset : validOffsets) {
                 this.placeBlockAt(block, offset);
                 this.print();
-                int[] nextPos = this.findNextPosition(block, offset);
+                int[] nextPos = this.findNextPosition(block);
                 if (nextPos[0] == -1) {
                     // no free position; if the board is full we have found one solution
                     this.result++;
@@ -37,7 +37,7 @@ public class Board {
         }
     }
 
-    private int[] findNextPosition(Block block, ArrayList<Integer> offset) {
+    private int[] findNextPosition(Block block) {
         // HashSet go and fuck yourself
         // http://stackoverflow.com/q/16657905/458274
         //HashSet<int[]> nextPosition = new HashSet<int[]>();
@@ -52,47 +52,47 @@ public class Board {
         return new int[]{-1, -1};
     }
 
-    private void placeBlockAt(Block block, ArrayList<Integer> offset) {
+    private void placeBlockAt(Block block, Integer[] offset) {
         for (int i = 0; i < block.data.length; i++) {
             for (int j = 0; j < block.data[i].length; j++) {
                 if (block.data[i][j] != 0) {
-                    this.data[i + offset.get(0)][j + offset.get(1)] = block.data[i][j];
+                    this.data[i + offset[0]][j + offset[1]] = block.data[i][j];
                 }
             }
         }
     }
 
-    private void removeBlockAt(Block block, ArrayList<Integer> offset) {
+    private void removeBlockAt(Block block, Integer[] offset) {
         for (int i = 0; i < block.data.length; i++) {
             for (int j = 0; j < block.data[i].length; j++) {
                 if (block.data[i][j] != 0) {
-                    this.data[i + offset.get(0)][j + offset.get(1)] = 0;
+                    this.data[i + offset[0]][j + offset[1]] = 0;
                 }
             }
         }
     }
 
-    HashSet<ArrayList<Integer>> findValidOffsets(Block block, int[] pos) {
-        HashSet<ArrayList<Integer>> validOffsets = new HashSet<ArrayList<Integer>>();
+    ArrayList<Integer[]> findValidOffsets(Block block, int[] pos) {
+        ArrayList<Integer[]> validOffsets = new ArrayList<Integer[]>();
         for (int[] coordinate : block.coordinates) {
-            ArrayList<Integer> offset = new ArrayList<Integer>();
-            offset.add(pos[0] - coordinate[0]);
-            offset.add(pos[1] - coordinate[1]);
+            Integer[] offset = new Integer[]{
+                    pos[0] - coordinate[0],
+                    pos[1] - coordinate[1]
+            };
             if (this.blockPlaceableAt(block, offset)) {
-                //System.out.format("%d %d\n", offset[0], offset[1]);
                 validOffsets.add(offset);
             }
         }
         return validOffsets;
     }
 
-    private boolean blockPlaceableAt(Block block, ArrayList<Integer> offset) {
-        if (offset.get(0) < 0 || offset.get(1) < 0) {
+    private boolean blockPlaceableAt(Block block, Integer[] offset) {
+        if (offset[0] < 0 || offset[1] < 0) {
             return false;
         }
         for (int i = 0; i < block.data.length; i++) {
             for (int j = 0; j < block.data[i].length; j++) {
-                if (i + offset.get(0) >= this.data.length) {
+                if (i + offset[0] >= this.data.length) {
                     // out of bounds
                     if (block.data[i][j] != 0) {
                         // but the block might have a zero here, so
@@ -102,7 +102,7 @@ public class Board {
                         continue;
                     }
                 }
-                if (j + offset.get(1) >= this.data[i].length) {
+                if (j + offset[1] >= this.data[i].length) {
                     // out of bounds
                     if (block.data[i][j] != 0) {
                         // but the block might have a zero here, so
@@ -112,7 +112,7 @@ public class Board {
                         continue;
                     }
                 }
-                if (block.data[i][j] != 0 && this.data[i + offset.get(0)][j + offset.get(1)] != 0) {
+                if (block.data[i][j] != 0 && this.data[i + offset[0]][j + offset[1]] != 0) {
                     // there is already a block; can't place this one
                     return false;
                 }
