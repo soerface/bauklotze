@@ -11,9 +11,6 @@ public class Board {
     public Board(int m, int n, Block[] blocks) {
         this.data = new int[m][n];
         this.cache = new int[m > n ? m : n][m > n ? n : m];
-        this.cache[2][2] = 10;
-        this.cache[3][2] = 23;
-        this.cache[4][2] = 62;
         this.blocks = blocks;
         this.result = 0;
     }
@@ -28,8 +25,10 @@ public class Board {
             ArrayList<Integer[]> validOffsets = this.findValidOffsets(block, position);
             for (Integer[] offset : validOffsets) {
                 this.placeBlockAt(block, offset);
-                this.print();
+//                this.print();
                 int[] subRect = this.isRect();
+                int resultBefore = 0;
+                boolean saveToCache = false;
                 if (subRect[0] > 0) {
                     // we might have already computed the number of mutations
                     // for the sub rectangle
@@ -38,6 +37,9 @@ public class Board {
                         this.result += value;
                         this.removeBlockAt(block, offset);
                         continue;
+                    } else {
+                        resultBefore = this.result;
+                        saveToCache = true;
                     }
                 }
                 int[] nextPos = this.findNextPosition(block);
@@ -48,6 +50,10 @@ public class Board {
                     this.nextPosition(nextPos);
                 }
                 this.removeBlockAt(block, offset);
+                if (saveToCache) {
+                    this.cache[subRect[0]][subRect[1]] = this.result - resultBefore;
+//                    System.out.format("Saving to cache: %d, %d = %d\n", subRect[0] + 1, subRect[1] + 1, this.result - resultBefore);
+                }
             }
         }
     }
