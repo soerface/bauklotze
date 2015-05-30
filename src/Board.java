@@ -16,11 +16,11 @@ public class Board {
     }
 
     public long calculateMutations() {
-        this.nextPosition(new int[]{0, 0});
+        this.nextPosition(new Integer[]{0, 0});
         return this.result;
     }
 
-    void nextPosition(int[] position) {
+    void nextPosition(Integer[] position) {
         for (Block block : this.blocks) {
             ArrayList<Integer[]> validOffsets = this.findValidOffsets(block, position);
             for (Integer[] offset : validOffsets) {
@@ -37,12 +37,11 @@ public class Board {
                         this.result += value;
                         this.removeBlockAt(block, offset);
                         continue;
-                    } else {
-                        resultBefore = this.result;
-                        saveToCache = true;
                     }
+                    resultBefore = this.result;
+                    saveToCache = true;
                 }
-                int[] nextPos = this.findNextPosition(block);
+                Integer[] nextPos = this.findNextPosition(block);
                 if (nextPos[0] == -1) {
                     // no free position; if the board is full we have found one solution
                     this.result++;
@@ -58,15 +57,32 @@ public class Board {
         }
     }
 
-    private int[] findNextPosition(Block block) {
+    private Integer[] findNextPosition(Block block) {
+        // to make best use of the cache, we should try to find
+        // a position for the next block which makes a rectangle
+        Integer[] nextPosition = new Integer[]{-1, -1};
+        Integer[] firstPosition = new Integer[]{-1, -1};
         for (int i = 0; i < this.data.length; i++) {
             for (int j = 0; j < this.data[i].length; j++) {
                 if (this.data[i][j] == 0) {
-                    return new int[]{i, j};
+                    if (firstPosition[0] == -1) {
+                        firstPosition[0] = i;
+                        firstPosition[1] = j;
+                    }
+                    nextPosition[0] = i;
+                    nextPosition[1] = j;
+                    if (this.blockPlaceableAt(block, nextPosition)) {
+                        this.placeBlockAt(block, nextPosition);
+                        if (this.isRect()[0] != 0) {
+                            this.removeBlockAt(block, nextPosition);
+                            return nextPosition;
+                        }
+                        this.removeBlockAt(block, nextPosition);
+                    }
                 }
             }
         }
-        return new int[]{-1, -1};
+        return firstPosition;
     }
 
     private void placeBlockAt(Block block, Integer[] offset) {
@@ -89,7 +105,7 @@ public class Board {
         }
     }
 
-    ArrayList<Integer[]> findValidOffsets(Block block, int[] pos) {
+    ArrayList<Integer[]> findValidOffsets(Block block, Integer[] pos) {
         ArrayList<Integer[]> validOffsets = new ArrayList<Integer[]>();
         for (int[] coordinate : block.coordinates) {
             Integer[] offset = new Integer[]{
@@ -161,16 +177,16 @@ public class Board {
                     if (j < left) {
                         // the block is empty, but it is left from our
                         // top left edge. This can't be a rectangle
-                        return new int[] {0, 0};
+                        return new int[]{0, 0};
                     }
                     if (right != -1 && j > right) {
                         // right from our right edge. Can't be rect.
-                        return new int[] {0, 0};
+                        return new int[]{0, 0};
                     }
                     if (rectangleEnded) {
                         // we already found the end of the rect.
                         // therefore there can't be another empty tile.
-                        return new int[] {0, 0};
+                        return new int[]{0, 0};
                     }
                 } else {
                     // filled block
@@ -187,7 +203,7 @@ public class Board {
                         // ##  ####
                         // ########
                         // obviously not a rectangle
-                        return new int[] {0, 0};
+                        return new int[]{0, 0};
                     } else if (!rectangleEnded && j == left) {
                         // the rectangle ends here. Remember that.
                         rectangleEnded = true;
@@ -203,7 +219,7 @@ public class Board {
             }
         }
         if (left == -1 || right == -1) {
-            return new int[] {0, 0};
+            return new int[]{0, 0};
         }
         bottom = this.data.length - 1;
         int width = right - left;
@@ -220,7 +236,7 @@ public class Board {
 //        if (width * height % 3 == 0) {
 //            return true;
 //        }
-        return new int[] {width, height};
+        return new int[]{width, height};
     }
 
     void print() {
