@@ -1,18 +1,17 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 
 public class Board {
 
     private int[][] data;
     private Block[] blocks;
-    private HashSet<String> results;
+    public int result;
     private int[][][] blocksCoordinates;
 
     public Board(int m, int n, Block[] blocks) {
         this.data = new int[m][n];
         this.blocks = blocks;
-        this.results = new HashSet();
+        this.result = 0;
     }
 
     public long calculateMutations() {
@@ -22,14 +21,10 @@ public class Board {
         HashSet<ArrayList<Integer>> positions = new HashSet<ArrayList<Integer>>();
         positions.add(list);
         this.nextPositions(positions);
-        return this.results.size();
+        return this.result;
     }
 
     void nextPositions(HashSet<ArrayList<Integer>> positions) {
-//        System.out.println("Positions:");
-        for (ArrayList<Integer> pos : positions) {
-//            System.out.format("(%d, %d)\n", pos.get(0), pos.get(1));
-        }
         for (Block block : this.blocks) {
             HashSet<ArrayList<Integer>> validOffsets = new HashSet<ArrayList<Integer>>();
             for (ArrayList<Integer> pos : positions) {
@@ -47,7 +42,7 @@ public class Board {
                     if (this.isFull()) {
 //                        this.print();
 //                        System.out.format(" (Last Block at %d, %d)\n", offset.get(0), offset.get(1));
-                        this.results.add(Arrays.deepToString(this.data));
+                        this.result++;
                     }
                 }
                 this.removeBlockAt(block, offset);
@@ -163,7 +158,7 @@ public class Board {
             }
         }
         try {
-            Thread.sleep(300);
+            Thread.sleep(80);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
