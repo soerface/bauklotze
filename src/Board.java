@@ -15,35 +15,24 @@ public class Board {
     }
 
     public long calculateMutations() {
-        ArrayList<Integer> list = new ArrayList<Integer>();
-        list.add(0);
-        list.add(0);
-        HashSet<ArrayList<Integer>> positions = new HashSet<ArrayList<Integer>>();
-        positions.add(list);
-        this.nextPositions(positions);
+        this.nextPosition(new int[] {0, 0});
         return this.result;
     }
 
-    void nextPositions(HashSet<ArrayList<Integer>> positions) {
+    void nextPosition(int[] position) {
         for (Block block : this.blocks) {
-            HashSet<ArrayList<Integer>> validOffsets = new HashSet<ArrayList<Integer>>();
-            for (ArrayList<Integer> pos : positions) {
-                validOffsets.addAll(this.findValidOffsets(block, pos));
-            }
+            HashSet<ArrayList<Integer>> validOffsets = this.findValidOffsets(block, position);
             for (ArrayList<Integer> offset : validOffsets) {
                 this.placeBlockAt(block, offset);
-//                this.print();
-//                System.out.println();
-                HashSet<ArrayList<Integer>> nextPos = this.findNextPositions(block, offset);
-                if (nextPos.size() > 0) {
-                    this.nextPositions(nextPos);
-                } else {
-                    // could not find a free neighbour; if the board is full we have found one solution
+                this.print();
+                int[] nextPos = this.findNextPosition(block, offset);
+                if (nextPos[0] == -1) {
+                    // no free position; if the board is full we have found one solution
                     if (this.isFull()) {
-//                        this.print();
-//                        System.out.format(" (Last Block at %d, %d)\n", offset.get(0), offset.get(1));
                         this.result++;
                     }
+                } else {
+                    this.nextPosition(nextPos);
                 }
                 this.removeBlockAt(block, offset);
             }
@@ -61,23 +50,19 @@ public class Board {
         return true;
     }
 
-    private HashSet<ArrayList<Integer>> findNextPositions(Block block, ArrayList<Integer> offset) {
+    private int[] findNextPosition(Block block, ArrayList<Integer> offset) {
         // HashSet go and fuck yourself
         // http://stackoverflow.com/q/16657905/458274
-        //HashSet<int[]> nextPositions = new HashSet<int[]>();
+        //HashSet<int[]> nextPosition = new HashSet<int[]>();
         HashSet<ArrayList<Integer>> nextPositions = new HashSet<ArrayList<Integer>>();
         for (int i = 0; i < this.data.length; i++) {
             for (int j = 0; j < this.data[i].length; j++) {
                 if (this.data[i][j] == 0) {
-                    ArrayList<Integer> pos = new ArrayList<Integer>();
-                    pos.add(i);
-                    pos.add(j);
-                    nextPositions.add(pos);
-                    return nextPositions;
+                    return new int[] {i, j};
                 }
             }
         }
-        return nextPositions;
+        return new int[] {-1, -1};
     }
 
     private void placeBlockAt(Block block, ArrayList<Integer> offset) {
@@ -100,12 +85,12 @@ public class Board {
         }
     }
 
-    HashSet<ArrayList<Integer>> findValidOffsets(Block block, ArrayList<Integer> pos) {
+    HashSet<ArrayList<Integer>> findValidOffsets(Block block, int[] pos) {
         HashSet<ArrayList<Integer>> validOffsets = new HashSet<ArrayList<Integer>>();
         for (int[] coordinate : block.coordinates) {
             ArrayList<Integer> offset = new ArrayList<Integer>();
-            offset.add(pos.get(0) - coordinate[0]);
-            offset.add(pos.get(1) - coordinate[1]);
+            offset.add(pos[0] - coordinate[0]);
+            offset.add(pos[1] - coordinate[1]);
             if (this.blockPlaceableAt(block, offset)) {
                 //System.out.format("%d %d\n", offset[0], offset[1]);
                 validOffsets.add(offset);
@@ -151,16 +136,21 @@ public class Board {
     }
 
     void print() {
-        for (int[] row : this.data) {
-            System.out.println();
-            for (int value : row) {
-                System.out.format("\u001B[4%dm %d \u001B[0m", value, value);
-            }
-        }
-        try {
-            Thread.sleep(80);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        for (int[] row : this.data) {
+//            for (int value : row) {
+//                System.out.format("\u001B[4%dm %d \u001B[0m", value, value);
+//            }
+//            System.out.println();
+//        }
+//        System.out.println();
+//        try {
+//            Thread.sleep(80);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
     }
+//
+//    boolean stillSolveable() {
+//
+//    }
 }
