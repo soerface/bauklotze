@@ -15,7 +15,7 @@ public class Board {
     }
 
     public long calculateMutations() {
-        this.nextPosition(new int[] {0, 0});
+        this.nextPosition(new int[]{0, 0});
         return this.result;
     }
 
@@ -28,26 +28,13 @@ public class Board {
                 int[] nextPos = this.findNextPosition(block, offset);
                 if (nextPos[0] == -1) {
                     // no free position; if the board is full we have found one solution
-                    if (this.isFull()) {
-                        this.result++;
-                    }
-                } else {
+                    this.result++;
+                } else if (this.stillSolveable()) {
                     this.nextPosition(nextPos);
                 }
                 this.removeBlockAt(block, offset);
             }
         }
-    }
-
-    private boolean isFull() {
-        for (int[] row : this.data) {
-            for (int value : row) {
-                if (value == 0) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     private int[] findNextPosition(Block block, ArrayList<Integer> offset) {
@@ -58,11 +45,11 @@ public class Board {
         for (int i = 0; i < this.data.length; i++) {
             for (int j = 0; j < this.data[i].length; j++) {
                 if (this.data[i][j] == 0) {
-                    return new int[] {i, j};
+                    return new int[]{i, j};
                 }
             }
         }
-        return new int[] {-1, -1};
+        return new int[]{-1, -1};
     }
 
     private void placeBlockAt(Block block, ArrayList<Integer> offset) {
@@ -135,6 +122,10 @@ public class Board {
         return true;
     }
 
+    boolean stillSolveable() {
+        return true;
+    }
+
     void print() {
 //        for (int[] row : this.data) {
 //            for (int value : row) {
@@ -149,8 +140,4 @@ public class Board {
 //            e.printStackTrace();
 //        }
     }
-//
-//    boolean stillSolveable() {
-//
-//    }
 }
