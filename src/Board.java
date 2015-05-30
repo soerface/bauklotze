@@ -37,14 +37,16 @@ public class Board {
             }
             for (ArrayList<Integer> offset : validOffsets) {
                 this.placeBlockAt(block, offset);
+//                this.print();
+//                System.out.println();
                 HashSet<ArrayList<Integer>> nextPos = this.findNextPositions(block, offset);
                 if (nextPos.size() > 0) {
                     this.nextPositions(nextPos);
                 } else {
                     // could not find a free neighbour; if the board is full we have found one solution
                     if (this.isFull()) {
-                        this.print();
-                        System.out.println();
+//                        this.print();
+//                        System.out.format(" (Last Block at %d, %d)\n", offset.get(0), offset.get(1));
                         this.results.add(Arrays.deepToString(this.data));
                     }
                 }
@@ -69,47 +71,14 @@ public class Board {
         // http://stackoverflow.com/q/16657905/458274
         //HashSet<int[]> nextPositions = new HashSet<int[]>();
         HashSet<ArrayList<Integer>> nextPositions = new HashSet<ArrayList<Integer>>();
-        for (int i = 0; i < block.data.length; i++) {
-            for (int j = 0; j < block.data[i].length; j++) {
-                if (block.data[i][j] != 0) {
-                    int a = i + offset.get(0);
-                    int b = j + offset.get(1);
-                    // above
-                    a--;
-                    if (a >= 0 && this.data[a][b] == 0) {
-                        ArrayList<Integer> pos = new ArrayList<Integer>();
-                        pos.add(a);
-                        pos.add(b);
-                        nextPositions.add(pos);
-                    }
-                    a++;
-                    // below
-                    a++;
-                    if (a < this.data.length && this.data[a][b] == 0) {
-                        ArrayList<Integer> pos = new ArrayList<Integer>();
-                        pos.add(a);
-                        pos.add(b);
-                        nextPositions.add(pos);
-                    }
-                    a--;
-                    // left
-                    b--;
-                    if (b >= 0 && this.data[a][b] == 0) {
-                        ArrayList<Integer> pos = new ArrayList<Integer>();
-                        pos.add(a);
-                        pos.add(b);
-                        nextPositions.add(pos);
-                    }
-                    b++;
-                    // below
-                    b++;
-                    if (b < this.data[a].length && this.data[a][b] == 0) {
-                        ArrayList<Integer> pos = new ArrayList<Integer>();
-                        pos.add(a);
-                        pos.add(b);
-                        nextPositions.add(pos);
-                    }
-                    //b--;
+        for (int i = 0; i < this.data.length; i++) {
+            for (int j = 0; j < this.data[i].length; j++) {
+                if (this.data[i][j] == 0) {
+                    ArrayList<Integer> pos = new ArrayList<Integer>();
+                    pos.add(i);
+                    pos.add(j);
+                    nextPositions.add(pos);
+                    return nextPositions;
                 }
             }
         }
@@ -188,10 +157,15 @@ public class Board {
 
     void print() {
         for (int[] row : this.data) {
+            System.out.println();
             for (int value : row) {
                 System.out.format("\u001B[4%dm %d \u001B[0m", value, value);
             }
-            System.out.println();
+        }
+        try {
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }
