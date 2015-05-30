@@ -43,8 +43,8 @@ public class Board {
                 } else {
                     // could not find a free neighbour; if the board is full we have found one solution
                     if (this.isFull()) {
-//                        this.print();
-//                        System.out.println();
+                        this.print();
+                        System.out.println();
                         this.results.add(Arrays.deepToString(this.data));
                     }
                 }
@@ -189,7 +189,7 @@ public class Board {
     void print() {
         for (int[] row : this.data) {
             for (int value : row) {
-                System.out.format("%d ", value);
+                System.out.format("\u001B[4%dm %d \u001B[0m", value, value);
             }
             System.out.println();
         }
