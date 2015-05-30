@@ -4,13 +4,13 @@ public class Board {
 
     private int[][] data;
     private Block[] blocks;
-    public int result;
+    public long result;
     private int[][][] blocksCoordinates;
-    private int[][] cache;
+    private long[][] cache;
 
     public Board(int m, int n, Block[] blocks) {
         this.data = new int[m][n];
-        this.cache = new int[m > n ? m : n][m > n ? n : m];
+        this.cache = new long[m > n ? m : n][m > n ? n : m];
         this.blocks = blocks;
         this.result = 0;
     }
@@ -25,14 +25,18 @@ public class Board {
             ArrayList<Integer[]> validOffsets = this.findValidOffsets(block, position);
             for (Integer[] offset : validOffsets) {
                 this.placeBlockAt(block, offset);
+                if (this.unsolveable()) {
+                    this.removeBlockAt(block, offset);
+                    continue;
+                }
 //                this.print();
                 int[] subRect = this.isRect();
-                int resultBefore = 0;
+                long resultBefore = 0;
                 boolean saveToCache = false;
                 if (subRect[0] > 0) {
                     // we might have already computed the number of mutations
                     // for the sub rectangle
-                    int value = this.cache[subRect[0]][subRect[1]];
+                    long value = this.cache[subRect[0]][subRect[1]];
                     if (value > 0) {
                         this.result += value;
                         this.removeBlockAt(block, offset);
@@ -48,13 +52,75 @@ public class Board {
                 } else {
                     this.nextPosition(nextPos);
                 }
-                this.removeBlockAt(block, offset);
                 if (saveToCache) {
                     this.cache[subRect[0]][subRect[1]] = this.result - resultBefore;
-//                    System.out.format("Saving to cache: %d, %d = %d\n", subRect[0] + 1, subRect[1] + 1, this.result - resultBefore);
+//                    this.print();
+//                    System.out.format(" Saving to cache: %d, %d = %d\n", subRect[0] + 1, subRect[1] + 1, this.result - resultBefore);
+                }
+                this.removeBlockAt(block, offset);
+            }
+        }
+    }
+
+    private boolean unsolveable() {
+        // returns true if there are gaps which cant be filled (smaller than 3 tiles)
+        for (int i = 0; i < this.data.length; i++) {
+            for (int j = 0; j < this.data[i].length; j++) {
+                if (this.data[i][j] == 0) {
+                    int neighbours = this.numberOfFreeNeighbours(new int[]{i, j});
+                    if (neighbours > 1) {
+                        continue;
+                    } else if (neighbours == 1) {
+                        int[] neighbourPosition = this.freeNeighbour(new int[]{i, j});
+                        if (this.numberOfFreeNeighbours(neighbourPosition) > 1) {
+                            continue;
+                        }
+                    }
+                    return true;
                 }
             }
         }
+        return false;
+    }
+
+    int numberOfFreeNeighbours(int[] position) {
+        // returns the number of free tiles around a give position
+        int x = position[0];
+        int y = position[1];
+        int n = 0;
+        if (x > 0 && this.data[x - 1][y] == 0) {
+            n++;
+        }
+        if (y > 0 && this.data[x][y - 1] == 0) {
+            n++;
+        }
+        if (x < this.data.length - 1 && this.data[x + 1][y] == 0) {
+            n++;
+        }
+        if (y < this.data[x].length - 1 && this.data[x][y + 1] == 0) {
+            n++;
+        }
+        return n;
+    }
+
+    int[] freeNeighbour(int[] position) {
+        // returns one free neighbour position
+        int x = position[0];
+        int y = position[1];
+        int n = 0;
+        if (x > 0 && this.data[x - 1][y] == 0) {
+            return new int[] {x-1, y};
+        }
+        if (y > 0 && this.data[x][y - 1] == 0) {
+            return new int[] {x, y-1};
+        }
+        if (x < this.data.length - 1 && this.data[x + 1][y] == 0) {
+            return new int[] {x+1, y};
+        }
+        if (y < this.data[x].length - 1 && this.data[x][y + 1] == 0) {
+            return new int[] {x, y+1};
+        }
+        return new int[] {-1, -1};
     }
 
     private Integer[] findNextPosition(Block block) {
