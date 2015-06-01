@@ -20,6 +20,10 @@ public class Test {
             {19, 3, 53794224},
             {42, 2, 80198051},
             {45, 2, 299303201},
+            {9, 6, 0},
+            {9, 7, 0},
+            {9, 8, 0},
+            {9, 9, 0},
     };
 
     public static void main(String[] args) {
@@ -32,7 +36,7 @@ public class Test {
             long res = Tetris.solve(values[0], values[1]);
             stop = System.currentTimeMillis();
             delta = stop - start;
-            if (res == values[2]) {
+            if (values[2] == 0 || res == values[2]) {
                 System.out.format("OK (%dms)\n", delta);
             } else {
                 System.out.println("ERROR");

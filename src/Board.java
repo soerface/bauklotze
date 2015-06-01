@@ -25,11 +25,12 @@ public class Board {
             ArrayList<Integer[]> validOffsets = this.findValidOffsets(block, position);
             for (Integer[] offset : validOffsets) {
                 this.placeBlockAt(block, offset);
+//                this.print();
                 if (this.unsolveable()) {
+//                    System.out.println("unsolveable");
                     this.removeBlockAt(block, offset);
                     continue;
                 }
-//                this.print();
                 int[] subRect = this.isRect();
                 long resultBefore = 0;
                 boolean saveToCache = false;
@@ -39,6 +40,7 @@ public class Board {
                     long value = this.cache[subRect[0]][subRect[1]];
                     if (value > 0) {
                         this.result += value;
+//                        this.print();
                         this.removeBlockAt(block, offset);
                         continue;
                     }
@@ -49,6 +51,7 @@ public class Board {
                 if (nextPos[0] == -1) {
                     // no free position; if the board is full we have found one solution
                     this.result++;
+//                    this.print();
                 } else {
                     this.nextPosition(nextPos);
                 }
@@ -126,29 +129,15 @@ public class Board {
     private Integer[] findNextPosition(Block block) {
         // to make best use of the cache, we should try to find
         // a position for the next block which makes a rectangle
-        Integer[] nextPosition = new Integer[]{-1, -1};
-        Integer[] firstPosition = new Integer[]{-1, -1};
+        // TODO: not implemented anymore, the used method was actually slower. Maybe try again another way
         for (int i = 0; i < this.data.length; i++) {
             for (int j = 0; j < this.data[i].length; j++) {
                 if (this.data[i][j] == 0) {
-                    if (firstPosition[0] == -1) {
-                        firstPosition[0] = i;
-                        firstPosition[1] = j;
-                    }
-                    nextPosition[0] = i;
-                    nextPosition[1] = j;
-                    if (this.blockPlaceableAt(block, nextPosition)) {
-                        this.placeBlockAt(block, nextPosition);
-                        if (this.isRect()[0] != 0) {
-                            this.removeBlockAt(block, nextPosition);
-                            return nextPosition;
-                        }
-                        this.removeBlockAt(block, nextPosition);
-                    }
+                    return new Integer[]{i, j};
                 }
             }
         }
-        return firstPosition;
+        return new Integer[]{-1, -1};
     }
 
     private void placeBlockAt(Block block, Integer[] offset) {
