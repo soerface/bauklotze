@@ -31,13 +31,13 @@ public class Test {
         long stop;
         long delta;
         for (int[] values : Test.example_values) {
-            System.out.format("%d %d - ", values[0], values[1]);
+            System.out.format("%2d %2d - ", values[0], values[1]);
             start = System.currentTimeMillis();
             long res = Tetris.solve(values[0], values[1]);
             stop = System.currentTimeMillis();
             delta = stop - start;
             if (values[2] == 0 || res == values[2]) {
-                System.out.format("OK (%dms)\n", delta);
+                System.out.format("OK (%7dms) (mutations: %d)\n", delta, res);
             } else {
                 System.out.println("ERROR");
                 System.out.format("Expected %d, got %d\n", values[2], res);

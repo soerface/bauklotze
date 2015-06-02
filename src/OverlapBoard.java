@@ -82,9 +82,9 @@ public class OverlapBoard extends Board {
             return true;
         }
         if (this.currentPosition == this.positions.length) {
-            // we have now placed all blocks which are separating top and bottom rect
-            // to make sure they are overlapping, both top half and bottom half need to have
-            // blocks inside them. Additionally, both of them need a number of blocks divideable
+            // we have now placed all blocks which are separating top and bottom rect.
+            // To make sure they are overlapping, both top half and bottom half need to have
+            // blocks inside them. Additionally, both of them need a number of blocks dividable
             // by 3 inside, otherwise, it won't be possible to find a solution
             int blocksInsideTopHalf = 0;
             int blocksInsideBottomHalf = 0;
