@@ -3,13 +3,11 @@ import java.util.ArrayList;
 public class Board {
 
     private int[][] data;
-    private Block[] blocks;
     public long result;
     private int[][][] blocksCoordinates;
 
-    public Board(int m, int n, Block[] blocks) {
+    public Board(int m, int n) {
         this.data = new int[m][n];
-        this.blocks = blocks;
         this.result = 0;
     }
 
@@ -29,30 +27,42 @@ public class Board {
             // we might have already computed the number of mutations
             // for the sub rectangle
             long value = Tetris.getCache(subRect[0], subRect[1]);
+            int longSide = subRect[0] + 1;
+            int shortSide = subRect[1] + 1;
             if (value > 0) {
                 this.result += value;
 //                        this.print();
 //                this.removeBlockAt(block, offset);
                 return;
-            } else if (subRect[0] >= 6 && subRect[1] >= 3) {
+            } else if (longSide >= 6 && shortSide >= 3) {
                 // it is not yet in the cache, but maybe we can split it into two smaller squares
                 // try to divide in half by the largest of the sides (first value will always be the largest, see
                 // this.isRect()
-                if ((subRect[0] / 2 % 3) == 0 || subRect[1] % 3 == 0) {
+                if (longSide % 2 == 0 && ((longSide / 2 % 3) == 0 || shortSide % 3 == 0)) {
+//                    System.out.println("divide long");
+                    // calculate the number of combinations each separate block has
+                    Board subBoard = new Board(longSide / 2, shortSide);
+                    long mutations = subBoard.calculateMutations();
+                    // both together have a total number of combinations of multiplying them...
+//                    this.result += mutations * mutations;
+                    // and additionally, every combination that is possible by melting the borders of the blocks together
+                    // TODO
 
-                    // ... not dividable by the large side. Try the short side
-                } else if ((subRect[1] / 2 % 3) == 0 || subRect[0] % 3 == 0) {
-
+                } else if (shortSide % 2 == 0 && ((shortSide / 2 % 3) == 0 || longSide % 3 == 0)) {
+                    // Not dividable by the large side. Try the short side.
+//                    System.out.println("divide short");
+                    Board subBoard = new Board(longSide, shortSide / 2);
+                    long mutations = subBoard.calculateMutations();
                 }
 //                return;
             }
             resultBefore = this.result;
             saveToCache = true;
         }
-        for (Block block : this.blocks) {
+        for (Block block : Tetris.blocks) {
             ArrayList<Integer[]> validOffsets = this.findValidOffsets(block, position);
             for (Integer[] offset : validOffsets) {
-//                this.print();
+                this.print();
                 this.placeBlockAt(block, offset);
                 Integer[] nextPos = this.findNextPosition(block);
                 if (nextPos[0] == -1) {

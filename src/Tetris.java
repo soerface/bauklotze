@@ -1,5 +1,5 @@
 public class Tetris {
-    static Block[] blocks;
+    public static Block[] blocks;
     private static long[][] cache;
 
     public static void main(String[] args) {
@@ -10,7 +10,7 @@ public class Tetris {
     }
 
     public static long solve(int m, int n) {
-        blocks = new Block[6];
+        Tetris.blocks = new Block[6];
         blocks[0] = new Block(new int[][]{
                 {1, 0, 0},
                 {1, 0, 0},
@@ -43,7 +43,7 @@ public class Tetris {
         });
 
         Tetris.cache = new long[m > n ? m : n][m > n ? n : m];
-        Board board = new Board(m, n, blocks);
+        Board board = new Board(m, n);
         return board.calculateMutations();
     }
 
