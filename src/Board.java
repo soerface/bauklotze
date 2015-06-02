@@ -28,7 +28,7 @@ public class Board {
         if (subRect[0] > 0) {
             // we might have already computed the number of mutations
             // for the sub rectangle
-            long value = Tetris.cache[subRect[0]][subRect[1]];
+            long value = Tetris.getCache(subRect[0], subRect[1]);
             if (value > 0) {
                 this.result += value;
 //                        this.print();
@@ -44,6 +44,7 @@ public class Board {
                 } else if ((subRect[1] / 2 % 3) == 0 || subRect[0] % 3 == 0) {
 
                 }
+//                return;
             }
             resultBefore = this.result;
             saveToCache = true;
@@ -63,7 +64,7 @@ public class Board {
                     this.nextPosition(nextPos);
                 }
                 if (saveToCache) {
-                    Tetris.cache[subRect[0]][subRect[1]] = this.result - resultBefore;
+                    Tetris.setCache(subRect[0], subRect[1], this.result - resultBefore);
 //                    this.print();
 //                    System.out.format(" Saving to cache: %d, %d = %d\n", subRect[0] + 1, subRect[1] + 1, this.result - resultBefore);
                 }
