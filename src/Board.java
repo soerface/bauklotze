@@ -2,9 +2,8 @@ import java.util.ArrayList;
 
 public class Board {
 
-    private int[][] data;
+    protected int[][] data;
     public long result;
-    private int[][][] blocksCoordinates;
 
     public Board(int m, int n) {
         this.data = new int[m][n];
@@ -13,6 +12,7 @@ public class Board {
 
     public long calculateMutations() {
         this.nextPosition(new Integer[]{0, 0});
+        Tetris.setCache(this.data.length-1, this.data[0].length-1, this.result);
         return this.result;
     }
 
@@ -31,10 +31,8 @@ public class Board {
             int shortSide = subRect[1] + 1;
             if (value > 0) {
                 this.result += value;
-//                        this.print();
-//                this.removeBlockAt(block, offset);
                 return;
-            } else if (longSide >= 6 && shortSide >= 3) {
+            } else if (longSide >= 6 && shortSide >= 3 && false) {
                 // it is not yet in the cache, but maybe we can split it into two smaller squares
                 // try to divide in half by the largest of the sides (first value will always be the largest, see
                 // this.isRect()
@@ -46,15 +44,20 @@ public class Board {
                     // both together have a total number of combinations of multiplying them...
 //                    this.result += mutations * mutations;
                     // and additionally, every combination that is possible by melting the borders of the blocks together
-                    // TODO
-
-                } else if (shortSide % 2 == 0 && ((shortSide / 2 % 3) == 0 || longSide % 3 == 0)) {
+                    subBoard = new OverlapBoard(longSide, shortSide);
+                    long overlapMutations = subBoard.calculateMutations();
+                    this.result += mutations * mutations + overlapMutations;
+                    return;
+                } else if (shortSide >= 6 && shortSide % 2 == 0 && ((shortSide / 2 % 3) == 0 || longSide % 3 == 0)) {
                     // Not dividable by the large side. Try the short side.
 //                    System.out.println("divide short");
-                    Board subBoard = new Board(longSide, shortSide / 2);
+                    Board subBoard = new Board(shortSide / 2, longSide);
                     long mutations = subBoard.calculateMutations();
+                    subBoard = new OverlapBoard(shortSide, longSide);
+                    long overlapMutations = subBoard.calculateMutations();
+                    this.result += mutations * mutations + overlapMutations;
+                    return;
                 }
-//                return;
             }
             resultBefore = this.result;
             saveToCache = true;
@@ -62,9 +65,9 @@ public class Board {
         for (Block block : Tetris.blocks) {
             ArrayList<Integer[]> validOffsets = this.findValidOffsets(block, position);
             for (Integer[] offset : validOffsets) {
-                this.print();
+//                this.print();
                 this.placeBlockAt(block, offset);
-                Integer[] nextPos = this.findNextPosition(block);
+                Integer[] nextPos = this.findNextPosition();
                 if (nextPos[0] == -1) {
                     // no free position; if the board is full we have found one solution
                     this.result++;
@@ -83,7 +86,7 @@ public class Board {
         }
     }
 
-    private boolean unsolveable() {
+    protected boolean unsolveable() {
         // returns true if there are gaps which cant be filled (smaller than 3 tiles)
         for (int i = 0; i < this.data.length; i++) {
             for (int j = 0; j < this.data[i].length; j++) {
@@ -144,7 +147,7 @@ public class Board {
         return new int[]{-1, -1};
     }
 
-    private Integer[] findNextPosition(Block block) {
+    protected Integer[] findNextPosition() {
         // to make best use of the cache, we should try to find
         // a position for the next block which makes a rectangle
         // TODO: not implemented anymore, the used method was actually slower. Maybe try again another way
@@ -158,7 +161,7 @@ public class Board {
         return new Integer[]{-1, -1};
     }
 
-    private void placeBlockAt(Block block, Integer[] offset) {
+    protected void placeBlockAt(Block block, Integer[] offset) {
         for (int i = 0; i < block.data.length; i++) {
             for (int j = 0; j < block.data[i].length; j++) {
                 if (block.data[i][j] != 0) {
@@ -168,7 +171,7 @@ public class Board {
         }
     }
 
-    private void removeBlockAt(Block block, Integer[] offset) {
+    protected void removeBlockAt(Block block, Integer[] offset) {
         for (int i = 0; i < block.data.length; i++) {
             for (int j = 0; j < block.data[i].length; j++) {
                 if (block.data[i][j] != 0) {
