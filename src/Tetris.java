@@ -1,5 +1,6 @@
 public class Tetris {
     static Block[] blocks;
+    public static long[][] cache;
 
     public static void main(String[] args) {
         int m = Integer.parseInt(args[0]);
@@ -40,6 +41,8 @@ public class Tetris {
                 {6, 6, 0},
                 {0, 0, 0}
         });
+
+        Tetris.cache = new long[m > n ? m : n][m > n ? n : m];
         Board board = new Board(m, n, blocks);
         return board.calculateMutations();
     }

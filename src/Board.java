@@ -6,11 +6,9 @@ public class Board {
     private Block[] blocks;
     public long result;
     private int[][][] blocksCoordinates;
-    private long[][] cache;
 
     public Board(int m, int n, Block[] blocks) {
         this.data = new int[m][n];
-        this.cache = new long[m > n ? m : n][m > n ? n : m];
         this.blocks = blocks;
         this.result = 0;
     }
@@ -21,42 +19,51 @@ public class Board {
     }
 
     void nextPosition(Integer[] position) {
+        if (this.unsolveable()) {
+            return;
+        }
+        int[] subRect = this.isRect();
+        long resultBefore = 0;
+        boolean saveToCache = false;
+        if (subRect[0] > 0) {
+            // we might have already computed the number of mutations
+            // for the sub rectangle
+            long value = Tetris.cache[subRect[0]][subRect[1]];
+            if (value > 0) {
+                this.result += value;
+//                        this.print();
+//                this.removeBlockAt(block, offset);
+                return;
+            } else if (subRect[0] >= 6 && subRect[1] >= 3) {
+                // it is not yet in the cache, but maybe we can split it into two smaller squares
+                // try to divide in half by the largest of the sides (first value will always be the largest, see
+                // this.isRect()
+                if ((subRect[0] / 2 % 3) == 0 || subRect[1] % 3 == 0) {
+
+                    // ... not dividable by the large side. Try the short side
+                } else if ((subRect[1] / 2 % 3) == 0 || subRect[0] % 3 == 0) {
+
+                }
+            }
+            resultBefore = this.result;
+            saveToCache = true;
+        }
         for (Block block : this.blocks) {
             ArrayList<Integer[]> validOffsets = this.findValidOffsets(block, position);
             for (Integer[] offset : validOffsets) {
-                this.placeBlockAt(block, offset);
 //                this.print();
-                if (this.unsolveable()) {
-//                    System.out.println("unsolveable");
-                    this.removeBlockAt(block, offset);
-                    continue;
-                }
-                int[] subRect = this.isRect();
-                long resultBefore = 0;
-                boolean saveToCache = false;
-                if (subRect[0] > 0) {
-                    // we might have already computed the number of mutations
-                    // for the sub rectangle
-                    long value = this.cache[subRect[0]][subRect[1]];
-                    if (value > 0) {
-                        this.result += value;
-//                        this.print();
-                        this.removeBlockAt(block, offset);
-                        continue;
-                    }
-                    resultBefore = this.result;
-                    saveToCache = true;
-                }
+                this.placeBlockAt(block, offset);
                 Integer[] nextPos = this.findNextPosition(block);
                 if (nextPos[0] == -1) {
                     // no free position; if the board is full we have found one solution
                     this.result++;
+//                    System.out.println("succ");
 //                    this.print();
                 } else {
                     this.nextPosition(nextPos);
                 }
                 if (saveToCache) {
-                    this.cache[subRect[0]][subRect[1]] = this.result - resultBefore;
+                    Tetris.cache[subRect[0]][subRect[1]] = this.result - resultBefore;
 //                    this.print();
 //                    System.out.format(" Saving to cache: %d, %d = %d\n", subRect[0] + 1, subRect[1] + 1, this.result - resultBefore);
                 }
@@ -112,18 +119,18 @@ public class Board {
         int y = position[1];
         int n = 0;
         if (x > 0 && this.data[x - 1][y] == 0) {
-            return new int[] {x-1, y};
+            return new int[]{x - 1, y};
         }
         if (y > 0 && this.data[x][y - 1] == 0) {
-            return new int[] {x, y-1};
+            return new int[]{x, y - 1};
         }
         if (x < this.data.length - 1 && this.data[x + 1][y] == 0) {
-            return new int[] {x+1, y};
+            return new int[]{x + 1, y};
         }
         if (y < this.data[x].length - 1 && this.data[x][y + 1] == 0) {
-            return new int[] {x, y+1};
+            return new int[]{x, y + 1};
         }
-        return new int[] {-1, -1};
+        return new int[]{-1, -1};
     }
 
     private Integer[] findNextPosition(Block block) {
