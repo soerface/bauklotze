@@ -29,14 +29,14 @@ public class Board {
             return;
         }
         int[] subRect = this.isRect();
+        int longSide = subRect[0];
+        int shortSide = subRect[1];
         long resultBefore = 0;
         boolean saveToCache = false;
-        if (subRect[0] > 0) {
+        if (longSide > 0) {
             // we might have already computed the number of mutations
             // for the sub rectangle
-            long value = Tetris.getCache(subRect[0], subRect[1]);
-            int longSide = subRect[0];
-            int shortSide = subRect[1];
+            long value = Tetris.getCache(longSide, shortSide);
             if (value > 0) {
                 this.result += value;
                 return;
@@ -44,33 +44,27 @@ public class Board {
                 // it is not yet in the cache, but maybe we can split it into two smaller squares
                 // try to divide in half by the largest of the sides (first value will always be the largest, see
                 // this.isRect()
+                int sideA = 0;
+                int sideB = 0;
                 if (longSide % 2 == 0 && ((longSide / 2 % 3) == 0 || shortSide % 3 == 0)) {
-//                    System.out.println("divide long");
+                    sideA = longSide;
+                    sideB = shortSide;
+
+                } else if (shortSide >= 6 && shortSide % 2 == 0 && ((shortSide / 2 % 3) == 0 || longSide % 3 == 0)) {
+                    sideA = shortSide;
+                    sideB = longSide;
+                }
+                if (sideA > 0) {
                     // calculate the number of combinations each separate block has
-                    long mutations = Tetris.getCache(longSide / 2, shortSide);
+                    long mutations = Tetris.getCache(sideA / 2, sideB);
                     if (mutations == 0) {
-                        Board subBoard = new Board(longSide / 2, shortSide);
+                        Board subBoard = new Board(sideA / 2, sideB);
                         mutations = subBoard.calculateMutations();
                     }
 
                     // both together have a total number of combinations of multiplying them
                     // and additionally, every combination that is possible by melting the borders of the blocks together
-                    Board subBoard = new OverlapBoard(longSide, shortSide);
-                    long overlapMutations = subBoard.calculateMutations();
-                    value = mutations * mutations + overlapMutations;
-                    Tetris.setCache(subRect[0], subRect[1], value);
-                    this.result += value;
-                    return;
-                } else if (shortSide >= 6 && shortSide % 2 == 0 && ((shortSide / 2 % 3) == 0 || longSide % 3 == 0)) {
-                    // Not dividable by the large side. Try the short side.
-//                    System.out.println("divide short");
-                    long mutations = Tetris.getCache(shortSide / 2, longSide);
-                    if (mutations == 0) {
-                        Board subBoard = new Board(shortSide / 2, longSide);
-                        mutations = subBoard.calculateMutations();
-                    }
-
-                    Board subBoard = new OverlapBoard(shortSide, longSide);
+                    Board subBoard = new OverlapBoard(sideA, sideB);
                     long overlapMutations = subBoard.calculateMutations();
                     value = mutations * mutations + overlapMutations;
                     Tetris.setCache(subRect[0], subRect[1], value);
@@ -343,7 +337,7 @@ public class Board {
             }
         }
         try {
-            Thread.sleep(80);
+            Thread.sleep(30);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
