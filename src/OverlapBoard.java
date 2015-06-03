@@ -81,8 +81,8 @@ public class OverlapBoard extends Board {
     }
 
     @Override
-    protected boolean unsolveable() {
-        if (super.unsolveable()) {
+    protected boolean unsolvable() {
+        if (super.unsolvable()) {
             return true;
         }
         if (this.currentPosition == this.positions.length) {

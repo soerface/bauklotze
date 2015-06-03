@@ -25,7 +25,7 @@ public class Board {
     }
 
     void nextPosition(Integer[] position) {
-        if (this.unsolveable()) {
+        if (this.unsolvable()) {
             return;
         }
         int[] subRect = this.isRect();
@@ -99,7 +99,7 @@ public class Board {
         }
     }
 
-    protected boolean unsolveable() {
+    protected boolean unsolvable() {
         // returns true if there are gaps which cant be filled (smaller than 3 tiles)
         for (int i = 0; i < this.data.length; i++) {
             for (int j = 0; j < this.data[i].length; j++) {
