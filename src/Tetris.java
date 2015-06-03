@@ -1,10 +1,15 @@
 public class Tetris {
     public static Block[] blocks;
     private static long[][] cache;
+    public static boolean debugPrint = false;
 
     public static void main(String[] args) {
         int m = Integer.parseInt(args[0]);
         int n = Integer.parseInt(args[1]);
+        if (args.length > 2 && args[2].equals("debug")) {
+            System.out.println("debug!");
+            Tetris.debugPrint = true;
+        }
 
         System.out.println(Tetris.solve(m, n));
     }

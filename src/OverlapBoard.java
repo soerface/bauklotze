@@ -63,9 +63,11 @@ public class OverlapBoard extends Board {
         for (int i = 0; i < this.data.length; i++) {
             for (int j = 0; j < this.data[i].length; j++) {
                 if (i < this.data.length / 2) {
-                    topBoard.data[i][j] = this.data[i][j];
+                    // 7 for better visualization while debugging; could be any other number != 0
+                    topBoard.data[i][j] = this.data[i][j] != 0 ? 7 : 0;
                 } else {
-                    bottomBoard.data[i - this.data.length / 2][j] = this.data[i][j];
+                    // 7 for better visualization while debugging; could be any other number != 0
+                    bottomBoard.data[i - this.data.length / 2][j] = this.data[i][j] != 0 ? 7 : 0;
                 }
             }
         }

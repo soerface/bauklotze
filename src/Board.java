@@ -80,7 +80,7 @@ public class Board {
             ArrayList<Integer[]> validOffsets = this.findValidOffsets(block, position);
             for (Integer[] offset : validOffsets) {
                 this.placeBlockAt(block, offset);
-//                this.print();
+                this.print();
                 Integer[] nextPos = this.findNextPosition();
                 if (nextPos[0] == -1) {
                     // no free position; if the board is full we have found one solution
@@ -96,8 +96,6 @@ public class Board {
         }
         if (saveToCache) {
             Tetris.setCache(longSide, shortSide, this.result - resultBefore);
-//                    this.print();
-//                    System.out.format(" Saving to cache: %d, %d = %d\n", subRect[0] + 1, subRect[1] + 1, this.result - resultBefore);
         }
     }
 
@@ -333,6 +331,9 @@ public class Board {
     }
 
     void print() {
+        if (!Tetris.debugPrint) {
+            return;
+        }
         System.out.println();
         for (int[] row : this.data) {
             System.out.println();
@@ -340,10 +341,10 @@ public class Board {
                 System.out.format("\u001B[4%dm %d \u001B[0m", value, value);
             }
         }
-        try {
-            Thread.sleep(80);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.sleep(80);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
     }
 }
