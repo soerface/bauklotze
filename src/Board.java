@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class Board {
 
-    protected int[][] data;
+    public int[][] data;
     public long result;
 
     public Board(int m, int n) {
@@ -19,7 +19,7 @@ public class Board {
     }
 
     public long calculateMutations() {
-        this.nextPosition(new Integer[]{0, 0});
+        this.nextPosition(this.findNextPosition());
         Tetris.setCache(this.data.length, this.data[0].length, this.result);
         return this.result;
     }
@@ -38,6 +38,7 @@ public class Board {
             // for the sub rectangle
             long value = Tetris.getCache(longSide, shortSide);
             if (value > 0) {
+//                System.out.format("from cache: %d (%d, %d)\n", value, longSide, shortSide);
                 this.result += value;
                 return;
             } else if (longSide >= 6 && shortSide >= 3) {
@@ -78,8 +79,8 @@ public class Board {
         for (Block block : Tetris.blocks) {
             ArrayList<Integer[]> validOffsets = this.findValidOffsets(block, position);
             for (Integer[] offset : validOffsets) {
-//                this.print();
                 this.placeBlockAt(block, offset);
+//                this.print();
                 Integer[] nextPos = this.findNextPosition();
                 if (nextPos[0] == -1) {
                     // no free position; if the board is full we have found one solution
@@ -310,7 +311,9 @@ public class Board {
         if (left == -1 || right == -1) {
             return new int[]{0, 0};
         }
-        bottom = this.data.length - 1;
+        if (bottom == -1) {
+            bottom = this.data.length - 1;
+        }
         int width = right - left + 1;
         int height = bottom - top + 1;
         if (height > width) {
