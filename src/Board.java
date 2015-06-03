@@ -4,15 +4,21 @@ public class Board {
 
     protected int[][] data;
     public long result;
+    private Strategy currentStrategy;
+
+    public enum Strategy {
+        BRUTE_FORCE, OVERLAP
+    }
 
     public Board(int m, int n) {
         this.data = new int[m][n];
         this.result = 0;
+        this.currentStrategy = Strategy.BRUTE_FORCE;
     }
 
     public long calculateMutations() {
         this.nextPosition(new Integer[]{0, 0});
-        Tetris.setCache(this.data.length-1, this.data[0].length-1, this.result);
+        Tetris.setCache(this.data.length - 1, this.data[0].length - 1, this.result);
         return this.result;
     }
 
