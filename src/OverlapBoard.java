@@ -47,14 +47,64 @@ public class OverlapBoard extends Board {
             }
             offset++;
         }
+        if (!this.correctlySplitted()) {
+            // since we are returning "board is full", the overridden
+            // method will add 1, so we need to fix this
+            this.result--;
+            return new Integer[]{-1, -1};
+        }
+//        System.out.println("SPLitTinG!");
+        // the board is now separated in half;
+        // we just need to calculate the combinations of the top and
+        // the bottom half and multiply them
+        Board topBoard = new Board(this.data.length / 2, this.data[0].length, false);
+        Board bottomBoard = new Board(this.data.length / 2, this.data[0].length, false);
+        // copy the data from our current board to the two new ones
         for (int i = 0; i < this.data.length; i++) {
             for (int j = 0; j < this.data[i].length; j++) {
-                if (this.data[i][j] == 0) {
-                    return new Integer[]{i, j};
+                if (i < this.data.length / 2) {
+                    topBoard.data[i][j] = this.data[i][j];
+                } else {
+                    bottomBoard.data[i - this.data.length / 2][j] = this.data[i][j];
                 }
             }
         }
+
+        long top = topBoard.calculateMutations();
+        long bottom = bottomBoard.calculateMutations();
+        this.result += top * bottom;
+        // since we are returning "board is full", the overridden
+        // method will add 1, so we need to fix this
+        this.result--;
         return new Integer[]{-1, -1};
+    }
+
+    private boolean correctlySplitted() {
+        // we have now placed all blocks which are separating top and bottom rect.
+        // To make sure they are overlapping, both top half and bottom half need to have
+        // blocks inside them. Additionally, both of them need a number of blocks dividable
+        // by 3 inside, otherwise, it won't be possible to find a solution
+        int blocksInsideTopHalf = 0;
+        int blocksInsideBottomHalf = 0;
+
+        for (int i = 0; i < this.data.length; i++) {
+            for (int j = 0; j < this.data[i].length; j++) {
+                if (this.data[i][j] != 0) {
+                    if (i < this.data.length / 2) {
+                        blocksInsideTopHalf++;
+                    } else {
+                        blocksInsideBottomHalf++;
+                    }
+                }
+            }
+        }
+        if (blocksInsideTopHalf == 0 || blocksInsideBottomHalf == 0) {
+            return false;
+        }
+        if (blocksInsideTopHalf % 3 != 0) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -78,39 +128,5 @@ public class OverlapBoard extends Board {
     protected void removeBlockAt(Block block, Integer[] offset) {
         super.removeBlockAt(block, offset);
         this.currentPosition--;
-    }
-
-    @Override
-    protected boolean unsolvable() {
-        if (super.unsolvable()) {
-            return true;
-        }
-        if (this.currentPosition == this.positions.length) {
-            // we have now placed all blocks which are separating top and bottom rect.
-            // To make sure they are overlapping, both top half and bottom half need to have
-            // blocks inside them. Additionally, both of them need a number of blocks dividable
-            // by 3 inside, otherwise, it won't be possible to find a solution
-            int blocksInsideTopHalf = 0;
-            int blocksInsideBottomHalf = 0;
-
-            for (int i = 0; i < this.data.length; i++) {
-                for (int j = 0; j < this.data[i].length; j++) {
-                    if (this.data[i][j] != 0) {
-                        if (i < this.data.length / 2) {
-                            blocksInsideTopHalf++;
-                        } else {
-                            blocksInsideBottomHalf++;
-                        }
-                    }
-                }
-            }
-            if (blocksInsideTopHalf == 0 || blocksInsideBottomHalf == 0) {
-                return true;
-            }
-            if (blocksInsideTopHalf % 3 != 0) {
-                return true;
-            }
-        }
-        return false;
     }
 }

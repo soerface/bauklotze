@@ -90,13 +90,14 @@ public class Board {
                 } else {
                     this.nextPosition(nextPos);
                 }
-                if (saveToCache) {
-                    Tetris.setCache(subRect[0], subRect[1], this.result - resultBefore);
-//                    this.print();
-//                    System.out.format(" Saving to cache: %d, %d = %d\n", subRect[0] + 1, subRect[1] + 1, this.result - resultBefore);
-                }
+
                 this.removeBlockAt(block, offset);
             }
+        }
+        if (saveToCache) {
+            Tetris.setCache(longSide, shortSide, this.result - resultBefore);
+//                    this.print();
+//                    System.out.format(" Saving to cache: %d, %d = %d\n", subRect[0] + 1, subRect[1] + 1, this.result - resultBefore);
         }
     }
 
@@ -340,7 +341,7 @@ public class Board {
             }
         }
         try {
-            Thread.sleep(30);
+            Thread.sleep(80);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

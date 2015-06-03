@@ -56,10 +56,14 @@ public class Tetris {
     }
 
     public static void setCache(int m, int n, long value) {
-        if (m > n) {
-            Tetris.cache[m][n] = value;
-        } else {
-            Tetris.cache[n][m] = value;
+        if (m < n) {
+            int tmp = m;
+            m = n;
+            n = tmp;
         }
+        if (Tetris.cache[m][n] != 0) {
+            return;
+        }
+        Tetris.cache[m][n] = value;
     }
 }
