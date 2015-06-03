@@ -17,7 +17,7 @@ public class Board {
 
     public long calculateMutations() {
         this.nextPosition(new Integer[]{0, 0});
-        Tetris.setCache(this.data.length - 1, this.data[0].length - 1, this.result);
+        Tetris.setCache(this.data.length, this.data[0].length, this.result);
         return this.result;
     }
 
@@ -32,8 +32,8 @@ public class Board {
             // we might have already computed the number of mutations
             // for the sub rectangle
             long value = Tetris.getCache(subRect[0], subRect[1]);
-            int longSide = subRect[0] + 1;
-            int shortSide = subRect[1] + 1;
+            int longSide = subRect[0];
+            int shortSide = subRect[1];
             if (value > 0) {
                 this.result += value;
                 return;
@@ -44,7 +44,7 @@ public class Board {
                 if (longSide % 2 == 0 && ((longSide / 2 % 3) == 0 || shortSide % 3 == 0)) {
 //                    System.out.println("divide long");
                     // calculate the number of combinations each separate block has
-                    long mutations = Tetris.getCache(subRect[0] / 2, subRect[1]);
+                    long mutations = Tetris.getCache(longSide / 2, shortSide);
                     if (mutations == 0) {
                         Board subBoard = new Board(longSide / 2, shortSide);
                         mutations = subBoard.calculateMutations();
@@ -61,7 +61,7 @@ public class Board {
                 } else if (shortSide >= 6 && shortSide % 2 == 0 && ((shortSide / 2 % 3) == 0 || longSide % 3 == 0)) {
                     // Not dividable by the large side. Try the short side.
 //                    System.out.println("divide short");
-                    long mutations = Tetris.getCache(subRect[1] / 2, subRect[0]);
+                    long mutations = Tetris.getCache(shortSide / 2, longSide);
                     if (mutations == 0) {
                         Board subBoard = new Board(shortSide / 2, longSide);
                         mutations = subBoard.calculateMutations();
@@ -81,7 +81,7 @@ public class Board {
         for (Block block : Tetris.blocks) {
             ArrayList<Integer[]> validOffsets = this.findValidOffsets(block, position);
             for (Integer[] offset : validOffsets) {
-                this.print();
+//                this.print();
                 this.placeBlockAt(block, offset);
                 Integer[] nextPos = this.findNextPosition();
                 if (nextPos[0] == -1) {
@@ -314,8 +314,8 @@ public class Board {
             return new int[]{0, 0};
         }
         bottom = this.data.length - 1;
-        int width = right - left;
-        int height = bottom - top;
+        int width = right - left + 1;
+        int height = bottom - top + 1;
         if (height > width) {
             // it doesn't matter for calculation number of calculation if it is rotated or not
             // but always putting the larger coordinate on one side uses the cache more efficiently

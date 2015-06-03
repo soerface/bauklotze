@@ -42,7 +42,7 @@ public class Tetris {
                 {0, 0, 0}
         });
 
-        Tetris.cache = new long[m > n ? m : n][m > n ? n : m];
+        Tetris.cache = new long[(m > n ? m : n) + 1][(m > n ? n : m) + 1];
         Board board = new Board(m, n);
         return board.calculateMutations();
     }

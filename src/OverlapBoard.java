@@ -58,7 +58,7 @@ public class OverlapBoard extends Board {
         int[] res = super.isRect();
         int m = this.data.length;
         int n = this.data[0].length;
-        if (res[0]+1 == Math.max(m, n) && res[1]+1 == Math.min(m, n)) {
+        if (res[0] == Math.max(m, n) && res[1] == Math.min(m, n)) {
             return new int[]{-1, -1};
         }
         return res;
