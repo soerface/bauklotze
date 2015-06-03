@@ -5,13 +5,16 @@ public class Board {
     protected int[][] data;
     public long result;
 
-    public enum Strategy {
-        BRUTE_FORCE, OVERLAP
+    public Board(int m, int n) {
+        this(m, n, true);
     }
 
-    public Board(int m, int n) {
-        this.data = new int[m][n];
-//        this.data = new int[m > n ? m : n][n < m ? n : m];
+    public Board(int m, int n, boolean allowRotate) {
+        if (allowRotate) {
+            this.data = new int[m > n ? m : n][n < m ? n : m];
+        } else {
+            this.data = new int[m][n];
+        }
         this.result = 0;
     }
 

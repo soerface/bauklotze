@@ -16,7 +16,11 @@ public class OverlapBoard extends Board {
     private int currentPosition;
 
     public OverlapBoard(int m, int n) {
-        super(m, n);
+        this(m, n, false);
+    }
+
+    public OverlapBoard(int m, int n, boolean allowRotate) {
+        super(m, n, allowRotate);
         this.positions = new Integer[n][2];
         this.currentPosition = 0;
         for (int i = 0; i < n; i++) {
