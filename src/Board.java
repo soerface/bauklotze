@@ -4,7 +4,6 @@ public class Board {
 
     protected int[][] data;
     public long result;
-    private Strategy currentStrategy;
 
     public enum Strategy {
         BRUTE_FORCE, OVERLAP
@@ -12,8 +11,8 @@ public class Board {
 
     public Board(int m, int n) {
         this.data = new int[m][n];
+//        this.data = new int[m > n ? m : n][n < m ? n : m];
         this.result = 0;
-        this.currentStrategy = Strategy.BRUTE_FORCE;
     }
 
     public long calculateMutations() {
@@ -38,30 +37,41 @@ public class Board {
             if (value > 0) {
                 this.result += value;
                 return;
-            } else if (longSide >= 6 && shortSide >= 3 && false) {
+            } else if (longSide >= 6 && shortSide >= 3) {
                 // it is not yet in the cache, but maybe we can split it into two smaller squares
                 // try to divide in half by the largest of the sides (first value will always be the largest, see
                 // this.isRect()
                 if (longSide % 2 == 0 && ((longSide / 2 % 3) == 0 || shortSide % 3 == 0)) {
 //                    System.out.println("divide long");
                     // calculate the number of combinations each separate block has
-                    Board subBoard = new Board(longSide / 2, shortSide);
-                    long mutations = subBoard.calculateMutations();
-                    // both together have a total number of combinations of multiplying them...
-//                    this.result += mutations * mutations;
+                    long mutations = Tetris.getCache(subRect[0] / 2, subRect[1]);
+                    if (mutations == 0) {
+                        Board subBoard = new Board(longSide / 2, shortSide);
+                        mutations = subBoard.calculateMutations();
+                    }
+
+                    // both together have a total number of combinations of multiplying them
                     // and additionally, every combination that is possible by melting the borders of the blocks together
-                    subBoard = new OverlapBoard(longSide, shortSide);
+                    Board subBoard = new OverlapBoard(longSide, shortSide);
                     long overlapMutations = subBoard.calculateMutations();
-                    this.result += mutations * mutations + overlapMutations;
+                    value = mutations * mutations + overlapMutations;
+                    Tetris.setCache(subRect[0], subRect[1], value);
+                    this.result += value;
                     return;
                 } else if (shortSide >= 6 && shortSide % 2 == 0 && ((shortSide / 2 % 3) == 0 || longSide % 3 == 0)) {
                     // Not dividable by the large side. Try the short side.
 //                    System.out.println("divide short");
-                    Board subBoard = new Board(shortSide / 2, longSide);
-                    long mutations = subBoard.calculateMutations();
-                    subBoard = new OverlapBoard(shortSide, longSide);
+                    long mutations = Tetris.getCache(subRect[1] / 2, subRect[0]);
+                    if (mutations == 0) {
+                        Board subBoard = new Board(shortSide / 2, longSide);
+                        mutations = subBoard.calculateMutations();
+                    }
+
+                    Board subBoard = new OverlapBoard(shortSide, longSide);
                     long overlapMutations = subBoard.calculateMutations();
-                    this.result += mutations * mutations + overlapMutations;
+                    value = mutations * mutations + overlapMutations;
+                    Tetris.setCache(subRect[0], subRect[1], value);
+                    this.result += value;
                     return;
                 }
             }
@@ -71,7 +81,7 @@ public class Board {
         for (Block block : Tetris.blocks) {
             ArrayList<Integer[]> validOffsets = this.findValidOffsets(block, position);
             for (Integer[] offset : validOffsets) {
-//                this.print();
+                this.print();
                 this.placeBlockAt(block, offset);
                 Integer[] nextPos = this.findNextPosition();
                 if (nextPos[0] == -1) {
