@@ -1,9 +1,13 @@
 public class Block {
     public int[][] data;
     public int[][] coordinates;
+    public int width;
+    public int height;
 
     public Block(int[][] data) {
         this.data = data;
+        this.width = data.length;
+        this.height = data[0].length;
         this.coordinates = new int[3][2];
         int k = 0;
         while (k < 3) {

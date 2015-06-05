@@ -1,33 +1,144 @@
-1 3 - OK (1ms)
-6 1 - OK (0ms)
-2 3 - OK (2ms)
-3 3 - OK (12ms)
-6 2 - OK (29ms)
-3 4 - OK (28ms)
-9 2 - OK (84ms)
-3 5 - OK (38ms)
-6 4 - OK (2745ms)
-9 3 - OK (7937ms)
-6 5 - OK (152708ms)
+without split:
 
--------------------
+ 3  1 - OK      1ms mutations:               1 setBlock:               1 getCache:               1
+ 3  2 - OK      0ms mutations:               3 setBlock:               7 getCache:               2
+ 3  3 - OK      0ms mutations:              10 setBlock:              18 getCache:               6
+ 3  4 - OK      0ms mutations:              23 setBlock:              42 getCache:              14
+ 3  5 - OK      1ms mutations:              62 setBlock:              72 getCache:              24
+ 6  1 - OK      0ms mutations:               1 setBlock:               2 getCache:               2
+ 6  2 - OK      1ms mutations:              11 setBlock:              20 getCache:               5
+ 6  3 - OK      2ms mutations:             170 setBlock:             110 getCache:              36
+ 6  4 - OK     32ms mutations:             939 setBlock:            1517 getCache:             233
+ 6  5 - OK     44ms mutations:            8342 setBlock:           17243 getCache:            2568
+ 6  6 - OK    106ms mutations:           80092 setBlock:          155669 getCache:           24491
+ 6  7 - OK    670ms mutations:          614581 setBlock:          994816 getCache:          157037
+ 6  8 - OK   3901ms mutations:         5271923 setBlock:         6609066 getCache:         1015097
+ 9  1 - OK      0ms mutations:               1 setBlock:               3 getCache:               3
+ 9  2 - OK      0ms mutations:              41 setBlock:              39 getCache:              10
+ 9  3 - OK      0ms mutations:            3127 setBlock:             262 getCache:              90
+ 9  4 - OK     20ms mutations:           41813 setBlock:           41325 getCache:            6102
+ 9  5 - OK   1045ms mutations:         1269900 setBlock:         1874769 getCache:          275614
+ 9  6 - OK  27409ms mutations:        45832761 setBlock:        44722885 getCache:         6829351
+12  1 - OK      0ms mutations:               1 setBlock:               4 getCache:               4
+12  2 - OK      0ms mutations:             153 setBlock:              64 getCache:              17
+12  3 - OK      1ms mutations:           58234 setBlock:             474 getCache:             168
+12  4 - OK    629ms mutations:         1895145 setBlock:         1157567 getCache:          169435
+12  5 - OK 135417ms mutations:       198253934 setBlock:       209279255 getCache:        30695466
+15  1 - OK      0ms mutations:               1 setBlock:               5 getCache:               5
+15  2 - OK      0ms mutations:             571 setBlock:              95 getCache:              26
+15  3 - OK      1ms mutations:         1086567 setBlock:             746 getCache:             270
+15  4 - OK  20692ms mutations:        86208957 setBlock:        32563213 getCache:         4756456
+18  1 - OK      0ms mutations:               1 setBlock:               6 getCache:               6
+18  2 - OK      0ms mutations:            2131 setBlock:             132 getCache:              37
+18  3 - OK      1ms mutations:        20279829 setBlock:            1078 getCache:             396
+18  4 - ??  ZU LANG
+21  1 - OK      0ms mutations:               1 setBlock:               7 getCache:               7
+21  2 - OK      1ms mutations:            7953 setBlock:             175 getCache:              50
+21  3 - OK      1ms mutations:       378522507 setBlock:            1470 getCache:             546
+21  4 - ??  ZU LANG
+24  1 - OK      0ms mutations:               1 setBlock:               8 getCache:               8
+24  2 - OK      0ms mutations:           29681 setBlock:             224 getCache:              65
+24  3 - OK      2ms mutations:      7065162260 setBlock:            1922 getCache:             720
+24  4 - ??  ZU LANG
 
-1 3 - OK (1ms)
-6 1 - OK (0ms)
-2 3 - OK (0ms)
-3 3 - OK (1ms)
-6 2 - OK (1ms)
-3 4 - OK (2ms)
-9 2 - OK (1ms)
-3 5 - OK (6ms)
-6 4 - OK (31ms)
-9 3 - OK (1ms)
-6 5 - OK (49ms)
-9 4 - OK (46ms)
-6 6 - OK (167ms)
-7 6 - OK (1029ms)
-9 5 - OK (1734ms)
-18 3 - OK (2ms)
-19 3 - OK (3ms)
-42 2 - OK (3ms)
-45 2 - OK (4ms)
+with split:
+
+ 3  1 - OK      1ms mutations:               1 setBlock:               1 getCache:               1
+ 3  2 - OK      1ms mutations:               3 setBlock:               7 getCache:               2
+ 3  3 - OK      0ms mutations:              10 setBlock:              18 getCache:               6
+ 3  4 - OK      1ms mutations:              23 setBlock:              42 getCache:              14
+ 3  5 - OK      2ms mutations:              62 setBlock:              72 getCache:              24
+ 6  1 - OK      0ms mutations:               1 setBlock:               2 getCache:               2
+ 6  2 - OK      0ms mutations:              11 setBlock:              20 getCache:               5
+ 6  3 - OK      4ms mutations:             170 setBlock:             175 getCache:              42
+ 6  4 - OK     33ms mutations:             939 setBlock:            1816 getCache:             230
+ 6  5 - OK     67ms mutations:            8342 setBlock:           17561 getCache:            2318
+ 6  6 - OK     88ms mutations:           80092 setBlock:          155894 getCache:           21806
+ 6  7 - OK    807ms mutations:          614581 setBlock:         1621307 getCache:          210319
+ 6  8 - OK    639ms mutations:         5271923 setBlock:         1315037 getCache:          175185
+ 9  1 - OK      0ms mutations:               1 setBlock:               3 getCache:               3
+ 9  2 - OK      0ms mutations:              41 setBlock:              39 getCache:              10
+ 9  3 - OK      1ms mutations:            3127 setBlock:             561 getCache:             146
+ 9  4 - OK     20ms mutations:           41813 setBlock:           41624 getCache:            6099
+ 9  5 - OK   1051ms mutations:         1269900 setBlock:         1875087 getCache:          275364
+ 9  6 - OK  74632ms mutations:        45832761 setBlock:       152656266 getCache:        17806911
+12  1 - OK      0ms mutations:               1 setBlock:               4 getCache:               4
+12  2 - OK      0ms mutations:             153 setBlock:              64 getCache:              17
+12  3 - OK      0ms mutations:           58234 setBlock:             863 getCache:             151
+12  4 - OK     37ms mutations:         1895145 setBlock:           77327 getCache:            7940
+12  5 - OK   1502ms mutations:       198253934 setBlock:         2800072 getCache:          327190
+15  1 - OK      0ms mutations:               1 setBlock:               5 getCache:               5
+15  2 - OK      0ms mutations:             571 setBlock:              95 getCache:              26
+15  3 - OK      2ms mutations:         1086567 setBlock:            3155 getCache:             540
+15  4 - OK  20862ms mutations:        86208957 setBlock:        31522781 getCache:         4600830
+18  1 - OK      0ms mutations:               1 setBlock:               6 getCache:               6
+18  2 - OK      0ms mutations:            2131 setBlock:             132 getCache:              37
+18  3 - OK      4ms mutations:        20279829 setBlock:            8715 getCache:             704
+18  4 - OK   1388ms mutations:      3924499731 setBlock:         2850843 getCache:          256941
+21  1 - OK      0ms mutations:               1 setBlock:               7 getCache:               7
+21  2 - OK      0ms mutations:            7953 setBlock:             175 getCache:              50
+21  3 - OK     17ms mutations:       378522507 setBlock:           36087 getCache:            2848
+21  4 - ??  ZU LANG
+24  1 - OK      0ms mutations:               1 setBlock:               8 getCache:               8
+24  2 - OK      0ms mutations:           29681 setBlock:             224 getCache:              65
+24  3 - OK     71ms mutations:      7065162260 setBlock:          148793 getCache:            9170
+24  4 - OK  59857ms mutations:   8135650498647 setBlock:       108824614 getCache:         8545059
+
+
+       L (w/o)   R (with)
+ 3  1      1ms     1ms  -
+ 3  2      0ms     1ms  -
+ 3  3      0ms     0ms  -
+ 3  4      0ms     1ms  -
+ 3  5      1ms     2ms  -
+ 6  1      0ms     0ms  -
+ 6  2      1ms     0ms  -
+ 6  3      2ms     4ms  -
+ 6  4     32ms    33ms  -
+ 6  5     44ms    67ms  l
+ 6  6    106ms    88ms  r
+ 6  7    670ms   807ms  l
+ 6  8   3901ms   639ms  R
+ 9  1      0ms     0ms  -
+ 9  2      0ms     0ms  -
+ 9  3      0ms     1ms  -
+ 9  4     20ms    20ms  -
+ 9  5   1045ms  1051ms  -
+ 9  6  27409ms 74632ms  L
+12  1      0ms     0ms  -
+12  2      0ms     0ms  -
+12  3      1ms     0ms  -
+12  4    629ms    37ms  R
+12  5 135417ms  1502ms  R
+15  1      0ms     0ms  -
+15  2      0ms     0ms  -
+15  3      1ms     2ms  -
+15  4  20692ms 20862ms  - (l)
+18  1      0ms     0ms  -
+18  2      0ms     0ms  -
+18  3      1ms     4ms  -
+18  4  ZU LANG  1388ms  R
+21  1      0ms     0ms  -
+21  2      1ms     0ms  -
+21  3      1ms    17ms  l
+21  4  ZU LANG ZU LANG  -
+24  1      0ms     0ms  -
+24  2      0ms     0ms  -
+24  3      2ms    71ms  L
+24  4  ZU LANG 59857ms  R
+
+combinations better without split:
+6 5
+6 7
+6 9  !
+15 4 (not much)
+21 3 !
+24 3 !
+
+combinations better with split:
+6 6
+6 8  !
+12 4 !
+12 5 !
+18 4 !
+24 4 !

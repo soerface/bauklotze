@@ -4,6 +4,8 @@ public class Board {
 
     public int[][] data;
     public long result;
+    private int width;
+    private int height;
 
     public Board(int m, int n) {
         this(m, n, true);
@@ -11,16 +13,19 @@ public class Board {
 
     public Board(int m, int n, boolean allowRotate) {
         if (allowRotate) {
-            this.data = new int[m > n ? m : n][n < m ? n : m];
+            this.height = n < m ? n : m;
+            this.width = m > n ? m : n;
         } else {
-            this.data = new int[m][n];
+            this.width = m;
+            this.height = n;
         }
+        this.data = new int[this.width][this.height];
         this.result = 0;
     }
 
     public long calculateMutations() {
         this.nextPosition(this.findNextPosition());
-        Tetris.setCache(this.data.length, this.data[0].length, this.result);
+        Tetris.setCache(this.width, this.height, this.result);
         return this.result;
     }
 
@@ -101,8 +106,8 @@ public class Board {
 
     protected boolean unsolvable() {
         // returns true if there are gaps which cant be filled (smaller than 3 tiles)
-        for (int i = 0; i < this.data.length; i++) {
-            for (int j = 0; j < this.data[i].length; j++) {
+        for (int i = 0; i < this.width; i++) {
+            for (int j = 0; j < this.height; j++) {
                 if (this.data[i][j] == 0) {
                     int neighbours = this.numberOfFreeNeighbours(new int[]{i, j});
                     if (neighbours > 1) {
@@ -131,10 +136,10 @@ public class Board {
         if (y > 0 && this.data[x][y - 1] == 0) {
             n++;
         }
-        if (x < this.data.length - 1 && this.data[x + 1][y] == 0) {
+        if (x < this.width - 1 && this.data[x + 1][y] == 0) {
             n++;
         }
-        if (y < this.data[x].length - 1 && this.data[x][y + 1] == 0) {
+        if (y < this.height - 1 && this.data[x][y + 1] == 0) {
             n++;
         }
         return n;
@@ -151,10 +156,10 @@ public class Board {
         if (y > 0 && this.data[x][y - 1] == 0) {
             return new int[]{x, y - 1};
         }
-        if (x < this.data.length - 1 && this.data[x + 1][y] == 0) {
+        if (x < this.width - 1 && this.data[x + 1][y] == 0) {
             return new int[]{x + 1, y};
         }
-        if (y < this.data[x].length - 1 && this.data[x][y + 1] == 0) {
+        if (y < this.height - 1 && this.data[x][y + 1] == 0) {
             return new int[]{x, y + 1};
         }
         return new int[]{-1, -1};
@@ -164,8 +169,8 @@ public class Board {
         // to make best use of the cache, we should try to find
         // a position for the next block which makes a rectangle
         // TODO: not implemented anymore, the used method was actually slower. Maybe try again another way
-        for (int i = 0; i < this.data.length; i++) {
-            for (int j = 0; j < this.data[i].length; j++) {
+        for (int i = 0; i < this.width; i++) {
+            for (int j = 0; j < this.height; j++) {
                 if (this.data[i][j] == 0) {
                     return new Integer[]{i, j};
                 }
@@ -175,8 +180,9 @@ public class Board {
     }
 
     protected void placeBlockAt(Block block, Integer[] offset) {
-        for (int i = 0; i < block.data.length; i++) {
-            for (int j = 0; j < block.data[i].length; j++) {
+        Tetris.setBlocks++;
+        for (int i = 0; i < block.width; i++) {
+            for (int j = 0; j < block.height; j++) {
                 if (block.data[i][j] != 0) {
                     this.data[i + offset[0]][j + offset[1]] = block.data[i][j];
                 }
@@ -185,8 +191,8 @@ public class Board {
     }
 
     protected void removeBlockAt(Block block, Integer[] offset) {
-        for (int i = 0; i < block.data.length; i++) {
-            for (int j = 0; j < block.data[i].length; j++) {
+        for (int i = 0; i < block.width; i++) {
+            for (int j = 0; j < block.height; j++) {
                 if (block.data[i][j] != 0) {
                     this.data[i + offset[0]][j + offset[1]] = 0;
                 }
@@ -212,9 +218,9 @@ public class Board {
         if (offset[0] < 0 || offset[1] < 0) {
             return false;
         }
-        for (int i = 0; i < block.data.length; i++) {
-            for (int j = 0; j < block.data[i].length; j++) {
-                if (i + offset[0] >= this.data.length) {
+        for (int i = 0; i < block.width; i++) {
+            for (int j = 0; j < block.height; j++) {
+                if (i + offset[0] >= this.width) {
                     // out of bounds
                     if (block.data[i][j] != 0) {
                         // but the block might have a zero here, so
@@ -224,7 +230,7 @@ public class Board {
                         continue;
                     }
                 }
-                if (j + offset[1] >= this.data[i].length) {
+                if (j + offset[1] >= this.height) {
                     // out of bounds
                     if (block.data[i][j] != 0) {
                         // but the block might have a zero here, so
@@ -254,8 +260,8 @@ public class Board {
         int bottom = -1;
         int left = -1;
         boolean rectangleEnded = false;
-        for (int i = 0; i < this.data.length; i++) {
-            for (int j = 0; j < this.data[i].length; j++) {
+        for (int i = 0; i < this.width; i++) {
+            for (int j = 0; j < this.height; j++) {
                 if (this.data[i][j] == 0) {
                     if (left == -1) {
                         // found the top left edge
@@ -304,14 +310,14 @@ public class Board {
                 // we jumped to the next line, found the left edge,
                 // but not the right. This means the rectangle goes
                 // to the edge of the board
-                right = this.data[i].length - 1;
+                right = this.height - 1;
             }
         }
         if (left == -1 || right == -1) {
             return new int[]{0, 0};
         }
         if (bottom == -1) {
-            bottom = this.data.length - 1;
+            bottom = this.width - 1;
         }
         int width = right - left + 1;
         int height = bottom - top + 1;
