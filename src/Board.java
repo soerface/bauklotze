@@ -4,8 +4,8 @@ public class Board {
 
     public int[][] data;
     public long result;
-    private int height;
-    private int width;
+    int height;
+    int width;
 
     public Board(int m, int n) {
         this(m, n, true);
@@ -16,19 +16,34 @@ public class Board {
             this.width = n < m ? n : m;
             this.height = m > n ? m : n;
         } else {
-            this.height = m;
             this.width = n;
+            this.height = m;
         }
         this.data = new int[this.height][this.width];
         this.result = 0;
     }
 
+    boolean boardIsClean() {
+        for (int i=0; i<this.height; i++) {
+            for (int j = 0; j < this.width; j++) {
+                if (this.data[i][j] != 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public long calculateMutations() {
-        long value = Tetris.getCache(this.height, this.width);
-        if (value > 0) {
-            return value;
-        } else if (this.height >= 6 && this.width >= 3 && false) {
-            this.splitBoard();
+        if (this.boardIsClean()) {
+            long value = Tetris.getCache(this.height, this.width);
+            if (value > 0) {
+                return value;
+            } else if (this.height >= 6 && this.width >= 4) {
+                this.splitBoard();
+            } else {
+                this.nextPosition(this.findNextPosition());
+            }
         } else {
             this.nextPosition(this.findNextPosition());
         }
@@ -39,29 +54,27 @@ public class Board {
     void splitBoard() {
         // Splits the board into two smaller boards
         // The number of combinations will be boardA * boardB + all combinations, where both are overlapping
-        int sideA = 0;
-        int sideB = 0;
-        if (this.height % 2 == 0 && ((this.height / 2 % 3) == 0 || this.width % 3 == 0)) {
-            sideA = this.height;
-            sideB = this.width;
-
-        } else if (this.width >= 6 && this.width % 2 == 0 && ((this.width / 2 % 3) == 0 || this.height % 3 == 0)) {
-            sideA = this.width;
-            sideB = this.height;
+        int splitPosition = this.height / 2;
+        // check if both blocks contains a number of squares dividable by three
+        while (true) {
+            if (this.width % 3 == 0) {
+                break;
+            }
+            if (splitPosition % 3 == 0 && ((this.height - splitPosition) % 3) == 0) {
+                break;
+            }
+            splitPosition--;
         }
-        // calculate the number of combinations each separate block has
-        long mutations = Tetris.getCache(sideA / 2, sideB);
-        if (mutations == 0) {
-            Board subBoard = new Board(sideA / 2, sideB);
-            mutations = subBoard.calculateMutations();
-        }
+        Board boardA = new Board(splitPosition, this.width);
+        long mutationsA = boardA.calculateMutations();
+        Board boardB = new Board(this.height - splitPosition, this.width);
+        long mutationsB = boardB.calculateMutations();
 
         // both together have a total number of combinations of multiplying them
         // and additionally, every combination that is possible by melting the borders of the blocks together
-        Board overlapBoard = new OverlapBoard(this.height, this.width);
+        Board overlapBoard = new OverlapBoard(this.height, this.width, splitPosition);
         long overlapMutations = overlapBoard.calculateMutations();
-        long value = mutations * mutations + overlapMutations;
-        this.result += value;
+        this.result = mutationsA * mutationsB + overlapMutations;
     }
 
     void nextPosition(Integer[] position) {

@@ -9,7 +9,6 @@ public class Tetris {
         int m = Integer.parseInt(args[0]);
         int n = Integer.parseInt(args[1]);
         if (args.length > 2 && args[2].equals("debug")) {
-            System.out.println("debug!");
             Tetris.debugPrint = true;
         }
 
@@ -74,6 +73,7 @@ public class Tetris {
         if (Tetris.cache[m][n] != 0) {
             return;
         }
+//        System.out.format("Set cache %d, %d\n", m, n);
         Tetris.cache[m][n] = value;
     }
 }

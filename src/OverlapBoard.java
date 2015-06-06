@@ -14,17 +14,19 @@
 public class OverlapBoard extends Board {
     private Integer[][] positions;
     private int currentPosition;
+    private int splitPosition;
 
-    public OverlapBoard(int m, int n) {
-        this(m, n, false);
+    public OverlapBoard(int m, int n, int splitPosition) {
+        this(m, n, splitPosition, false);
     }
 
-    public OverlapBoard(int m, int n, boolean allowRotate) {
+    public OverlapBoard(int m, int n, int splitPosition, boolean allowRotate) {
         super(m, n, allowRotate);
         this.positions = new Integer[n][2];
         this.currentPosition = 0;
+        this.splitPosition = splitPosition;
         for (int i = 0; i < n; i++) {
-            positions[i][0] = m / 2 - 1;
+            positions[i][0] = splitPosition - 1;
             positions[i][1] = i;
         }
     }
@@ -54,26 +56,31 @@ public class OverlapBoard extends Board {
             return new Integer[]{-1, -1};
         }
 //        System.out.println("SPLitTinG!");
+//        this.print();
         // the board is now separated in half;
         // we just need to calculate the combinations of the top and
         // the bottom half and multiply them
-        Board topBoard = new Board(this.data.length / 2, this.data[0].length, false);
-        Board bottomBoard = new Board(this.data.length / 2, this.data[0].length, false);
+        Board topBoard = new Board(this.splitPosition, this.data[0].length, false);
+        Board bottomBoard = new Board(this.height - this.splitPosition, this.data[0].length, false);
         // copy the data from our current board to the two new ones
         for (int i = 0; i < this.data.length; i++) {
             for (int j = 0; j < this.data[i].length; j++) {
-                if (i < this.data.length / 2) {
+                if (i < this.splitPosition) {
                     // 7 for better visualization while debugging; could be any other number != 0
                     topBoard.data[i][j] = this.data[i][j] != 0 ? 7 : 0;
                 } else {
                     // 7 for better visualization while debugging; could be any other number != 0
-                    bottomBoard.data[i - this.data.length / 2][j] = this.data[i][j] != 0 ? 7 : 0;
+                    bottomBoard.data[i - this.splitPosition][j] = this.data[i][j] != 0 ? 7 : 0;
                 }
             }
         }
-
+//        System.out.println("calcing top and and bottom");
+//        topBoard.print();
+//        bottomBoard.print();
         long top = topBoard.calculateMutations();
         long bottom = bottomBoard.calculateMutations();
+//        System.out.println(top);
+//        System.out.println(bottom);
         this.result += top * bottom;
         // since we are returning "board is full", the overridden
         // method will add 1, so we need to fix this
@@ -89,10 +96,10 @@ public class OverlapBoard extends Board {
         int blocksInsideTopHalf = 0;
         int blocksInsideBottomHalf = 0;
 
-        for (int i = 0; i < this.data.length; i++) {
-            for (int j = 0; j < this.data[i].length; j++) {
+        for (int i = 0; i < this.height; i++) {
+            for (int j = 0; j < this.width; j++) {
                 if (this.data[i][j] != 0) {
-                    if (i < this.data.length / 2) {
+                    if (i < this.splitPosition) {
                         blocksInsideTopHalf++;
                     } else {
                         blocksInsideBottomHalf++;
