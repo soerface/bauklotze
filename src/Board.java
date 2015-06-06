@@ -4,8 +4,8 @@ public class Board {
 
     public int[][] data;
     public long result;
-    private int width;
     private int height;
+    private int width;
 
     public Board(int m, int n) {
         this(m, n, true);
@@ -13,20 +13,55 @@ public class Board {
 
     public Board(int m, int n, boolean allowRotate) {
         if (allowRotate) {
-            this.height = n < m ? n : m;
-            this.width = m > n ? m : n;
+            this.width = n < m ? n : m;
+            this.height = m > n ? m : n;
         } else {
-            this.width = m;
-            this.height = n;
+            this.height = m;
+            this.width = n;
         }
-        this.data = new int[this.width][this.height];
+        this.data = new int[this.height][this.width];
         this.result = 0;
     }
 
     public long calculateMutations() {
-        this.nextPosition(this.findNextPosition());
-        Tetris.setCache(this.width, this.height, this.result);
+        long value = Tetris.getCache(this.height, this.width);
+        if (value > 0) {
+            return value;
+        } else if (this.height >= 6 && this.width >= 3 && false) {
+            this.splitBoard();
+        } else {
+            this.nextPosition(this.findNextPosition());
+        }
+        Tetris.setCache(this.height, this.width, this.result);
         return this.result;
+    }
+
+    void splitBoard() {
+        // Splits the board into two smaller boards
+        // The number of combinations will be boardA * boardB + all combinations, where both are overlapping
+        int sideA = 0;
+        int sideB = 0;
+        if (this.height % 2 == 0 && ((this.height / 2 % 3) == 0 || this.width % 3 == 0)) {
+            sideA = this.height;
+            sideB = this.width;
+
+        } else if (this.width >= 6 && this.width % 2 == 0 && ((this.width / 2 % 3) == 0 || this.height % 3 == 0)) {
+            sideA = this.width;
+            sideB = this.height;
+        }
+        // calculate the number of combinations each separate block has
+        long mutations = Tetris.getCache(sideA / 2, sideB);
+        if (mutations == 0) {
+            Board subBoard = new Board(sideA / 2, sideB);
+            mutations = subBoard.calculateMutations();
+        }
+
+        // both together have a total number of combinations of multiplying them
+        // and additionally, every combination that is possible by melting the borders of the blocks together
+        Board overlapBoard = new OverlapBoard(this.height, this.width);
+        long overlapMutations = overlapBoard.calculateMutations();
+        long value = mutations * mutations + overlapMutations;
+        this.result += value;
     }
 
     void nextPosition(Integer[] position) {
@@ -46,37 +81,6 @@ public class Board {
 //                System.out.format("from cache: %d (%d, %d)\n", value, longSide, shortSide);
                 this.result += value;
                 return;
-            } else if (longSide >= 6 && shortSide >= 3) {
-                // it is not yet in the cache, but maybe we can split it into two smaller squares
-                // try to divide in half by the largest of the sides (first value will always be the largest, see
-                // this.isRect()
-                int sideA = 0;
-                int sideB = 0;
-                if (longSide % 2 == 0 && ((longSide / 2 % 3) == 0 || shortSide % 3 == 0)) {
-                    sideA = longSide;
-                    sideB = shortSide;
-
-                } else if (shortSide >= 6 && shortSide % 2 == 0 && ((shortSide / 2 % 3) == 0 || longSide % 3 == 0)) {
-                    sideA = shortSide;
-                    sideB = longSide;
-                }
-                if (sideA > 0) {
-                    // calculate the number of combinations each separate block has
-                    long mutations = Tetris.getCache(sideA / 2, sideB);
-                    if (mutations == 0) {
-                        Board subBoard = new Board(sideA / 2, sideB);
-                        mutations = subBoard.calculateMutations();
-                    }
-
-                    // both together have a total number of combinations of multiplying them
-                    // and additionally, every combination that is possible by melting the borders of the blocks together
-                    Board subBoard = new OverlapBoard(sideA, sideB);
-                    long overlapMutations = subBoard.calculateMutations();
-                    value = mutations * mutations + overlapMutations;
-                    Tetris.setCache(subRect[0], subRect[1], value);
-                    this.result += value;
-                    return;
-                }
             }
             resultBefore = this.result;
             saveToCache = true;
@@ -106,8 +110,8 @@ public class Board {
 
     protected boolean unsolvable() {
         // returns true if there are gaps which cant be filled (smaller than 3 tiles)
-        for (int i = 0; i < this.width; i++) {
-            for (int j = 0; j < this.height; j++) {
+        for (int i = 0; i < this.height; i++) {
+            for (int j = 0; j < this.width; j++) {
                 if (this.data[i][j] == 0) {
                     int neighbours = this.numberOfFreeNeighbours(new int[]{i, j});
                     if (neighbours > 1) {
@@ -136,10 +140,10 @@ public class Board {
         if (y > 0 && this.data[x][y - 1] == 0) {
             n++;
         }
-        if (x < this.width - 1 && this.data[x + 1][y] == 0) {
+        if (x < this.height - 1 && this.data[x + 1][y] == 0) {
             n++;
         }
-        if (y < this.height - 1 && this.data[x][y + 1] == 0) {
+        if (y < this.width - 1 && this.data[x][y + 1] == 0) {
             n++;
         }
         return n;
@@ -156,10 +160,10 @@ public class Board {
         if (y > 0 && this.data[x][y - 1] == 0) {
             return new int[]{x, y - 1};
         }
-        if (x < this.width - 1 && this.data[x + 1][y] == 0) {
+        if (x < this.height - 1 && this.data[x + 1][y] == 0) {
             return new int[]{x + 1, y};
         }
-        if (y < this.height - 1 && this.data[x][y + 1] == 0) {
+        if (y < this.width - 1 && this.data[x][y + 1] == 0) {
             return new int[]{x, y + 1};
         }
         return new int[]{-1, -1};
@@ -169,8 +173,8 @@ public class Board {
         // to make best use of the cache, we should try to find
         // a position for the next block which makes a rectangle
         // TODO: not implemented anymore, the used method was actually slower. Maybe try again another way
-        for (int i = 0; i < this.width; i++) {
-            for (int j = 0; j < this.height; j++) {
+        for (int i = 0; i < this.height; i++) {
+            for (int j = 0; j < this.width; j++) {
                 if (this.data[i][j] == 0) {
                     return new Integer[]{i, j};
                 }
@@ -220,7 +224,7 @@ public class Board {
         }
         for (int i = 0; i < block.width; i++) {
             for (int j = 0; j < block.height; j++) {
-                if (i + offset[0] >= this.width) {
+                if (i + offset[0] >= this.height) {
                     // out of bounds
                     if (block.data[i][j] != 0) {
                         // but the block might have a zero here, so
@@ -230,7 +234,7 @@ public class Board {
                         continue;
                     }
                 }
-                if (j + offset[1] >= this.height) {
+                if (j + offset[1] >= this.width) {
                     // out of bounds
                     if (block.data[i][j] != 0) {
                         // but the block might have a zero here, so
@@ -251,7 +255,7 @@ public class Board {
     }
 
     int[] isRect() {
-        // returns width and height if the remaining fields are ordered in rectangle with
+        // returns height and width if the remaining fields are ordered in rectangle with
         // a number of blocks that is a multiple of 3
         // this is important for caching
         // returns {0, 0} if it is not a rectangle
@@ -260,8 +264,8 @@ public class Board {
         int bottom = -1;
         int left = -1;
         boolean rectangleEnded = false;
-        for (int i = 0; i < this.width; i++) {
-            for (int j = 0; j < this.height; j++) {
+        for (int i = 0; i < this.height; i++) {
+            for (int j = 0; j < this.width; j++) {
                 if (this.data[i][j] == 0) {
                     if (left == -1) {
                         // found the top left edge
@@ -310,14 +314,14 @@ public class Board {
                 // we jumped to the next line, found the left edge,
                 // but not the right. This means the rectangle goes
                 // to the edge of the board
-                right = this.height - 1;
+                right = this.width - 1;
             }
         }
         if (left == -1 || right == -1) {
             return new int[]{0, 0};
         }
         if (bottom == -1) {
-            bottom = this.width - 1;
+            bottom = this.height - 1;
         }
         int width = right - left + 1;
         int height = bottom - top + 1;
@@ -330,7 +334,7 @@ public class Board {
         }
 //        I think it isn't possible to get a rect with a wrong size,
 //        so skip this calculation
-//        if (width * height % 3 == 0) {
+//        if (height * width % 3 == 0) {
 //            return true;
 //        }
         return new int[]{width, height};
