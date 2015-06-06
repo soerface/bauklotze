@@ -41,6 +41,7 @@ public class OverlapBoard extends Board {
     @Override
     protected Integer[] findNextPosition() {
         int offset = 0;
+        this.print();
 
         while (this.currentPosition + offset < this.positions.length) {
             Integer[] coordinate = this.positions[this.currentPosition + offset];
@@ -68,10 +69,12 @@ public class OverlapBoard extends Board {
         for (int i = 0; i < this.data.length; i++) {
             for (int j = 0; j < this.data[i].length; j++) {
                 if (i < this.splitPosition) {
-                    // 7 for better visualization while debugging; could be any other number != 0
-                    topBoard.data[i][j] = this.data[i][j] != 0 ? 7 : 0;
+                    // "7" for better visualization while debugging; could be any other number != 0
+                    // mirror the data while copying; gives a little speedup
+                    // due to the way the next position is being chosen
+                    topBoard.data[i][j] = this.data[this.splitPosition - i - 1][j] != 0 ? 7 : 0;
                 } else {
-                    // 7 for better visualization while debugging; could be any other number != 0
+                    // "7" for better visualization while debugging; could be any other number != 0
                     bottomBoard.data[i - this.splitPosition][j] = this.data[i][j] != 0 ? 7 : 0;
                 }
             }

@@ -102,7 +102,7 @@ public class Board {
             ArrayList<Integer[]> validOffsets = this.findValidOffsets(block, position);
             for (Integer[] offset : validOffsets) {
                 this.placeBlockAt(block, offset);
-                this.print();
+//                this.print();
                 Integer[] nextPos = this.findNextPosition();
                 if (nextPos[0] == -1) {
                     // no free position; if the board is full we have found one solution
@@ -364,10 +364,10 @@ public class Board {
                 System.out.format("\u001B[4%dm %d \u001B[0m", value, value);
             }
         }
-        try {
-            Thread.sleep(80);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.sleep(80);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
     }
 }

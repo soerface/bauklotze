@@ -42,7 +42,7 @@
 18  2 -                         0ms       0ms      0ms mutations:            2131
 18  3 -                         1ms       4ms      1ms mutations:        20279829
 18  4 -                                1388ms     74ms mutations:      3924499731
-18  5 -
+18  5 -                                         5296ms mutations:   4887323351972
 21  1 -                         0ms       0ms      0ms mutations:               1
 21  2 -                         1ms       0ms      1ms mutations:            7953
 21  3 -                         1ms      17ms      1ms mutations:       378522507
