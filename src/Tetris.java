@@ -119,9 +119,7 @@ public class Tetris {
         int[][] mirrowedData = new int[data.length][data[0].length];
         strings[0] = dataToString(data);
         for (int i = 0; i < data.length; i++) {
-            for (int j = 0; j < data[0].length; j++) {
-                mirrowedData[i][j] = data[data.length - i - 1][j];
-            }
+            System.arraycopy(data[data.length - i - 1], 0, mirrowedData[i], 0, data[0].length);
         }
         strings[1] = dataToString(mirrowedData);
         for (int i = 0; i < data.length; i++) {
