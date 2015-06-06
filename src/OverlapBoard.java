@@ -89,7 +89,6 @@ public class OverlapBoard extends Board {
         } else {
             top = topBoard.calculateMutations();
             OverlapBoard.overlapCache.put(dataToString(topBoard.data), top);
-//            System.out.println(dataToString(bottomBoard.data));
         }
         cacheValue = OverlapBoard.overlapCache.get(dataToString(bottomBoard.data));
         if (cacheValue != null) {
@@ -97,10 +96,7 @@ public class OverlapBoard extends Board {
         } else {
             bottom = bottomBoard.calculateMutations();
             OverlapBoard.overlapCache.put(dataToString(bottomBoard.data), bottom);
-//            System.out.println(dataToString(bottomBoard.data));
         }
-//        System.out.println(top);
-//        System.out.println(bottom);
         this.result += top * bottom;
         // since we are returning "board is full", the overridden
         // method will add 1, so we need to fix this
@@ -120,7 +116,6 @@ public class OverlapBoard extends Board {
             }
             stringBuilder.append("+");
         }
-//        System.out.println(stringBuilder.toString());
         return stringBuilder.toString();
     }
 
