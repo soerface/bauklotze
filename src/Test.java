@@ -21,9 +21,9 @@ public class Test {
             {9, 5, 1269900},
             {9, 6, 45832761},
             {9, 7, 1064557805},
-            {9, 8, 30860212081L},
-            {9, 9, 928789262080L},
-            {9, 10, 25020222581494L},
+//            {9, 8, 30860212081L},
+//            {9, 9, 928789262080L},
+//            {9, 10, 25020222581494L},
 //            {9, 11, 0},
             {12, 1, 1},
             {12, 2, 153},
@@ -44,7 +44,7 @@ public class Test {
             {15, 3, 1086567},
             {15, 4, 86208957},
             {15, 5, 31111319376L},
-//            {15, 6, 0},
+            {15, 6, 0},
             {18, 1, 1},
             {18, 2, 2131},
             {18, 3, 20279829},
@@ -78,16 +78,17 @@ public class Test {
         long stop;
         long delta;
         for (long[] values : Test.example_values) {
-            System.out.format("%2d %2d - ", values[0], values[1]);
             start = System.currentTimeMillis();
             long res = Tetris.solve((int)values[0], (int)values[1]);
             stop = System.currentTimeMillis();
             delta = stop - start;
             if (values[2] == 0 || res == values[2]) {
 //                System.out.format("OK %6dms mutations: %15d setBlock: %15d getCache: %15d\n", delta, res, Tetris.setBlocks, Tetris.getCaches);
-                System.out.format("OK %6dms mutations: %15d\n", delta, res);
+                if (delta > 200) {
+                    System.out.format("%2d %2d - OK %6dms mutations: %15d\n", values[0], values[1], delta, res);
+                }
             } else {
-                System.out.println("ERROR");
+                System.out.format("%2d %2d - ERROR\n", values[0], values[1]);
                 System.out.format("Expected %d, got %d\n", values[2], res);
                 return;
             }
