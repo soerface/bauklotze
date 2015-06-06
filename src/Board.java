@@ -197,7 +197,7 @@ public class Board {
     }
 
     protected void placeBlockAt(Block block, Integer[] offset) {
-        Tetris.setBlocks++;
+//        Tetris.setBlocks++;
         for (int i = 0; i < block.width; i++) {
             for (int j = 0; j < block.height; j++) {
                 if (block.data[i][j] != 0) {

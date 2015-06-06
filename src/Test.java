@@ -20,8 +20,8 @@ public class Test {
             {9, 4, 41813},
             {9, 5, 1269900},
             {9, 6, 45832761},
-//            {9, 7, 0},
-//            {9, 8, 0},
+            {9, 7, 1064557805},
+            {9, 8, 0},
 //            {9, 9, 0},
 //            {9, 10, 0},
 //            {9, 11, 0},
@@ -58,7 +58,7 @@ public class Test {
             {24, 3, 7065162260L},
             {24, 4, 8135650498647L},
             {24, 5, 0},
-            {24, 6, 0},
+//            {24, 6, 0},
 //            {12, 5, 198253934},
 ////            {24, 5, 0},
 ////            {15, 5, 0},
@@ -84,7 +84,8 @@ public class Test {
             stop = System.currentTimeMillis();
             delta = stop - start;
             if (values[2] == 0 || res == values[2]) {
-                System.out.format("OK %6dms mutations: %15d setBlock: %15d getCache: %15d\n", delta, res, Tetris.setBlocks, Tetris.getCaches);
+//                System.out.format("OK %6dms mutations: %15d setBlock: %15d getCache: %15d\n", delta, res, Tetris.setBlocks, Tetris.getCaches);
+                System.out.format("OK %6dms mutations: %15d\n", delta, res);
             } else {
                 System.out.println("ERROR");
                 System.out.format("Expected %d, got %d\n", values[2], res);

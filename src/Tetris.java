@@ -2,8 +2,8 @@ public class Tetris {
     public static Block[] blocks;
     private static long[][] cache;
     public static boolean debugPrint = false;
-    public static long setBlocks;
-    public static long getCaches;
+//    public static long setBlocks;
+//    public static long getCaches;
 
     public static void main(String[] args) {
         int m = Integer.parseInt(args[0]);
@@ -49,14 +49,14 @@ public class Tetris {
         });
 
         Tetris.cache = new long[(m > n ? m : n) + 1][(m > n ? n : m) + 1];
-        Tetris.getCaches = 0;
-        Tetris.setBlocks = 0;
+//        Tetris.getCaches = 0;
+//        Tetris.setBlocks = 0;
         Board board = new Board(m, n);
         return board.calculateMutations();
     }
 
     public static long getCache(int m, int n) {
-        Tetris.getCaches++;
+//        Tetris.getCaches++;
         if (m > n) {
             return Tetris.cache[m][n];
         } else {
