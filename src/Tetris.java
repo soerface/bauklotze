@@ -1,6 +1,9 @@
+import java.util.HashMap;
+
 public class Tetris {
     public static Block[] blocks;
     private static long[][] cache;
+    private static HashMap<String, Long> overlapCache;
     public static boolean debugPrint = false;
 //    public static long setBlocks;
 //    public static long getCaches;
@@ -49,6 +52,7 @@ public class Tetris {
         });
 
         Tetris.cache = new long[(m > n ? m : n) + 1][(m > n ? n : m) + 1];
+        Tetris.overlapCache = new HashMap<String, Long>();
 //        Tetris.getCaches = 0;
 //        Tetris.setBlocks = 0;
         Board board = new Board(m, n);
@@ -75,5 +79,32 @@ public class Tetris {
         }
 //        System.out.format("Set cache %d, %d\n", m, n);
         Tetris.cache[m][n] = value;
+    }
+
+    public static void saveToOverlapCache(int[][] data, long value) {
+        Tetris.overlapCache.put(dataToString(data), value);
+    }
+
+    public static long getFromOverlapCache(int[][] data) {
+        Long value = Tetris.overlapCache.get(dataToString(data));
+        if (value != null) {
+            return value;
+        }
+        return 0;
+    }
+
+    public static String dataToString(int[][] data) {
+        // This method is used to provide a key for the "overlap cache"
+        // Often, the same for the top or bottom board is beeing calculated, though it is usally not a rectangle
+        // Therefore, we can save a lot of work by caching those situations.
+        // TODO: Even more could be cached, if we try to detect symmetrical solutions
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < data[0].length; j++) {
+                stringBuilder.append(data[i][j]);
+            }
+            stringBuilder.append("+");
+        }
+        return stringBuilder.toString();
     }
 }

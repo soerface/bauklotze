@@ -17,7 +17,6 @@ public class OverlapBoard extends Board {
     private Integer[][] positions;
     private int currentPosition;
     private int splitPosition;
-    private static HashMap<String, Long> overlapCache;
 
     public OverlapBoard(int m, int n, int splitPosition) {
         this(m, n, splitPosition, false);
@@ -25,7 +24,6 @@ public class OverlapBoard extends Board {
 
     public OverlapBoard(int m, int n, int splitPosition, boolean allowRotate) {
         super(m, n, allowRotate);
-        OverlapBoard.overlapCache = new HashMap<String, Long>();
         this.positions = new Integer[n][2];
         this.currentPosition = 0;
         this.splitPosition = splitPosition;
@@ -83,40 +81,25 @@ public class OverlapBoard extends Board {
 //        bottomBoard.print();
         long top;
         long bottom;
-        Long cacheValue = OverlapBoard.overlapCache.get(dataToString(topBoard.data));
-        if (cacheValue != null) {
+        long cacheValue = Tetris.getFromOverlapCache(topBoard.data);
+        if (cacheValue != 0) {
             top = cacheValue;
         } else {
             top = topBoard.calculateMutations();
-            OverlapBoard.overlapCache.put(dataToString(topBoard.data), top);
+            Tetris.saveToOverlapCache(topBoard.data, top);
         }
-        cacheValue = OverlapBoard.overlapCache.get(dataToString(bottomBoard.data));
-        if (cacheValue != null) {
+        cacheValue = Tetris.getFromOverlapCache(bottomBoard.data);
+        if (cacheValue != 0) {
             bottom = cacheValue;
         } else {
             bottom = bottomBoard.calculateMutations();
-            OverlapBoard.overlapCache.put(dataToString(bottomBoard.data), bottom);
+            Tetris.saveToOverlapCache(bottomBoard.data, bottom);
         }
         this.result += top * bottom;
         // since we are returning "board is full", the overridden
         // method will add 1, so we need to fix this
         this.result--;
         return new Integer[]{-1, -1};
-    }
-
-    static String dataToString(int[][] data) {
-        // This method is used to provide a key for the "overlap cache"
-        // Often, the same for the top or bottom board is beeing calculated, though it is usally not a rectangle
-        // Therefore, we can save a lot of work by caching those situations.
-        // TODO: Even more could be cached, if we try to detect symmetrical solutions
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < data.length; i++) {
-            for (int j = 0; j < data[0].length; j++) {
-                stringBuilder.append(data[i][j]);
-            }
-            stringBuilder.append("+");
-        }
-        return stringBuilder.toString();
     }
 
     private boolean correctlySplitted() {
