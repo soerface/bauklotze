@@ -1,5 +1,8 @@
 import java.util.HashMap;
 
+// After the contest is over, the sourcecode will be available at
+// https://github.com/swege/bauklotze
+
 public class Tetris {
     public static Block[] blocks;
     private static long[][] cache;
