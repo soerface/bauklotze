@@ -142,3 +142,35 @@ combinations better with split:
 12 5 !
 18 4 !
 24 4 !
+
+
+
+
+ 3  1 - OK      2ms mutations:               1 setBlock:               1 getCache:               2
+ 3  2 - OK      0ms mutations:               3 setBlock:               7 getCache:               3
+ 3  3 - OK      1ms mutations:              10 setBlock:              18 getCache:               7
+ 3  4 - OK      1ms mutations:              23 setBlock:              42 getCache:              15
+ 3  5 - OK      2ms mutations:              62 setBlock:              72 getCache:              25
+ 6  1 - OK      0ms mutations:               1 setBlock:               2 getCache:               3
+ 6  2 - OK      0ms mutations:              11 setBlock:              20 getCache:               6
+ 6  3 - OK      3ms mutations:             170 setBlock:             110 getCache:              37
+ 6  4 - OK     26ms mutations:             939 setBlock:            1816 getCache:             231
+ 6  5 - OK     65ms mutations:            8342 setBlock:           17561 getCache:            2319
+ 6  6 - OK    106ms mutations:           80092 setBlock:          155829 getCache:           21801
+ 6  7 - OK    572ms mutations:          614581 setBlock:          894382 getCache:          132898
+ 6  8 - OK    823ms mutations:         5271923 setBlock:         1315365 getCache:          175230
+ 9  1 - OK      0ms mutations:               1 setBlock:               3 getCache:               4
+ 9  2 - OK      0ms mutations:              41 setBlock:              39 getCache:              11
+ 9  3 - OK      0ms mutations:            3127 setBlock:             262 getCache:              91
+ 9  4 - OK     15ms mutations:           41813 setBlock:           34781 getCache:            4971
+ 9  5 - OK    811ms mutations:         1269900 setBlock:         1502741 getCache:          219489
+ 9  6 - OK   3811ms mutations:        45832761 setBlock:         7479413 getCache:         1099009
+12  1 - OK      0ms mutations:               1 setBlock:               4 getCache:               5
+12  2 - OK      0ms mutations:             153 setBlock:              64 getCache:              18
+12  3 - OK      0ms mutations:           58234 setBlock:             474 getCache:             169
+12  4 - OK     35ms mutations:         1895145 setBlock:           77327 getCache:            7941
+12  5 - OK   1409ms mutations:       198253934 setBlock:         2800072 getCache:          327191
+15  1 - OK      0ms mutations:               1 setBlock:               5 getCache:               6
+15  2 - OK      1ms mutations:             571 setBlock:              95 getCache:              27
+15  3 - OK      0ms mutations:         1086567 setBlock:             746 getCache:             271
+15  4 - OK    607ms mutations:        86208957 setBlock:         1216499 getCache:          173803

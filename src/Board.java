@@ -364,10 +364,10 @@ public class Board {
                 System.out.format("\u001B[4%dm %d \u001B[0m", value, value);
             }
         }
-//        try {
-//            Thread.sleep(80);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            Thread.sleep(80);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
