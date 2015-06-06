@@ -82,7 +82,9 @@ public class Tetris {
     }
 
     public static void saveToOverlapCache(int[][] data, long value) {
-        Tetris.overlapCache.put(dataToString(data), value);
+        for (String key : Tetris.dataToStrings(data)) {
+            Tetris.overlapCache.put(key, value);
+        }
     }
 
     public static long getFromOverlapCache(int[][] data) {
@@ -95,9 +97,8 @@ public class Tetris {
 
     public static String dataToString(int[][] data) {
         // This method is used to provide a key for the "overlap cache"
-        // Often, the same for the top or bottom board is beeing calculated, though it is usally not a rectangle
+        // Often, the same for the top or bottom board is being calculated, though it is usually not a rectangle
         // Therefore, we can save a lot of work by caching those situations.
-        // TODO: Even more could be cached, if we try to detect symmetrical solutions
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < data[0].length; j++) {
@@ -106,5 +107,32 @@ public class Tetris {
             stringBuilder.append("+");
         }
         return stringBuilder.toString();
+    }
+
+    public static String[] dataToStrings(int[][] data) {
+        // Basically the same as dataToString, but it returns four keys, since for one calculated solution we can save
+        // four solutions with the symmetrical ones (rotates not included; not necessary since we always split horizontal)
+        String[] strings = new String[4];
+        int[][] mirrowedData = new int[data.length][data[0].length];
+        strings[0] = dataToString(data);
+        for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < data[0].length; j++) {
+                mirrowedData[i][j] = data[data.length - i - 1][j];
+            }
+        }
+        strings[1] = dataToString(mirrowedData);
+        for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < data[0].length; j++) {
+                mirrowedData[i][j] = data[data.length - i - 1][data[0].length - j - 1];
+            }
+        }
+        strings[2] = dataToString(mirrowedData);
+        for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < data[0].length; j++) {
+                mirrowedData[i][j] = data[i][data[0].length - j - 1];
+            }
+        }
+        strings[3] = dataToString(mirrowedData);
+        return strings;
     }
 }

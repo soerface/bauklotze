@@ -144,47 +144,53 @@ combinations better with split:
 24 4 !
 
 
- 3  1 - OK      3ms mutations:               1
+ 3  1 - OK      2ms mutations:               1
  3  2 - OK      0ms mutations:               3
- 3  3 - OK      4ms mutations:              10
+ 3  3 - OK      1ms mutations:              10
  3  4 - OK      1ms mutations:              23
- 3  5 - OK      1ms mutations:              62
+ 3  5 - OK      2ms mutations:              62
  6  1 - OK      0ms mutations:               1
- 6  2 - OK      0ms mutations:              11
- 6  3 - OK      2ms mutations:             170
- 6  4 - OK     16ms mutations:             939
- 6  5 - OK     45ms mutations:            8342
- 6  6 - OK     79ms mutations:           80092
- 6  7 - OK     36ms mutations:          614581
- 6  8 - OK     57ms mutations:         5271923
+ 6  2 - OK      1ms mutations:              11
+ 6  3 - OK      3ms mutations:             170
+ 6  4 - OK     17ms mutations:             939
+ 6  5 - OK     53ms mutations:            8342
+ 6  6 - OK     73ms mutations:           80092
+ 6  7 - OK     28ms mutations:          614581
+ 6  8 - OK     37ms mutations:         5271923
  9  1 - OK      0ms mutations:               1
  9  2 - OK      0ms mutations:              41
- 9  3 - OK      1ms mutations:            3127
- 9  4 - OK      6ms mutations:           41813
- 9  5 - OK     67ms mutations:         1269900
- 9  6 - OK    123ms mutations:        45832761
+ 9  3 - OK      0ms mutations:            3127
+ 9  4 - OK      3ms mutations:           41813
+ 9  5 - OK     37ms mutations:         1269900
+ 9  6 - OK     70ms mutations:        45832761
+ 9  7 - OK   8741ms mutations:      1064557805
+ 9  8 - OK 148916ms mutations:     30860212081
+ 9  9 - OK  84680ms mutations:    928789262080
+ 9 10 - OK  87771ms mutations:  25020222581494
 12  1 - OK      0ms mutations:               1
 12  2 - OK      0ms mutations:             153
-12  3 - OK      1ms mutations:           58234
-12  4 - OK      8ms mutations:         1895145
-12  5 - OK     85ms mutations:       198253934
+12  3 - OK      0ms mutations:           58234
+12  4 - OK      3ms mutations:         1895145
+12  5 - OK     41ms mutations:       198253934
+12  6 - OK    483ms mutations:     27438555522
+12  7 - OK   9725ms mutations:   1949314526229
 15  1 - OK      0ms mutations:               1
 15  2 - OK      0ms mutations:             571
-15  3 - OK      0ms mutations:         1086567
-15  4 - OK     78ms mutations:        86208957
-15  5 - OK   6200ms mutations:     31111319376
+15  3 - OK      1ms mutations:         1086567
+15  4 - OK     38ms mutations:        86208957
+15  5 - OK   3293ms mutations:     31111319376
 18  1 - OK      0ms mutations:               1
-18  2 - OK      1ms mutations:            2131
-18  3 - OK      1ms mutations:        20279829
-18  4 - OK    147ms mutations:      3924499731
+18  2 - OK      0ms mutations:            2131
+18  3 - OK      0ms mutations:        20279829
+18  4 - OK     86ms mutations:      3924499731
 21  1 - OK      0ms mutations:               1
 21  2 - OK      0ms mutations:            7953
 21  3 - OK      1ms mutations:       378522507
-21  4 - OK   2032ms mutations:    178682349823
+21  4 - OK   1105ms mutations:    178682349823
 24  1 - OK      0ms mutations:               1
-24  2 - OK      1ms mutations:           29681
-24  3 - OK      1ms mutations:      7065162260
-24  4 - OK   6554ms mutations:   8135650498647
+24  2 - OK      0ms mutations:           29681
+24  3 - OK      2ms mutations:      7065162260
+24  4 - OK   3353ms mutations:   8135650498647
 42  2 - OK      1ms mutations:        80198051
 45  2 - OK      1ms mutations:       299303201
  2 45 - OK      1ms mutations:       299303201
