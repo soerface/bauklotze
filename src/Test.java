@@ -139,10 +139,16 @@ public class Test {
         long start;
         long stop;
         long delta;
-        for (int i=0; i<Test.example_values.length; i++) {
+        if (args.length == 2) {
+            Test.example_values = new long[1][3];
+            Test.example_values[0][0] = Long.valueOf(args[0]);
+            Test.example_values[0][1] = Long.valueOf(args[1]);
+            Test.example_values[0][2] = 0;
+        }
+        for (int i = 0; i < Test.example_values.length; i++) {
             long[] values = Test.example_values[i];
             start = System.currentTimeMillis();
-            long res = Tetris.solve((int)values[0], (int)values[1]);
+            long res = Tetris.solve((int) values[0], (int) values[1]);
             stop = System.currentTimeMillis();
             delta = stop - start;
             if (values[2] == 0 || res == values[2]) {
@@ -155,7 +161,7 @@ public class Test {
                 System.out.format("Expected %d, got %d\n", values[2], res);
                 return;
             }
-            if (i > 1 && i < Test.example_values.length - 1 && Test.example_values[i+1][0] != values[0] && Test.example_values[i-1][0] == values[0]) {
+            if (i > 1 && i < Test.example_values.length - 1 && Test.example_values[i + 1][0] != values[0] && Test.example_values[i - 1][0] == values[0]) {
                 System.out.println();
             }
         }
