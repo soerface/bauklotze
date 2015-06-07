@@ -46,6 +46,7 @@ public class Board {
         }
 
         Tetris.setCache(this.height, this.width, this.result);
+        Tetris.setCache(this.data, this.result);
         return this.result;
     }
 

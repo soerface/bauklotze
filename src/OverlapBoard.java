@@ -79,22 +79,8 @@ public class OverlapBoard extends Board {
 //        System.out.println("calcing top and and bottom");
 //        topBoard.print();
 //        bottomBoard.print();
-        long top;
-        long bottom;
-        long cacheValue = Tetris.getCache(topBoard.data);
-        if (cacheValue != 0) {
-            top = cacheValue;
-        } else {
-            top = topBoard.calculateMutations();
-            Tetris.setCache(topBoard.data, top);
-        }
-        cacheValue = Tetris.getCache(bottomBoard.data);
-        if (cacheValue != 0) {
-            bottom = cacheValue;
-        } else {
-            bottom = bottomBoard.calculateMutations();
-            Tetris.setCache(bottomBoard.data, bottom);
-        }
+        long top = topBoard.calculateMutations();
+        long bottom = bottomBoard.calculateMutations();
         this.result += top * bottom;
         // since we are returning "board is full", the overridden
         // method will add 1, so we need to fix this
