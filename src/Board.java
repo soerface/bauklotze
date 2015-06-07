@@ -1,9 +1,10 @@
+import java.math.BigInteger;
 import java.util.ArrayList;
 
 public class Board {
 
     public int[][] data;
-    public long result;
+    public BigInteger result;
     int height;
     int width;
     boolean saveToCache;
@@ -22,7 +23,7 @@ public class Board {
         }
         this.saveToCache = saveToCache;
         this.data = new int[this.height][this.width];
-        this.result = 0;
+        this.result = BigInteger.ZERO;
     }
 
     boolean boardIsClean() {
@@ -36,14 +37,16 @@ public class Board {
         return true;
     }
 
-    public long calculateMutations() {
-        long value = Tetris.getCache(this.data);
-        if (value >= 0) {
+    public BigInteger calculateMutations() {
+        BigInteger value = Tetris.getCache(this.data);
+//        if (value >= 0) {
+        if (value != null) {
             return value;
         }
         if (this.boardIsClean()) {
             value = Tetris.getCache(this.height, this.width);
-            if (value > 0) {
+//            if (value > 0) {
+            if (value != null) {
                 return value;
             }
         }
@@ -76,21 +79,22 @@ public class Board {
             splitPosition--;
         }
         Board boardA = new Board(splitPosition, this.width);
-        long mutationsA = boardA.calculateMutations();
+        BigInteger mutationsA = boardA.calculateMutations();
         Board boardB = new Board(this.height - splitPosition, this.width);
-        long mutationsB = boardB.calculateMutations();
+        BigInteger mutationsB = boardB.calculateMutations();
 
         // both together have a total number of combinations of multiplying them
         // and additionally, every combination that is possible by melting the borders of the blocks together
         Board overlapBoard = new OverlapBoard(this.height, this.width, splitPosition);
-        long overlapMutations = overlapBoard.calculateMutations();
-        this.result = mutationsA * mutationsB + overlapMutations;
+        BigInteger overlapMutations = overlapBoard.calculateMutations();
+        this.result = mutationsA.multiply(mutationsB).add(overlapMutations);
     }
 
     void nextPosition(Integer[] position) {
-        long cacheValue = Tetris.getCache(this.data);
-        if (cacheValue >= 0) {
-            this.result += cacheValue;
+        BigInteger cacheValue = Tetris.getCache(this.data);
+//        if (cacheValue >= 0) {
+        if (cacheValue != null) {
+            this.result = this.result.add(cacheValue);
             return;
         }
         if (this.unsolvable()) {
@@ -99,15 +103,15 @@ public class Board {
         int[] subRect = this.isRect();
         int longSide = subRect[0];
         int shortSide = subRect[1];
-        long resultBefore = this.result;
+        BigInteger resultBefore = this.result;
         boolean saveToRectCache = false;
         if (longSide > 0) {
             // we might have already computed the number of mutations
             // for the sub rectangle
             cacheValue = Tetris.getCache(longSide, shortSide);
-            if (cacheValue > 0) {
-//                System.out.format("from cache: %d (%d, %d)\n", value, longSide, shortSide);
-                this.result += cacheValue;
+//            if (cacheValue > 0) {
+            if (cacheValue != null) {
+                this.result = this.result.add(cacheValue);
                 return;
             }
             saveToRectCache = true;
@@ -120,7 +124,7 @@ public class Board {
                 Integer[] nextPos = this.findNextPosition();
                 if (this.isFull()) {
                     // if the board is full we have found one solution
-                    this.result++;
+                    this.result = this.result.add(BigInteger.ONE);
                 } else if (nextPos[0] != -1) {
                     this.nextPosition(nextPos);
                 }
@@ -130,10 +134,10 @@ public class Board {
         }
 
         if (saveToRectCache) {
-            Tetris.setCache(longSide, shortSide, this.result - resultBefore);
+            Tetris.setCache(longSide, shortSide, this.result.subtract(resultBefore));
         }
         if (this.saveToCache) {
-            Tetris.setCache(this.data, this.result - resultBefore);
+            Tetris.setCache(this.data, this.result.subtract(resultBefore));
         }
     }
 

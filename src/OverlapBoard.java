@@ -1,3 +1,5 @@
+import java.math.BigInteger;
+
 /**
  * The OverlapBoard only calculates mutations which consist of blocks
  * overlapping the half of the board It will be splitted by side m,
@@ -31,7 +33,7 @@ public class OverlapBoard extends Board {
         }
     }
 
-    public long calculateMutations() {
+    public BigInteger calculateMutations() {
         this.nextPosition(this.findNextPosition());
         return this.result;
     }
@@ -73,9 +75,9 @@ public class OverlapBoard extends Board {
                 }
             }
         }
-        long top = topBoard.calculateMutations();
-        long bottom = bottomBoard.calculateMutations();
-        this.result += top * bottom;
+        BigInteger top = topBoard.calculateMutations();
+        BigInteger bottom = bottomBoard.calculateMutations();
+        this.result = this.result.add(top.multiply(bottom));
         return new Integer[]{-1, -1};
     }
 

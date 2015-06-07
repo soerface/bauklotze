@@ -1,3 +1,5 @@
+import java.math.BigInteger;
+
 public class Test {
 
     static long[][] example_values = {
@@ -48,7 +50,7 @@ public class Test {
             {15, 6, 16593169804557L},
             {15, 7, 3619365754064658L},
             {15, 8, 1235348565576072999L},
-            {15, 9, 5262513436722467520L},
+//            {15, 9, new BigInteger("466431115279461257920")},
             // TODO: Overflow! A long is not enough
             // {15, 10, -9210086974413531734},
             {18, 1, 1},
@@ -73,14 +75,14 @@ public class Test {
             {24, 3, 7065162260L},
             {24, 4, 8135650498647L},
             {24, 5, 120664440361104580L},
-            {24, 6, 8846286113130393632L},
+//            {24, 6, new BigInteger("3698195100855040716832")},
             // TODO: 24 7 is less than 24 6. Probably some overflow issue
             // {24, 7, 3858125783825068169L},
             {27, 1, 1},
             {27, 2, 110771},
             {27, 3, 131872134232L},
             {27, 4, 370429531112741L},
-            {27, 5, 513609422906159377L},
+//            {27, 5, new BigInteger("18960353496615710993")},
             // TODO: Overflow! A long is not enough
             // {27, 6, -8218920711443338650},
             {30, 1, 1},
@@ -129,8 +131,8 @@ public class Test {
             {93, 2, 423908497265970753L},
             {96, 2, 1582048049556775361L},
             {99, 2, 5904283700961130691L},
-            {102, 2, 3588342680578195787L},
-            {105, 2, 8449087021351652457L},
+//            {102, 2, new BigInteger("22035086754287747403"},
+//            {105, 2, },
             // TODO: Overflow! A long is not enough
             // {108, 2, -6685482742590689191L},
     };
@@ -148,10 +150,10 @@ public class Test {
         for (int i = 0; i < Test.example_values.length; i++) {
             long[] values = Test.example_values[i];
             start = System.currentTimeMillis();
-            long res = Tetris.solve((int) values[0], (int) values[1]);
+            BigInteger res = Tetris.solve((int) values[0], (int) values[1]);
             stop = System.currentTimeMillis();
             delta = stop - start;
-            if (values[2] == 0 || res == values[2]) {
+            if (values[2] == 0 || res.compareTo(BigInteger.valueOf(values[2])) == 0) {
 //                System.out.format("OK %6dms mutations: %15d setBlock: %15d setCache: %15d\n", delta, res, Tetris.setBlocks, Tetris.getCaches);
                 if (delta > 200 || true) {
                     System.out.format("%3d %3d - OK %6dms mutations: %20d\n", values[0], values[1], delta, res);

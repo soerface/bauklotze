@@ -1,3 +1,4 @@
+import java.math.BigInteger;
 import java.util.HashMap;
 
 // After the contest is over, the sourcecode will be available at
@@ -5,8 +6,8 @@ import java.util.HashMap;
 
 public class Tetris {
     public static Block[] blocks;
-    private static long[][] cache;
-    private static HashMap<String, Long> partialsCache;
+    private static BigInteger[][] cache;
+    private static HashMap<String, BigInteger> partialsCache;
     public static boolean debugPrint = false;
 //    public static long setBlocks;
 //    public static long getCaches;
@@ -21,7 +22,7 @@ public class Tetris {
         System.out.println(Tetris.solve(m, n));
     }
 
-    public static long solve(int m, int n) {
+    public static BigInteger solve(int m, int n) {
         Tetris.blocks = new Block[6];
         blocks[0] = new Block(new int[][]{
                 {1, 0, 0},
@@ -54,15 +55,15 @@ public class Tetris {
                 {0, 0, 0}
         });
 
-        Tetris.cache = new long[(m > n ? m : n) + 1][(m > n ? n : m) + 1];
-        Tetris.partialsCache = new HashMap<String, Long>();
+        Tetris.cache = new BigInteger[(m > n ? m : n) + 1][(m > n ? n : m) + 1];
+        Tetris.partialsCache = new HashMap<String, BigInteger>();
 //        Tetris.getCaches = 0;
 //        Tetris.setBlocks = 0;
         Board board = new Board(m, n);
         return board.calculateMutations();
     }
 
-    public static void setCache(int m, int n, long value) {
+    public static void setCache(int m, int n, BigInteger value) {
         if (m < n) {
             int tmp = m;
             m = n;
@@ -71,7 +72,7 @@ public class Tetris {
         Tetris.cache[m][n] = value;
     }
 
-    public static void setCache(int[][] data, long value) {
+    public static void setCache(int[][] data, BigInteger value) {
         Board.print(data);
 //        System.out.println(value);
         for (String key : Tetris.dataToStrings(data)) {
@@ -79,9 +80,8 @@ public class Tetris {
         }
     }
 
-    public static long getCache(int m, int n) {
-        // This method returns 0 if there is no solution available.
-        // Attention: Take a look at getCache(int[][] data)
+    public static BigInteger getCache(int m, int n) {
+        // This method returns null if there is no solution available.
         if (m > n) {
             return Tetris.cache[m][n];
         } else {
@@ -89,15 +89,10 @@ public class Tetris {
         }
     }
 
-    public static long getCache(int[][] data) {
-        // This method returns -1 if there is no solution available.
-        // "0" as a solution is valid, since not all boards with pre set blocks are solveable!
-        // Attention: Take a look at getCache(int m, int n)
-        Long value = Tetris.partialsCache.get(dataToString(data));
-        if (value != null) {
-            return value;
-        }
-        return -1;
+    public static BigInteger getCache(int[][] data) {
+        // This method returns null if there is no solution available.
+        // "0" as a solution is valid, since not all boards with pre set blocks are solvable!
+       return Tetris.partialsCache.get(dataToString(data));
     }
 
     public static String dataToString(int[][] data) {
