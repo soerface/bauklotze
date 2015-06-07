@@ -82,7 +82,7 @@ public class OverlapBoard extends Board {
         long top = topBoard.calculateMutations();
         long bottom = bottomBoard.calculateMutations();
         this.result += top * bottom;
-        // since we are returning "board is full", the overridden
+        // since we are returning "board is full", the nextPosition
         // method will add 1, so we need to fix this
         this.result--;
         return new Integer[]{-1, -1};

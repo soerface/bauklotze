@@ -36,7 +36,7 @@ public class Board {
 
     public long calculateMutations() {
         long value = Tetris.getCache(this.data);
-        if (value > 0) {
+        if (value >= 0) {
             return value;
         }
         if (this.boardIsClean() && this.height >= 6 && this.width >= 4) {
@@ -47,8 +47,9 @@ public class Board {
 
         if (this.boardIsClean()) {
             Tetris.setCache(this.height, this.width, this.result);
+        } else {
+            Tetris.setCache(this.data, this.result);
         }
-        Tetris.setCache(this.data, this.result);
         return this.result;
     }
 
@@ -103,7 +104,7 @@ public class Board {
             ArrayList<Integer[]> validOffsets = this.findValidOffsets(block, position);
             for (Integer[] offset : validOffsets) {
                 this.placeBlockAt(block, offset);
-                this.print();
+//                this.print();
                 Integer[] nextPos = this.findNextPosition();
                 if (nextPos[0] == -1) {
                     // no free position; if the board is full we have found one solution

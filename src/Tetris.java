@@ -72,12 +72,16 @@ public class Tetris {
     }
 
     public static void setCache(int[][] data, long value) {
+        Board.print(data);
+//        System.out.print(" " + value);
         for (String key : Tetris.dataToStrings(data)) {
             Tetris.partialsCache.put(key, value);
         }
     }
 
     public static long getCache(int m, int n) {
+        // This method returns 0 if there is no solution available.
+        // Attention: Take a look at getCache(int[][] data)
         if (m > n) {
             return Tetris.cache[m][n];
         } else {
@@ -86,11 +90,14 @@ public class Tetris {
     }
 
     public static long getCache(int[][] data) {
+        // This method returns -1 if there is no solution available.
+        // "0" as a solution is valid, since not all boards with pre set blocks are solveable!
+        // Attention: Take a look at getCache(int m, int n)
         Long value = Tetris.partialsCache.get(dataToString(data));
         if (value != null) {
             return value;
         }
-        return 0;
+        return -1;
     }
 
     public static String dataToString(int[][] data) {
