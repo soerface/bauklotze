@@ -6,12 +6,13 @@ public class Board {
     public long result;
     int height;
     int width;
+    boolean saveToCache;
 
     public Board(int m, int n) {
-        this(m, n, true);
+        this(m, n, true, true);
     }
 
-    public Board(int m, int n, boolean allowRotate) {
+    public Board(int m, int n, boolean allowRotate, boolean saveToCache) {
         if (allowRotate) {
             this.width = n < m ? n : m;
             this.height = m > n ? m : n;
@@ -19,6 +20,7 @@ public class Board {
             this.width = n;
             this.height = m;
         }
+        this.saveToCache = saveToCache;
         this.data = new int[this.height][this.width];
         this.result = 0;
     }
@@ -130,7 +132,7 @@ public class Board {
         if (saveToRectCache) {
             Tetris.setCache(longSide, shortSide, this.result - resultBefore);
         }
-        if (this.isFull()) {
+        if (this.saveToCache) {
             Tetris.setCache(this.data, this.result - resultBefore);
         }
     }

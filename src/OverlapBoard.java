@@ -21,7 +21,7 @@ public class OverlapBoard extends Board {
     }
 
     public OverlapBoard(int m, int n, int splitPosition, boolean allowRotate) {
-        super(m, n, allowRotate);
+        super(m, n, allowRotate, false);
         this.positions = new Integer[n][2];
         this.currentPosition = 0;
         this.splitPosition = splitPosition;
@@ -57,8 +57,8 @@ public class OverlapBoard extends Board {
         // the board is now separated in half;
         // we just need to calculate the combinations of the top and
         // the bottom half and multiply them
-        Board topBoard = new Board(this.splitPosition, this.data[0].length, false);
-        Board bottomBoard = new Board(this.height - this.splitPosition, this.data[0].length, false);
+        Board topBoard = new Board(this.splitPosition, this.data[0].length, false, true);
+        Board bottomBoard = new Board(this.height - this.splitPosition, this.data[0].length, false, true);
         // copy the data from our current board to the two new ones
         for (int i = 0; i < this.data.length; i++) {
             for (int j = 0; j < this.data[i].length; j++) {
