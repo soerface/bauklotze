@@ -50,9 +50,6 @@ public class OverlapBoard extends Board {
             offset++;
         }
         if (!this.correctlySplitted()) {
-            // since we are returning "board is full", the overridden
-            // method will add 1, so we need to fix this
-            this.result--;
             return new Integer[]{-1, -1};
         }
 //        System.out.println("SPLitTinG!");
@@ -76,15 +73,9 @@ public class OverlapBoard extends Board {
                 }
             }
         }
-//        System.out.println("calcing top and and bottom");
-//        topBoard.print();
-//        bottomBoard.print();
         long top = topBoard.calculateMutations();
         long bottom = bottomBoard.calculateMutations();
         this.result += top * bottom;
-        // since we are returning "board is full", the nextPosition
-        // method will add 1, so we need to fix this
-        this.result--;
         return new Integer[]{-1, -1};
     }
 

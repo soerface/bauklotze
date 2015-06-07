@@ -116,22 +116,33 @@ public class Board {
                 this.placeBlockAt(block, offset);
 //                this.print();
                 Integer[] nextPos = this.findNextPosition();
-                if (nextPos[0] == -1) {
-                    // no free position; if the board is full we have found one solution
-                    this.result++;
-//                    System.out.println("succ");
-//                    this.print();
-                } else {
+                if (this.isFull()) {
+                    // if the board is full we have found one solution
+                        this.result++;
+                } else if (nextPos[0] != -1) {
                     this.nextPosition(nextPos);
                 }
 
                 this.removeBlockAt(block, offset);
             }
         }
-        if (saveToRectCache) {
-            Tetris.setCache(longSide, shortSide, this.result - resultBefore);
+        if (this.isFull()) {
+            if (saveToRectCache) {
+                Tetris.setCache(longSide, shortSide, this.result - resultBefore);
+            }
+            Tetris.setCache(this.data, this.result - resultBefore);
         }
-//        Tetris.setCache(this.data, this.result - resultBefore);
+    }
+
+    private boolean isFull() {
+        for (int i=0; i<this.height; i++) {
+            for (int j=0; j<this.width; j++) {
+                if (this.data[i][j] == 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     protected boolean unsolvable() {
