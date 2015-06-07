@@ -24,7 +24,7 @@ public class Board {
     }
 
     boolean boardIsClean() {
-        for (int i=0; i<this.height; i++) {
+        for (int i = 0; i < this.height; i++) {
             for (int j = 0; j < this.width; j++) {
                 if (this.data[i][j] != 0) {
                     return false;
@@ -35,18 +35,16 @@ public class Board {
     }
 
     public long calculateMutations() {
-        if (this.boardIsClean()) {
-            long value = Tetris.getCache(this.height, this.width);
-            if (value > 0) {
-                return value;
-            } else if (this.height >= 6 && this.width >= 4) {
-                this.splitBoard();
-            } else {
-                this.nextPosition(this.findNextPosition());
-            }
+        long value = Tetris.getCache(this.data);
+        if (value > 0) {
+            return value;
+        }
+        if (this.boardIsClean() && this.height >= 6 && this.width >= 4) {
+            this.splitBoard();
         } else {
             this.nextPosition(this.findNextPosition());
         }
+
         Tetris.setCache(this.height, this.width, this.result);
         return this.result;
     }
@@ -102,7 +100,7 @@ public class Board {
             ArrayList<Integer[]> validOffsets = this.findValidOffsets(block, position);
             for (Integer[] offset : validOffsets) {
                 this.placeBlockAt(block, offset);
-//                this.print();
+                this.print();
                 Integer[] nextPos = this.findNextPosition();
                 if (nextPos[0] == -1) {
                     // no free position; if the board is full we have found one solution
@@ -364,10 +362,10 @@ public class Board {
                 System.out.format("\u001B[4%dm %d \u001B[0m", value, value);
             }
         }
-//        try {
-//            Thread.sleep(80);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            Thread.sleep(40);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

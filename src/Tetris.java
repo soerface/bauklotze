@@ -6,7 +6,7 @@ import java.util.HashMap;
 public class Tetris {
     public static Block[] blocks;
     private static long[][] cache;
-    private static HashMap<String, Long> overlapCache;
+    private static HashMap<String, Long> partialsCache;
     public static boolean debugPrint = false;
 //    public static long setBlocks;
 //    public static long getCaches;
@@ -55,20 +55,11 @@ public class Tetris {
         });
 
         Tetris.cache = new long[(m > n ? m : n) + 1][(m > n ? n : m) + 1];
-        Tetris.overlapCache = new HashMap<String, Long>();
+        Tetris.partialsCache = new HashMap<String, Long>();
 //        Tetris.getCaches = 0;
 //        Tetris.setBlocks = 0;
         Board board = new Board(m, n);
         return board.calculateMutations();
-    }
-
-    public static long getCache(int m, int n) {
-//        Tetris.getCaches++;
-        if (m > n) {
-            return Tetris.cache[m][n];
-        } else {
-            return Tetris.cache[n][m];
-        }
     }
 
     public static void setCache(int m, int n, long value) {
@@ -80,18 +71,25 @@ public class Tetris {
         if (Tetris.cache[m][n] != 0) {
             return;
         }
-//        System.out.format("Set cache %d, %d\n", m, n);
         Tetris.cache[m][n] = value;
     }
 
-    public static void saveToOverlapCache(int[][] data, long value) {
+    public static void setCache(int[][] data, long value) {
         for (String key : Tetris.dataToStrings(data)) {
-            Tetris.overlapCache.put(key, value);
+            Tetris.partialsCache.put(key, value);
         }
     }
 
-    public static long getFromOverlapCache(int[][] data) {
-        Long value = Tetris.overlapCache.get(dataToString(data));
+    public static long getCache(int m, int n) {
+        if (m > n) {
+            return Tetris.cache[m][n];
+        } else {
+            return Tetris.cache[n][m];
+        }
+    }
+
+    public static long getCache(int[][] data) {
+        Long value = Tetris.partialsCache.get(dataToString(data));
         if (value != null) {
             return value;
         }
@@ -105,7 +103,7 @@ public class Tetris {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < data[0].length; j++) {
-                stringBuilder.append(data[i][j]);
+                stringBuilder.append(data[i][j] != 0 ? 1 : 0);
             }
             stringBuilder.append("+");
         }

@@ -1,5 +1,3 @@
-import java.util.HashMap;
-
 /**
  * The OverlapBoard only calculates mutations which consist of blocks
  * overlapping the half of the board It will be splitted by side m,
@@ -41,7 +39,6 @@ public class OverlapBoard extends Board {
     @Override
     protected Integer[] findNextPosition() {
         int offset = 0;
-        this.print();
 
         while (this.currentPosition + offset < this.positions.length) {
             Integer[] coordinate = this.positions[this.currentPosition + offset];
@@ -84,19 +81,19 @@ public class OverlapBoard extends Board {
 //        bottomBoard.print();
         long top;
         long bottom;
-        long cacheValue = Tetris.getFromOverlapCache(topBoard.data);
+        long cacheValue = Tetris.getCache(topBoard.data);
         if (cacheValue != 0) {
             top = cacheValue;
         } else {
             top = topBoard.calculateMutations();
-            Tetris.saveToOverlapCache(topBoard.data, top);
+            Tetris.setCache(topBoard.data, top);
         }
-        cacheValue = Tetris.getFromOverlapCache(bottomBoard.data);
+        cacheValue = Tetris.getCache(bottomBoard.data);
         if (cacheValue != 0) {
             bottom = cacheValue;
         } else {
             bottom = bottomBoard.calculateMutations();
-            Tetris.saveToOverlapCache(bottomBoard.data, bottom);
+            Tetris.setCache(bottomBoard.data, bottom);
         }
         this.result += top * bottom;
         // since we are returning "board is full", the overridden

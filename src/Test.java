@@ -91,7 +91,7 @@ public class Test {
             stop = System.currentTimeMillis();
             delta = stop - start;
             if (values[2] == 0 || res == values[2]) {
-//                System.out.format("OK %6dms mutations: %15d setBlock: %15d getCache: %15d\n", delta, res, Tetris.setBlocks, Tetris.getCaches);
+//                System.out.format("OK %6dms mutations: %15d setBlock: %15d setCache: %15d\n", delta, res, Tetris.setBlocks, Tetris.getCaches);
                 if (delta > 200 || true) {
                     System.out.format("%2d %2d - OK %6dms mutations: %15d\n", values[0], values[1], delta, res);
                 }
