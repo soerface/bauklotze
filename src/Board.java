@@ -126,10 +126,11 @@ public class Board {
                 this.removeBlockAt(block, offset);
             }
         }
-        if (this.isFull()) {
+
             if (saveToRectCache) {
                 Tetris.setCache(longSide, shortSide, this.result - resultBefore);
             }
+        if (this.isFull()) {
             Tetris.setCache(this.data, this.result - resultBefore);
         }
     }
