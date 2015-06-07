@@ -45,7 +45,9 @@ public class Board {
             this.nextPosition(this.findNextPosition());
         }
 
-        Tetris.setCache(this.height, this.width, this.result);
+        if (this.boardIsClean()) {
+            Tetris.setCache(this.height, this.width, this.result);
+        }
         Tetris.setCache(this.data, this.result);
         return this.result;
     }

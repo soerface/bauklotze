@@ -68,9 +68,6 @@ public class Tetris {
             m = n;
             n = tmp;
         }
-        if (Tetris.cache[m][n] != 0) {
-            return;
-        }
         Tetris.cache[m][n] = value;
     }
 
