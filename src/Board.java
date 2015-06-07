@@ -118,7 +118,7 @@ public class Board {
                 Integer[] nextPos = this.findNextPosition();
                 if (this.isFull()) {
                     // if the board is full we have found one solution
-                        this.result++;
+                    this.result++;
                 } else if (nextPos[0] != -1) {
                     this.nextPosition(nextPos);
                 }
@@ -127,17 +127,17 @@ public class Board {
             }
         }
 
-            if (saveToRectCache) {
-                Tetris.setCache(longSide, shortSide, this.result - resultBefore);
-            }
+        if (saveToRectCache) {
+            Tetris.setCache(longSide, shortSide, this.result - resultBefore);
+        }
         if (this.isFull()) {
             Tetris.setCache(this.data, this.result - resultBefore);
         }
     }
 
     private boolean isFull() {
-        for (int i=0; i<this.height; i++) {
-            for (int j=0; j<this.width; j++) {
+        for (int i = 0; i < this.height; i++) {
+            for (int j = 0; j < this.width; j++) {
                 if (this.data[i][j] == 0) {
                     return false;
                 }
