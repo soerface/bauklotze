@@ -39,6 +39,12 @@ public class Board {
         if (value >= 0) {
             return value;
         }
+        if (this.boardIsClean()) {
+            value = Tetris.getCache(this.height, this.width);
+            if (value > 0) {
+                return value;
+            }
+        }
         if (this.boardIsClean() && this.height >= 6 && this.width >= 4) {
             this.splitBoard();
         } else {

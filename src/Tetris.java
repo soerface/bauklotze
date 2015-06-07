@@ -73,7 +73,6 @@ public class Tetris {
 
     public static void setCache(int[][] data, long value) {
         Board.print(data);
-//        System.out.print(" " + value);
         for (String key : Tetris.dataToStrings(data)) {
             Tetris.partialsCache.put(key, value);
         }
@@ -106,8 +105,24 @@ public class Tetris {
         // Therefore, we can save a lot of work by caching those situations.
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < data.length; i++) {
+            StringBuilder row = new StringBuilder();
+            boolean filledRow = true;
             for (int j = 0; j < data[0].length; j++) {
-                stringBuilder.append(data[i][j] != 0 ? 1 : 0);
+                if (data[i][j] != 0) {
+                    row.append(1);
+                } else {
+                    row.append(0);
+                    filledRow = false;
+                }
+            }
+            // _______    _______
+            // |#####|    |# ###|
+            // |# ###| == |     |
+            // |     |    -------
+            // -------
+            // For calculating the combinations, those are both equal. Therefore, completely ignore filled rows
+            if (!filledRow) {
+                stringBuilder.append(row);
             }
             stringBuilder.append("+");
         }
