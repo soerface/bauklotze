@@ -355,11 +355,15 @@ public class Board {
     }
 
     void print() {
+        Board.print(this.data);
+    }
+
+    public static void print(int[][] data) {
         if (!Tetris.debugPrint) {
             return;
         }
         System.out.println();
-        for (int[] row : this.data) {
+        for (int[] row : data) {
             System.out.println();
             for (int value : row) {
                 System.out.format("\u001B[4%dm %d \u001B[0m", value, value);
