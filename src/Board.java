@@ -86,25 +86,29 @@ public class Board {
     }
 
     void nextPosition(Integer[] position) {
+        long cacheValue = Tetris.getCache(this.data);
+        if (cacheValue >= 0) {
+            this.result += cacheValue;
+            return;
+        }
         if (this.unsolvable()) {
             return;
         }
         int[] subRect = this.isRect();
         int longSide = subRect[0];
         int shortSide = subRect[1];
-        long resultBefore = 0;
-        boolean saveToCache = false;
+        long resultBefore = this.result;
+        boolean saveToRectCache = false;
         if (longSide > 0) {
             // we might have already computed the number of mutations
             // for the sub rectangle
-            long value = Tetris.getCache(longSide, shortSide);
-            if (value > 0) {
+            cacheValue = Tetris.getCache(longSide, shortSide);
+            if (cacheValue > 0) {
 //                System.out.format("from cache: %d (%d, %d)\n", value, longSide, shortSide);
-                this.result += value;
+                this.result += cacheValue;
                 return;
             }
-            resultBefore = this.result;
-            saveToCache = true;
+            saveToRectCache = true;
         }
         for (Block block : Tetris.blocks) {
             ArrayList<Integer[]> validOffsets = this.findValidOffsets(block, position);
@@ -124,9 +128,10 @@ public class Board {
                 this.removeBlockAt(block, offset);
             }
         }
-        if (saveToCache) {
+        if (saveToRectCache) {
             Tetris.setCache(longSide, shortSide, this.result - resultBefore);
         }
+//        Tetris.setCache(this.data, this.result - resultBefore);
     }
 
     protected boolean unsolvable() {

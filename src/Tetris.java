@@ -73,6 +73,7 @@ public class Tetris {
 
     public static void setCache(int[][] data, long value) {
         Board.print(data);
+//        System.out.println(value);
         for (String key : Tetris.dataToStrings(data)) {
             Tetris.partialsCache.put(key, value);
         }
