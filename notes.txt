@@ -1,147 +1,126 @@
- 3  1 -      1ms      1ms       1ms       1ms      4ms      2ms mutations:                   1
- 3  2 -      2ms      1ms       0ms       1ms      0ms      0ms mutations:                   3
- 3  3 -     12ms      3ms       0ms       0ms      1ms      1ms mutations:                  10
- 3  4 -     28ms     10ms       0ms       1ms      2ms      2ms mutations:                  23
- 3  5 -     38ms     17ms       1ms       2ms      1ms      4ms mutations:                  62
- 6  1 -      0ms      0ms       0ms       0ms      0ms      0ms mutations:                   1
- 6  2 -     29ms      5ms       1ms       0ms      0ms      1ms mutations:                  11
- 6  3 -                         2ms       4ms      3ms      5ms mutations:                 170
- 6  4 -   2745ms     95ms      32ms      33ms     16ms     19ms mutations:                 939
- 6  5 - 152708ms     95ms      44ms      67ms     65ms     41ms mutations:                8342
- 6  6 -             863ms     106ms      88ms     90ms     75ms mutations:               80092
- 6  7 -            6652ms     670ms     807ms     32ms     50ms mutations:              614581
- 6  8 -                      3901ms     639ms     41ms     56ms mutations:             5271923
- 9  1 -                         0ms       0ms      0ms      0ms mutations:                   1
- 9  2 -     84ms     22ms       0ms       0ms      0ms      0ms mutations:                  41
- 9  3 -   7937ms    118ms       0ms       1ms      1ms      1ms mutations:                3127
- 9  4 -             331ms      20ms      20ms      3ms      3ms mutations:               41813
- 9  5 -           10845ms    1045ms    1051ms     34ms     16ms mutations:             1269900
- 9  6 -                     27409ms   74632ms     70ms     56ms mutations:            45832761
- 9  7 -                                         8616ms    188ms mutations:          1064557805
- 9  8 -                                       151980ms    736ms mutations:         30860212081
- 9  9 -                                        86005ms   4822ms mutations:        928789262080
- 9 10 -                                        88592ms   4787ms mutations:      25020222581494
- 9 11 -                                                  5370ms mutations:     714819627084057
-12  1 -                         0ms       0ms      0ms      0ms mutations:                   1
-12  2 -                         0ms       0ms      0ms      0ms mutations:                 153
-12  3 -                         1ms       0ms      0ms      1ms mutations:               58234
-12  4 -                       629ms      37ms      3ms      2ms mutations:             1895145
-12  5 -                    135417ms    1502ms     40ms      8ms mutations:           198253934
-12  6 -                                          495ms     44ms mutations:         27438555522
-12  7 -                                         9690ms    187ms mutations:       1949314526229
-12  8 -                                       159265ms    984ms mutations:     193553900967497
-12  9 -                                                  5507ms mutations:   20574308184277971
-
-15  1 -                         0ms       0ms      0ms      0ms mutations:                   1
-15  2 -                         0ms       0ms      0ms      0ms mutations:                 571
-15  3 -                         1ms       2ms      1ms      0ms mutations:             1086567
-15  4 -                     20692ms   20862ms     34ms      3ms mutations:            86208957
-15  5 -                                         3267ms     16ms mutations:         31111319376
-15  6 -                                        16831ms     86ms mutations:      16593169804557
-15  7 -                                                   357ms mutations:    3619365754064658
-15  8 -                                                  1905ms mutations: 1235348565576072999
-15  9 -                                                  8265ms mutations: 5262513436722467520
-18  1 -                         0ms       0ms      0ms      0ms mutations:                   1
-18  2 -                         0ms       0ms      0ms      0ms mutations:                2131
-18  3 -                         1ms       4ms      1ms      1ms mutations:            20279829
-18  4 -                                1388ms     74ms      3ms mutations:          3924499731
-18  5 -                                         5296ms     16ms mutations:       4887323351972
-18  6 -                                                    74ms mutations:   10056816580083721
-18  7 -                                                   388ms mutations: 6743148875847013949
-18  8 -                                                  2071ms mutations: 4962389223879298519
-21  1 -                         0ms       0ms      0ms      0ms mutations:                   1
-21  2 -                         1ms       0ms      1ms      0ms mutations:                7953
-21  3 -                         1ms      17ms      1ms      1ms mutations:           378522507
-21  4 -                                         1080ms      5ms mutations:        178682349823
-21  5 -                                                    27ms mutations:     767919868804309
-21  6 -                                                   141ms mutations: 6098207777286812381
-24  1 -                         0ms       0ms      0ms      0ms mutations:                   1
-24  2 -                         0ms       0ms      0ms      0ms mutations:               29681
-24  3 -                         2ms      71ms      2ms      1ms mutations:          7065162260
-24  4 -                               59857ms   3333ms      4ms mutations:       8135650498647
-24  5 -                                                    22ms mutations:  120664440361104580
-24  6 -                                                   108ms mutations: 8846286113130393632
-27  1 -                                            0ms      0ms mutations:                   1
-27  2 -                                            1ms      1ms mutations:              110771
-27  3 -                                            2ms      2ms mutations:        131872134232
-27  4 -                                        34854ms      8ms mutations:     370429531112741
-27  5 -                                                    42ms mutations:  513609422906159377
-30  1 -                                                     0ms mutations:                   1
-30  2 -                                                     0ms mutations:              413403
-30  3 -                                                     3ms mutations:       2461410223831
-30  4 -                                                     6ms mutations:   16866286184557689
-42  2 -                                            1ms      0ms mutations:            80198051
-45  2 -                                            1ms      1ms mutations:           299303201
- 2 45 -                                            1ms      1ms mutations:           299303201
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  3   1 -      1ms      1ms       1ms       1ms      4ms      2ms mutations:                    1
+  3   2 -      2ms      1ms       0ms       1ms      0ms      1ms mutations:                    3
+  3   3 -     12ms      3ms       0ms       0ms      1ms      1ms mutations:                   10
+  3   4 -     28ms     10ms       0ms       1ms      2ms      2ms mutations:                   23
+  3   5 -     38ms     17ms       1ms       2ms      1ms      4ms mutations:                   62
+
+  6   1 -      0ms      0ms       0ms       0ms      0ms      0ms mutations:                    1
+  6   2 -     29ms      5ms       1ms       0ms      0ms      1ms mutations:                   11
+  6   3 -                         2ms       4ms      3ms      5ms mutations:                  170
+  6   4 -   2745ms     95ms      32ms      33ms     16ms     21ms mutations:                  939
+  6   5 - 152708ms     95ms      44ms      67ms     65ms     43ms mutations:                 8342
+  6   6 -             863ms     106ms      88ms     90ms     65ms mutations:                80092
+  6   7 -            6652ms     670ms     807ms     32ms     49ms mutations:               614581
+  6   8 -                      3901ms     639ms     41ms     60ms mutations:              5271923
+
+  9   1 -                         0ms       0ms      0ms      0ms mutations:                    1
+  9   2 -     84ms     22ms       0ms       0ms      0ms      1ms mutations:                   41
+  9   3 -   7937ms    118ms       0ms       1ms      1ms      0ms mutations:                 3127
+  9   4 -             331ms      20ms      20ms      3ms      2ms mutations:                41813
+  9   5 -           10845ms    1045ms    1051ms     34ms     14ms mutations:              1269900
+  9   6 -                     27409ms   74632ms     70ms     48ms mutations:             45832761
+  9   7 -                                         8616ms    161ms mutations:           1064557805
+  9   8 -                                       151980ms    707ms mutations:          30860212081
+  9   9 -                                        86005ms   4891ms mutations:         928789262080
+  9  10 -                                        88592ms   4810ms mutations:       25020222581494
+  9  11 -                                                  5421ms mutations:      714819627084057
+
+ 12   1 -                         0ms       0ms      0ms      0ms mutations:                    1
+ 12   2 -                         0ms       0ms      0ms      0ms mutations:                  153
+ 12   3 -                         1ms       0ms      0ms      1ms mutations:                58234
+ 12   4 -                       629ms      37ms      3ms      2ms mutations:              1895145
+ 12   5 -                    135417ms    1502ms     40ms      8ms mutations:            198253934
+ 12   6 -                                          495ms     45ms mutations:          27438555522
+ 12   7 -                                         9690ms    192ms mutations:        1949314526229
+ 12   8 -                                       159265ms    988ms mutations:      193553900967497
+ 12   9 -                                                  5607ms mutations:    20574308184277971
+ 12  10 -                                                 32554ms mutations:  1830607857363940042
+ 12  11 - OVERFLOW
+ 15   1 -                         0ms       0ms      0ms      1ms mutations:                    1
+ 15   2 -                         0ms       0ms      0ms      0ms mutations:                  571
+ 15   3 -                         1ms       2ms      1ms      1ms mutations:              1086567
+ 15   4 -                     20692ms   20862ms     34ms      3ms mutations:             86208957
+ 15   5 -                                         3267ms     16ms mutations:          31111319376
+ 15   6 -                                        16831ms     83ms mutations:       16593169804557
+ 15   7 -                                                   365ms mutations:     3619365754064658
+ 15   8 -                                                  1927ms mutations:  1235348565576072999
+ 15   9 -                                                  8406ms mutations:  5262513436722467520
+ 15  10 - OVERFLOW
+ 18   1 -                         0ms       0ms      0ms      0ms mutations:                    1
+ 18   2 -                         0ms       0ms      0ms      0ms mutations:                 2131
+ 18   3 -                         1ms       4ms      1ms      0ms mutations:             20279829
+ 18   4 -                                1388ms     74ms      3ms mutations:           3924499731
+ 18   5 -                                         5296ms     16ms mutations:        4887323351972
+ 18   6 -                                                    76ms mutations:    10056816580083721
+ 18   7 -                                                   386ms mutations:  6743148875847013949
+ 18   8 - OVERFLOW
+ 21   1 -                         0ms       0ms      0ms      1ms mutations:                    1
+ 21   2 -                         1ms       0ms      1ms      0ms mutations:                 7953
+ 21   3 -                         1ms      17ms      1ms      1ms mutations:            378522507
+ 21   4 -                                         1080ms      4ms mutations:         178682349823
+ 21   5 -                                                    26ms mutations:      767919868804309
+ 21   6 -                                                   145ms mutations:  6098207777286812381
+ 21   7 - OVERFLOW
+ 24   1 -                         0ms       0ms      0ms      0ms mutations:                    1
+ 24   2 -                         0ms       0ms      0ms      1ms mutations:                29681
+ 24   3 -                         2ms      71ms      2ms      1ms mutations:           7065162260
+ 24   4 -                               59857ms   3333ms      3ms mutations:        8135650498647
+ 24   5 -                                                    21ms mutations:   120664440361104580
+ 24   6 -                                                   110ms mutations:  8846286113130393632
+ 24   7 - OVERFLOW
+ 27   1 -                                            0ms      1ms mutations:                    1
+ 27   2 -                                            1ms      0ms mutations:               110771
+ 27   3 -                                            2ms      2ms mutations:         131872134232
+ 27   4 -                                        34854ms      8ms mutations:      370429531112741
+ 27   5 -                                                    41ms mutations:   513609422906159377
+ 27   6 - OVERFLOW
+ 30   1 -                                                     0ms mutations:                    1
+ 30   2 -                                                     0ms mutations:               413403
+ 30   3 -                                                     2ms mutations:        2461410223831
+ 30   4 -                                                     6ms mutations:    16866286184557689
+ 30   5 - OVERFLOW
+ 33   1 -                                                     1ms mutations:                    1
+ 33   2 -                                                     0ms mutations:              1542841
+ 33   3 -                                                     3ms mutations:       45942537263742
+ 33   4 -                                                    10ms mutations:   767950873073579951
+ 33   5 - OVERFLOW
+ 36   1 -                                                     0ms mutations:                    1
+ 36   2 -                                                     1ms mutations:              5757961
+ 36   3 -                                                     3ms mutations:      857523348947977
+ 36   4 - OVERFLOW
+ 39   1 -                                                     0ms mutations:                    1
+ 39   2 -                                                     0ms mutations:             21489003
+ 39   3 -                                                     3ms mutations:    16005783272212985
+ 39   4 - OVERFLOW
+ 42   1 -                                                     0ms mutations:                    1
+ 42   2 -                                                     1ms mutations:             80198051
+ 42   3 -                                                     4ms mutations:   298749997296405057
+ 42   4 - OVERFLOW
+ 45   1 -                                                     1ms mutations:                    1
+ 45   2 -                                                     1ms mutations:            299303201
+ 45   3 -                                                     4ms mutations:  5576207010172198758
+ 45   4 - OVERFLOW
+ 48   1 -                                                     0ms mutations:                    1
+ 48   2 -                                                     1ms mutations:           1117014753
+ 48   3 - OVERFLOW
+ 51   1 -                                                     1ms mutations:                    1
+ 51   2 -                                                     1ms mutations:           4168755811
+ 51   3 - OVERFLOW
+ 54   2 -                                                     1ms mutations:          15558008491
+ 57   2 -                                                     1ms mutations:          58063278153
+ 60   2 -                                                     1ms mutations:         216695104121
+ 63   2 -                                                     1ms mutations:         808717138331
+ 66   2 -                                                     1ms mutations:        3018173449203
+ 69   2 -                                                     2ms mutations:       11263976658481
+ 72   2 -                                                     2ms mutations:       42037733184721
+ 75   2 -                                                     3ms mutations:      156886956080403
+ 78   2 -                                                     2ms mutations:      585510091136891
+ 81   2 -                                                     3ms mutations:     2185153408467161
+ 84   2 -                                                     3ms mutations:     8155103542731753
+ 87   2 -                                                     3ms mutations:    30435260762459851
+ 90   2 -                                                     3ms mutations:   113585939507107651
+ 93   2 -                                                     3ms mutations:   423908497265970753
+ 96   2 -                                                     4ms mutations:  1582048049556775361
+ 99   2 -                                                     3ms mutations:  5904283700961130691
+102   2 -                                                     4ms mutations:  3588342680578195787
+105   2 -                                                     4ms mutations:  8449087021351652457
