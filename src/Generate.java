@@ -20,8 +20,8 @@ public class Generate {
         } else {
             Generate.TIMELIMIT = 300000;
         }
-        long start = 0;
-        long stop = 0;
+        long start;
+        long stop;
         String delta = "";
         Generate.m = 0;
         while (true) {
@@ -35,12 +35,14 @@ public class Generate {
                     BigInteger res = task.get(Generate.TIMELIMIT, TimeUnit.MILLISECONDS);
                     stop = System.currentTimeMillis();
                     delta = String.format("%7d", stop - start);
-                    mutations = String.format("%50d", res);
+                    mutations = String.format("%100d", res);
                 } catch (ExecutionException e) {
                     throw new RuntimeException(e);
                 } catch (TimeoutException e) {
                     delta = String.format(">%6d", Generate.TIMELIMIT);
-                    mutations = String.format("%50s", "TIMEOUT");
+                    mutations = String.format("%100s", "TIMEOUT");
+                    // skip the other ones
+                    Generate.n = Generate.m + 3;
                 } catch (InterruptedException e) {
                     System.out.println("interrupted");
                 }
