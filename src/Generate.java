@@ -23,11 +23,14 @@ public class Generate {
         long start;
         long stop;
         String delta = "";
-        Generate.m = 0;
+        Generate.m = 2;
         while (true) {
-            Generate.m += 3;
+            Generate.m++;
             boolean skip = false;
-            for (Generate.n = 1; Generate.n < Generate.m + 3 && !skip; Generate.n++) {
+            for (Generate.n = 1; Generate.n <= Generate.m && !skip; Generate.n++) {
+                if (Generate.m % 3 != 0 && Generate.n % 3 != 0) {
+                    continue;
+                }
                 ExecutorService executorService = Executors.newCachedThreadPool();
                 Future<BigInteger> task = executorService.submit(callable);
                 String mutations = "";
