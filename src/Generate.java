@@ -26,7 +26,8 @@ public class Generate {
         Generate.m = 0;
         while (true) {
             Generate.m += 3;
-            for (Generate.n = 1; Generate.n < Generate.m + 3; Generate.n++) {
+            boolean skip = false;
+            for (Generate.n = 1; Generate.n < Generate.m + 3 && !skip; Generate.n++) {
                 ExecutorService executorService = Executors.newCachedThreadPool();
                 Future<BigInteger> task = executorService.submit(callable);
                 String mutations = "";
@@ -42,7 +43,7 @@ public class Generate {
                     delta = String.format(">%6d", Generate.TIMELIMIT);
                     mutations = String.format("%100s", "TIMEOUT");
                     // skip the other ones
-                    Generate.n = Generate.m + 3;
+                    skip = true;
                 } catch (InterruptedException e) {
                     System.out.println("interrupted");
                 }
