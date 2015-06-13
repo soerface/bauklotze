@@ -120,7 +120,7 @@ public class Board {
             ArrayList<Integer[]> validOffsets = this.findValidOffsets(block, position);
             for (Integer[] offset : validOffsets) {
                 this.placeBlockAt(block, offset);
-//                this.print();
+                this.print();
                 Integer[] nextPos = this.findNextPosition();
                 if (this.isFull()) {
                     // if the board is full we have found one solution
@@ -130,6 +130,7 @@ public class Board {
                 }
 
                 this.removeBlockAt(block, offset);
+                this.print();
             }
         }
 
@@ -385,22 +386,23 @@ public class Board {
     }
 
     void print() {
-        Board.print(this.data);
+        Board.print(this.data, this.result);
     }
 
-    public static void print(int[][] data) {
+    public static void print(int[][] data, BigInteger result) {
         if (!Tetris.debugPrint) {
             return;
         }
         System.out.println();
         for (int[] row : data) {
-            System.out.println();
             for (int value : row) {
                 System.out.format("\u001B[4%dm %d \u001B[0m", value, value);
             }
+            System.out.println();
         }
+        System.out.format("Solutions: %d\n", result);
         try {
-            Thread.sleep(40);
+            Thread.sleep(Tetris.printDelay);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

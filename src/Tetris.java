@@ -9,14 +9,16 @@ public class Tetris {
     private static BigInteger[][] cache;
     private static HashMap<String, BigInteger> partialsCache;
     public static boolean debugPrint = false;
+    public static int printDelay;
 //    public static long setBlocks;
 //    public static long getCaches;
 
     public static void main(String[] args) {
         int m = Integer.parseInt(args[0]);
         int n = Integer.parseInt(args[1]);
-        if (args.length > 2 && args[2].equals("debug")) {
+        if (args.length > 2) {
             Tetris.debugPrint = true;
+            Tetris.printDelay = Integer.parseInt(args[2]);
         }
 
         System.out.println(Tetris.solve(m, n));
@@ -73,7 +75,7 @@ public class Tetris {
     }
 
     public static void setCache(int[][] data, BigInteger value) {
-        Board.print(data);
+//        Board.print(data, value);
 //        System.out.println(value);
         for (String key : Tetris.dataToStrings(data)) {
             Tetris.partialsCache.put(key, value);
