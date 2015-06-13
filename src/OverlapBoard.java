@@ -35,6 +35,7 @@ public class OverlapBoard extends Board {
 
     public BigInteger calculateMutations() {
         this.nextPosition(this.findNextPosition());
+        allBoards.remove(this);
         return this.result;
     }
 
@@ -77,6 +78,8 @@ public class OverlapBoard extends Board {
         }
         BigInteger top = topBoard.calculateMutations();
         BigInteger bottom = bottomBoard.calculateMutations();
+        Board.allBoards.remove(topBoard);
+        Board.allBoards.remove(bottomBoard);
         this.result = this.result.add(top.multiply(bottom));
         return new Integer[]{-1, -1};
     }

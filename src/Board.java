@@ -8,12 +8,14 @@ public class Board {
     int height;
     int width;
     boolean saveToCache;
+    public static ArrayList<Board> allBoards = new ArrayList<Board>();
 
     public Board(int m, int n) {
         this(m, n, true, true);
     }
 
     public Board(int m, int n, boolean allowRotate, boolean saveToCache) {
+        allBoards.add(this);
         if (allowRotate) {
             this.width = n < m ? n : m;
             this.height = m > n ? m : n;
@@ -24,7 +26,9 @@ public class Board {
         this.saveToCache = saveToCache;
         this.data = new int[this.height][this.width];
         this.result = BigInteger.ZERO;
+        Board.printAllBoards();
     }
+
 
     boolean boardIsClean() {
         for (int i = 0; i < this.height; i++) {
@@ -41,12 +45,14 @@ public class Board {
         BigInteger value = Tetris.getCache(this.data);
 //        if (value >= 0) {
         if (value != null) {
+            this.result = value;
             return value;
         }
         if (this.boardIsClean()) {
             value = Tetris.getCache(this.height, this.width);
 //            if (value > 0) {
             if (value != null) {
+                this.result = value;
                 return value;
             }
         }
@@ -65,6 +71,7 @@ public class Board {
     }
 
     void splitBoard() {
+        Board.allBoards.remove(this);
         // Splits the board into two smaller boards
         // The number of combinations will be boardA * boardB + all combinations, where both are overlapping
         int splitPosition = this.height / 2;
@@ -79,15 +86,20 @@ public class Board {
             splitPosition--;
         }
         Board boardA = new Board(splitPosition, this.width);
-        BigInteger mutationsA = boardA.calculateMutations();
-        Board boardB = new Board(this.height - splitPosition, this.width);
-        BigInteger mutationsB = boardB.calculateMutations();
-
+        Board boardB = boardA;
+        if (this.height % 2 != 0 || splitPosition != this.height / 2) {
+            boardB = new Board(this.height - splitPosition, this.width);
+        }
         // both together have a total number of combinations of multiplying them
         // and additionally, every combination that is possible by melting the borders of the blocks together
         Board overlapBoard = new OverlapBoard(this.height, this.width, splitPosition);
+        BigInteger mutationsA = boardA.calculateMutations();
+        BigInteger mutationsB = boardB.calculateMutations();
+        Board.allBoards.remove(boardA);
+        Board.allBoards.remove(boardB);
         BigInteger overlapMutations = overlapBoard.calculateMutations();
         this.result = mutationsA.multiply(mutationsB).add(overlapMutations);
+        Board.allBoards.remove(overlapBoard);
     }
 
     void nextPosition(Integer[] position) {
@@ -120,7 +132,7 @@ public class Board {
             ArrayList<Integer[]> validOffsets = this.findValidOffsets(block, position);
             for (Integer[] offset : validOffsets) {
                 this.placeBlockAt(block, offset);
-                this.print();
+                Board.printAllBoards();
                 Integer[] nextPos = this.findNextPosition();
                 if (this.isFull()) {
                     // if the board is full we have found one solution
@@ -130,7 +142,7 @@ public class Board {
                 }
 
                 this.removeBlockAt(block, offset);
-                this.print();
+                Board.printAllBoards();
             }
         }
 
@@ -401,6 +413,37 @@ public class Board {
             System.out.println();
         }
         System.out.format("Solutions: %d\n", result);
+        try {
+            Thread.sleep(Tetris.printDelay);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void printAllBoards() {
+        if (!Tetris.debugPrint) {
+            return;
+        }
+        int maxHeight = 0;
+        for (Board board : Board.allBoards) {
+            maxHeight = Math.max(maxHeight, board.height);
+        }
+        for (int row = 0; row <= maxHeight; row++) {
+            for (Board board : Board.allBoards) {
+                if (row < board.height) {
+                    for (int value : board.data[row]) {
+                        System.out.format("\u001B[4%dm %d \u001B[0m", value, value);
+                    }
+                } else if (row == board.height) {
+                    System.out.format("%" + board.width * 3 + "d", board.result);
+                } else {
+                    System.out.format("%" + board.width * 3 + "s", "");
+                }
+                System.out.print(" ");
+            }
+            System.out.println();
+        }
+        System.out.println();
         try {
             Thread.sleep(Tetris.printDelay);
         } catch (InterruptedException e) {
