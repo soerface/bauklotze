@@ -222,8 +222,8 @@ public class Board {
             return;
         }
         System.out.println();
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
+        for (int i = 0; i < Math.max(height, area.height); i++) {
+            for (int j = 0; j < Math.max(width, area.width); j++) {
                 int value = data[i][j];
                 String paddingChar = "";
                 String content = "   ";
