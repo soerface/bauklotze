@@ -14,7 +14,7 @@ public class Board {
     }
 
     public BigInteger calculateMutations() {
-        Area area = new Area(0, 0, height, width);
+        Area area = new Area(0, 0, width, height);
         return processNextPosition(findNextPosition(area), area);
     }
 
@@ -54,7 +54,7 @@ public class Board {
 
     private Area[] shrinkArea(Area area) {
         Area[] areas = new Area[2];
-        if (area.height > area.width) {
+        if (area.width < area.height) {
             areas[0] = new Area(area.x1, area.y1, area.x2, area.y1 + area.height / 2);
             areas[1] = new Area(area.x1, area.y1 + area.height / 2, area.x2, area.y2);
         } else {
@@ -65,25 +65,25 @@ public class Board {
     }
 
     protected Integer[] findNextPosition(Area area) {
-        if (area.width > 6 || area.height > 6) {
-            if (area.height > area.width) {
+        if (area.height > 6 || area.width > 6) {
+            if (area.width < area.height) {
                 int j = area.y1 + area.height / 2;
                 for (int i = area.x1; i < area.x2; i++) {
-                    if (data[i][j] == 0) {
-                        return new Integer[]{i, j};
+                    if (data[j][i] == 0) {
+                        return new Integer[]{j, i};
                     }
                 }
             } else {
                 int j = area.x1 + area.width / 2;
                 for (int i = area.y1; i < area.y2; i++) {
-                    if (data[j][i] == 0) {
-                        return new Integer[]{j, i};
+                    if (data[i][j] == 0) {
+                        return new Integer[]{i, j};
                     }
                 }
             }
         } else {
-            for (int i = area.x1; i < area.x2; i++) {
-                for (int j = area.y1; j < area.y2; j++) {
+            for (int i = area.y1; i < area.y2; i++) {
+                for (int j = area.x1; j < area.x2; j++) {
                     if (data[i][j] == 0) {
                         return new Integer[]{i, j};
                     }
@@ -166,7 +166,7 @@ public class Board {
     private boolean isFull(Area area) {
         for (int i = area.x1; i < area.x2; i++) {
             for (int j = area.y1; j < area.y2; j++) {
-                if (data[i][j] == 0) {
+                if (data[j][i] == 0) {
                     return false;
                 }
             }
