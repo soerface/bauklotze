@@ -3,18 +3,21 @@ import java.util.ArrayList;
 
 public class Board {
 
-    public int[][] data;
-    int height;
-    int width;
+    public static int[][] data;
+    public static int height;
+    public static int width;
+    public static int depth;
 
     public Board(int m, int n) {
-        height = m > n ? m : n;
-        width = n < m ? n : m;
-        data = new int[height][width];
+        Board.height = m > n ? m : n;
+        Board.width = n < m ? n : m;
+
     }
 
     public BigInteger calculateMutations() {
+        Board.data = new int[height][width];
         Area area = new Area(0, 0, width, height);
+        depth = 1;
         return processNextPosition(findNextPosition(area), area);
     }
 
@@ -26,29 +29,52 @@ public class Board {
             }
             return BigInteger.ZERO;
         }
+        BigInteger cacheValue = Tetris.getCache(data, area);
+        if (cacheValue != null) {
+            return cacheValue;
+        }
         for (Block block : Tetris.blocks) {
             ArrayList<Integer[]> validOffsets = findValidOffsets(block, position);
             for (Integer[] offset : validOffsets) {
                 placeBlockAt(block, offset);
-                print(result);
+                print(result, area);
                 if (isFull(area)) {
                     result = result.add(BigInteger.ONE);
                 } else {
                     Integer[] nextPosition = findNextPosition(area);
                     if (nextPosition == null) {
                         Area[] areas = shrinkArea(area);
-                        BigInteger resultA = processNextPosition(findNextPosition(areas[0]), areas[0]);
-                        BigInteger resultB = processNextPosition(findNextPosition(areas[1]), areas[1]);
-//                        System.out.format("a: %d b: %d", resultA, resultB);
-                        result = result.add(resultA.multiply(resultB));
+
+                        if (areas[0].solvable() && areas[1].solvable()) {
+//                            depth++;
+                            BigInteger resultA = processNextPosition(findNextPosition(areas[0]), areas[0]);
+                            BigInteger resultB = processNextPosition(findNextPosition(areas[1]), areas[1]);
+//                            depth--;
+//                            System.out.format("a: %d b: %d", resultA, resultB);
+                            result = result.add(resultA.multiply(resultB));
+                            print(resultA, areas[0]);
+                            print(resultB, areas[1]);
+                            print(resultA.multiply(resultB), area);
+                        }
+
                     } else {
                         result = result.add(processNextPosition(nextPosition, area));
                     }
                 }
+                print(result, area);
                 removeBlockAt(block, offset);
-                print(result);
             }
         }
+//        print(result);
+        if (result.compareTo(BigInteger.ZERO) != 0) {
+//            print(result, area);
+//            printArea(result, area);
+        }
+//        System.out.format("%s\n", area);
+//        if (result.compareTo(BigInteger.ZERO) != 0) {
+//            printArea(result, area);
+//        }
+        Tetris.setCache(data, result, area);
         return result;
     }
 
@@ -65,28 +91,28 @@ public class Board {
     }
 
     protected Integer[] findNextPosition(Area area) {
-        if (area.height > 6 || area.width > 6) {
-            if (area.width < area.height) {
-                int j = area.y1 + area.height / 2;
-                for (int i = area.x1; i < area.x2; i++) {
-                    if (data[j][i] == 0) {
-                        return new Integer[]{j, i};
-                    }
+        /*for (int i = area.y1; i < area.y2; i++) {
+            for (int j = area.x1; j < area.x2; j++) {
+                if (data[i][j] == 0) {
+                    return new Integer[]{i, j};
                 }
-            } else {
-                int j = area.x1 + area.width / 2;
-                for (int i = area.y1; i < area.y2; i++) {
-                    if (data[i][j] == 0) {
-                        return new Integer[]{i, j};
-                    }
+            }
+        }
+
+        return null;*/
+
+        if (area.width < area.height) {
+            int j = area.y1 + area.height / 2;
+            for (int i = area.x1; i < area.x2; i++) {
+                if (data[j][i] == 0) {
+                    return new Integer[]{j, i};
                 }
             }
         } else {
+            int j = area.x1 + area.width / 2;
             for (int i = area.y1; i < area.y2; i++) {
-                for (int j = area.x1; j < area.x2; j++) {
-                    if (data[i][j] == 0) {
-                        return new Integer[]{i, j};
-                    }
+                if (data[i][j] == 0) {
+                    return new Integer[]{i, j};
                 }
             }
         }
@@ -174,18 +200,49 @@ public class Board {
         return true;
     }
 
-    void print(BigInteger result) {
-        Board.print(data, result);
-    }
-
-    public static void print(int[][] data, BigInteger result) {
+    void printArea(BigInteger result, Area area) {
         if (!Tetris.debugPrint) {
             return;
         }
         System.out.println();
-        for (int[] row : data) {
-            for (int value : row) {
+        for (int i = area.y1; i < area.y2; i++) {
+            for (int j = area.x1; j < area.x2; j++) {
+                int value = data[i][j];
                 System.out.format("\u001B[4%dm %d \u001B[0m", value, value);
+            }
+            System.out.println();
+        }
+        System.out.format("Solutions: %d\n", result);
+        try {
+            Thread.sleep(Tetris.printDelay);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void print(BigInteger result) {
+        print(result, new Area(0, 0, width, height));
+    }
+
+    public static void print(BigInteger result, Area area) {
+        if (!Tetris.debugPrint || depth > 1) {
+            return;
+        }
+        System.out.println();
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                int value = data[i][j];
+                String paddingChar = "";
+                String content = "   ";
+                int color = 4; // dark bg colors
+                if (i >= area.y1 && i < area.y2 && j >= area.x1 && j < area.x2) {
+//                    paddingChar = "\u001B[30m"; // black font
+                    content = String.format(" %d ", value);
+//                    if (value != 0) {
+//                        color = 10; // bright bg colors
+//                    }
+                }
+                System.out.format("\u001B[%d%dm%s%s\u001B[0m", color, value, paddingChar, content);
             }
             System.out.println();
         }

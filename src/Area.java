@@ -14,4 +14,21 @@ public class Area {
         width = x2 - x1;
         height = y2 - y1;
     }
+
+    public boolean solvable() {
+        int freeBlocks = 0;
+        for (int i = y1; i < y2; i++) {
+            for (int j = x1; j < x2; j++) {
+                if (Board.data[i][j] == 0) {
+                    freeBlocks++;
+                }
+            }
+        }
+        return freeBlocks % 3 == 0;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%d / %d  %d / %d", x1, y1, x2, y2);
+    }
 }
