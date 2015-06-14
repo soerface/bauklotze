@@ -9,6 +9,7 @@ public class Board {
     int width;
     boolean saveToCache;
     public static ArrayList<Board> allBoards = new ArrayList<Board>();
+    protected boolean visualize;
 
     public Board(int m, int n) {
         this(m, n, true, true);
@@ -17,20 +18,21 @@ public class Board {
     public Board(int m, int n, boolean allowRotate, boolean saveToCache) {
         allBoards.add(this);
         if (allowRotate) {
-            this.width = n < m ? n : m;
-            this.height = m > n ? m : n;
+            width = n < m ? n : m;
+            height = m > n ? m : n;
         } else {
-            this.width = n;
-            this.height = m;
+            width = n;
+            height = m;
         }
         this.saveToCache = saveToCache;
-        this.data = new int[this.height][this.width];
-        this.result = BigInteger.ZERO;
-        Board.printAllBoards();
+        data = new int[height][width];
+        result = BigInteger.ZERO;
+        visualize = false;
+//        Board.printAllBoards();
     }
 
 
-    boolean boardIsClean() {
+    boolean isClean() {
         for (int i = 0; i < this.height; i++) {
             for (int j = 0; j < this.width; j++) {
                 if (this.data[i][j] != 0) {
@@ -41,28 +43,34 @@ public class Board {
         return true;
     }
 
+    public BigInteger calculateMutations(boolean visualize) {
+        this.visualize = visualize;
+        return this.calculateMutations();
+    }
+
     public BigInteger calculateMutations() {
+        if (isFull()) {
+            return BigInteger.ONE;
+        }
         BigInteger value = Tetris.getCache(this.data);
-//        if (value >= 0) {
         if (value != null) {
             this.result = value;
             return value;
         }
-        if (this.boardIsClean()) {
+        if (this.isClean()) {
             value = Tetris.getCache(this.height, this.width);
-//            if (value > 0) {
             if (value != null) {
                 this.result = value;
                 return value;
             }
         }
-        if (this.boardIsClean() && this.height >= 6 && this.width >= 4) {
+        if (this.height >= 6 && this.width >= 4) {
             this.splitBoard();
         } else {
             this.nextPosition(this.findNextPosition());
         }
 
-        if (this.boardIsClean()) {
+        if (isClean()) {
             Tetris.setCache(this.height, this.width, this.result);
         } else {
             Tetris.setCache(this.data, this.result);
@@ -76,6 +84,7 @@ public class Board {
         // The number of combinations will be boardA * boardB + all combinations, where both are overlapping
         int splitPosition = this.height / 2;
         // check if both blocks contains a number of squares dividable by three
+        // TODO: may need better check for prefilled boards
         while (true) {
             if (this.width % 3 == 0) {
                 break;
@@ -85,20 +94,48 @@ public class Board {
             }
             splitPosition--;
         }
-        Board boardA = new Board(splitPosition, this.width);
-        Board boardB = boardA;
-        if (this.height % 2 != 0 || splitPosition != this.height / 2) {
+        Board boardA;
+        Board boardB;
+        if (!isClean()) {
+            // TODO: Redundant to OverlapBoard copy process
+            // copy the data from our current board to the two new ones
+            boardA = new Board(splitPosition, this.width, false, true);
+            boardB = new Board(this.height - splitPosition, this.width, false, true);
+            for (int i = 0; i < data.length; i++) {
+                for (int j = 0; j < data[i].length; j++) {
+                    if (i < splitPosition) {
+                        // "7" for better visualization while debugging; could be any other number != 0
+                        // mirror the data while copying; gives a little speedup
+                        // due to the way the next position is being chosen
+                        boardA.data[i][j] = data[splitPosition - i - 1][j] != 0 ? 7 : 0;
+//                  TODO: use this instead of the above for slightly better performance if needed:
+//                  topBoard.data[i][j] = this.data[this.splitPosition - i - 1][j];
+                    } else {
+                        // "7" for better visualization while debugging; could be any other number != 0
+                        boardB.data[i - splitPosition][j] = data[i][j] != 0 ? 7 : 0;
+//                  TODO: use this instead of the above for slightly better performance if needed:
+//                  bottomBoard.data[i - this.splitPosition][j] = this.data[i][j];
+                    }
+                }
+            }
+        } else {
+            boardA = new Board(splitPosition, this.width);
             boardB = new Board(this.height - splitPosition, this.width);
         }
         // both together have a total number of combinations of multiplying them
         // and additionally, every combination that is possible by melting the borders of the blocks together
-        Board overlapBoard = new OverlapBoard(this.height, this.width, splitPosition);
+        OverlapBoard overlapBoard = new OverlapBoard(this.height, this.width, splitPosition);
+        overlapBoard.prefill(data);
         BigInteger mutationsA = boardA.calculateMutations();
         BigInteger mutationsB = boardB.calculateMutations();
+
+        BigInteger overlapMutations = overlapBoard.calculateMutations(!isClean());
+        if (!isClean()) {
+            printAllBoards();
+        }
+        this.result = mutationsA.multiply(mutationsB).add(overlapMutations);
         Board.allBoards.remove(boardA);
         Board.allBoards.remove(boardB);
-        BigInteger overlapMutations = overlapBoard.calculateMutations();
-        this.result = mutationsA.multiply(mutationsB).add(overlapMutations);
         Board.allBoards.remove(overlapBoard);
     }
 
@@ -125,6 +162,10 @@ public class Board {
             if (cacheValue != null) {
                 this.result = this.result.add(cacheValue);
                 return;
+            } else if (height >= 6 && width >= 4) {
+                Board subBoard = new Board(longSide, shortSide);
+                result = result.add(subBoard.calculateMutations());
+                return;
             }
             saveToRectCache = true;
         }
@@ -132,7 +173,9 @@ public class Board {
             ArrayList<Integer[]> validOffsets = this.findValidOffsets(block, position);
             for (Integer[] offset : validOffsets) {
                 this.placeBlockAt(block, offset);
-                Board.printAllBoards();
+                if (visualize) {
+                    Board.printAllBoards();
+                }
                 Integer[] nextPos = this.findNextPosition();
                 if (this.isFull()) {
                     // if the board is full we have found one solution
@@ -142,7 +185,9 @@ public class Board {
                 }
 
                 this.removeBlockAt(block, offset);
-                Board.printAllBoards();
+                if (visualize) {
+                    Board.printAllBoards();
+                }
             }
         }
 

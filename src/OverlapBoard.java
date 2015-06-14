@@ -17,6 +17,8 @@ public class OverlapBoard extends Board {
     private Integer[][] positions;
     private int currentPosition;
     private int splitPosition;
+    private int blocksInTopHalf;
+    private int blocksInBottomHalf;
 
     public OverlapBoard(int m, int n, int splitPosition) {
         this(m, n, splitPosition, false);
@@ -60,8 +62,8 @@ public class OverlapBoard extends Board {
         // the board is now separated in half;
         // we just need to calculate the combinations of the top and
         // the bottom half and multiply them
-        Board topBoard = new Board(this.splitPosition, this.data[0].length, false, true);
-        Board bottomBoard = new Board(this.height - this.splitPosition, this.data[0].length, false, true);
+        Board topBoard = new Board(this.splitPosition, this.data[0].length, false, visualize);
+        Board bottomBoard = new Board(this.height - this.splitPosition, this.data[0].length, false, visualize);
         // copy the data from our current board to the two new ones
         for (int i = 0; i < this.data.length; i++) {
             for (int j = 0; j < this.data[i].length; j++) {
@@ -80,15 +82,32 @@ public class OverlapBoard extends Board {
                 }
             }
         }
-        BigInteger top = topBoard.calculateMutations();
+        BigInteger top = topBoard.calculateMutations(visualize);
         // no need to calculate anything more if one half is already zero since we are multiplying
         if (top.compareTo(BigInteger.ZERO) != 0) {
-            BigInteger bottom = bottomBoard.calculateMutations();
+            BigInteger bottom = bottomBoard.calculateMutations(visualize);
             this.result = this.result.add(top.multiply(bottom));
         }
         Board.allBoards.remove(topBoard);
         Board.allBoards.remove(bottomBoard);
         return new Integer[]{-1, -1};
+    }
+
+    public void prefill(int[][] data) {
+        this.data = data;
+        blocksInTopHalf = 0;
+        blocksInBottomHalf = 0;
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if (this.data[i][j] != 0) {
+                    if (i < this.splitPosition) {
+                        blocksInTopHalf++;
+                    } else {
+                        blocksInBottomHalf++;
+                    }
+                }
+            }
+        }
     }
 
     private boolean correctlySplitted() {
@@ -99,10 +118,10 @@ public class OverlapBoard extends Board {
         int blocksInsideTopHalf = 0;
         int blocksInsideBottomHalf = 0;
 
-        for (int i = 0; i < this.height; i++) {
-            for (int j = 0; j < this.width; j++) {
-                if (this.data[i][j] != 0) {
-                    if (i < this.splitPosition) {
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if (data[i][j] != 0) {
+                    if (i < splitPosition) {
                         blocksInsideTopHalf++;
                     } else {
                         blocksInsideBottomHalf++;
@@ -110,12 +129,13 @@ public class OverlapBoard extends Board {
                 }
             }
         }
-        if (blocksInsideTopHalf == 0 || blocksInsideBottomHalf == 0) {
+        if (blocksInsideTopHalf == blocksInTopHalf || blocksInsideBottomHalf == blocksInBottomHalf) {
             return false;
         }
-        if (blocksInsideTopHalf % 3 != 0) {
-            return false;
-        }
+        // TODO: not sure if this still works
+//        if (blocksInsideTopHalf % 3 != 0) {
+//            return false;
+//        }
         return true;
     }
 
