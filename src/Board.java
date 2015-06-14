@@ -52,7 +52,8 @@ public class Board {
 
     public BigInteger calculateMutations() {
         if (isFull()) {
-            return BigInteger.ONE;
+            result = BigInteger.ONE;
+            return result;
         }
         BigInteger value = Tetris.getCache(this.data);
         if (value != null) {
@@ -66,7 +67,8 @@ public class Board {
                 return value;
             }
         }
-        if (this.height >= 6 && this.width >= 4) {
+        if (isClean() && this.height >= 6 && this.width >= 4) {
+            // still even slower when leaving out isClean(), something is wrong...
             this.splitBoard();
         } else {
             this.nextPosition(this.findNextPosition());
@@ -101,8 +103,8 @@ public class Board {
         if (!isClean()) {
             // TODO: Redundant to OverlapBoard copy process
             // copy the data from our current board to the two new ones
-            for (int i = 0; i < data.length; i++) {
-                for (int j = 0; j < data[i].length; j++) {
+            for (int i = 0; i < height; i++) {
+                for (int j = 0; j < width; j++) {
                     if (i < splitPosition) {
                         // "7" for better visualization while debugging; could be any other number != 0
                         // mirror the data while copying; gives a little speedup
@@ -130,11 +132,11 @@ public class Board {
         // both together have a total number of combinations of multiplying them
         // and additionally, every combination that is possible by melting the borders of the blocks together
         OverlapBoard overlapBoard = new OverlapBoard(this.height, this.width, splitPosition);
-        overlapBoard.prefill(data);
+//        overlapBoard.prefill(data);
         BigInteger mutationsA = boardA.calculateMutations();
         BigInteger mutationsB = boardB.calculateMutations();
 
-        BigInteger overlapMutations = overlapBoard.calculateMutations(!isClean());
+        BigInteger overlapMutations = overlapBoard.calculateMutations(true);
         if (!isClean()) {
             printAllBoards();
         }

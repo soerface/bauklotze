@@ -62,8 +62,8 @@ public class OverlapBoard extends Board {
         // the board is now separated in half;
         // we just need to calculate the combinations of the top and
         // the bottom half and multiply them
-        Board topBoard = new Board(this.splitPosition, this.data[0].length, false, visualize);
-        Board bottomBoard = new Board(this.height - this.splitPosition, this.data[0].length, false, visualize);
+        Board topBoard = new Board(this.splitPosition, this.data[0].length, false, true);
+        Board bottomBoard = new Board(this.height - this.splitPosition, this.data[0].length, false, true);
         // copy the data from our current board to the two new ones
         for (int i = 0; i < this.data.length; i++) {
             for (int j = 0; j < this.data[i].length; j++) {
@@ -71,12 +71,12 @@ public class OverlapBoard extends Board {
                     // "7" for better visualization while debugging; could be any other number != 0
                     // mirror the data while copying; gives a little speedup
                     // due to the way the next position is being chosen
-                    topBoard.data[i][j] = this.data[this.splitPosition - i - 1][j] != 0 ? 7 : 0;
+                        topBoard.data[i][j] = this.data[this.splitPosition - i - 1][j] != 0 ? 7 : 0;
 //                  TODO: use this instead of the above for slightly better performance if needed:
 //                  topBoard.data[i][j] = this.data[this.splitPosition - i - 1][j];
                 } else {
                     // "7" for better visualization while debugging; could be any other number != 0
-                    bottomBoard.data[i - this.splitPosition][j] = this.data[i][j] != 0 ? 7 : 0;
+                        bottomBoard.data[i - this.splitPosition][j] = this.data[i][j] != 0 ? 7 : 0;
 //                  TODO: use this instead of the above for slightly better performance if needed:
 //                  bottomBoard.data[i - this.splitPosition][j] = this.data[i][j];
                 }
@@ -117,6 +117,8 @@ public class OverlapBoard extends Board {
         // by 3 inside, otherwise, it won't be possible to find a solution
         int blocksInsideTopHalf = 0;
         int blocksInsideBottomHalf = 0;
+        int blocksFreeTopHalf = 0;
+        int blocksFreeBottomHalf = 0;
 
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -126,6 +128,12 @@ public class OverlapBoard extends Board {
                     } else {
                         blocksInsideBottomHalf++;
                     }
+                } else {
+                    if (i < splitPosition) {
+                        blocksFreeTopHalf++;
+                    } else {
+                        blocksFreeBottomHalf++;
+                    }
                 }
             }
         }
@@ -133,9 +141,9 @@ public class OverlapBoard extends Board {
             return false;
         }
         // TODO: not sure if this still works
-//        if (blocksInsideTopHalf % 3 != 0) {
-//            return false;
-//        }
+        if (blocksFreeTopHalf % 3 != 0 || blocksFreeBottomHalf % 3 != 0) {
+            return false;
+        }
         return true;
     }
 
