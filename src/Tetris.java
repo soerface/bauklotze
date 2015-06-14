@@ -10,8 +10,6 @@ public class Tetris {
     private static HashMap<String, BigInteger> partialsCache;
     public static boolean debugPrint = false;
     public static int printDelay;
-//    public static long setBlocks;
-//    public static long getCaches;
 
     public static void main(String[] args) {
         int m = Integer.parseInt(args[0]);

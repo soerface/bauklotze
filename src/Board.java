@@ -7,281 +7,37 @@ public class Board {
     public BigInteger result;
     int height;
     int width;
-    boolean saveToCache;
-    public static ArrayList<Board> allBoards = new ArrayList<Board>();
-    protected boolean visualize;
-    public boolean hasBeenRotated;
 
     public Board(int m, int n) {
-        this(m, n, true, true);
-    }
-
-    public Board(int m, int n, boolean allowRotate, boolean saveToCache) {
-        allBoards.add(this);
-        if (allowRotate) {
-            width = n < m ? n : m;
-            height = m > n ? m : n;
-        } else {
-            width = n;
-            height = m;
-        }
-        hasBeenRotated = height != m && width != n;
-        this.saveToCache = saveToCache;
+        width = n;
+        height = m;
         data = new int[height][width];
         result = BigInteger.ZERO;
-        visualize = false;
-//        Board.printAllBoards();
-    }
-
-
-    boolean isClean() {
-        for (int i = 0; i < this.height; i++) {
-            for (int j = 0; j < this.width; j++) {
-                if (this.data[i][j] != 0) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public BigInteger calculateMutations(boolean visualize) {
-        this.visualize = visualize;
-        return this.calculateMutations();
     }
 
     public BigInteger calculateMutations() {
-        if (isFull()) {
-            result = BigInteger.ONE;
-            return result;
-        }
-        BigInteger value = Tetris.getCache(this.data);
-        if (value != null) {
-            this.result = value;
-            return value;
-        }
-        if (this.isClean()) {
-            value = Tetris.getCache(this.height, this.width);
-            if (value != null) {
-                this.result = value;
-                return value;
-            }
-        }
-        if (isClean() && this.height >= 6 && this.width >= 4) {
-            // still even slower when leaving out isClean(), something is wrong...
-            this.splitBoard();
-        } else {
-            this.nextPosition(this.findNextPosition());
-        }
-
-        if (isClean()) {
-            Tetris.setCache(this.height, this.width, this.result);
-        } else {
-            Tetris.setCache(this.data, this.result);
-        }
-        return this.result;
-    }
-
-    void splitBoard() {
-        Board.allBoards.remove(this);
-        // Splits the board into two smaller boards
-        // The number of combinations will be boardA * boardB + all combinations, where both are overlapping
-        int splitPosition = this.height / 2;
-        // check if both blocks contains a number of squares dividable by three
-        // TODO: may need better check for prefilled boards
-        while (true) {
-            if (this.width % 3 == 0) {
-                break;
-            }
-            if (splitPosition % 3 == 0 && ((this.height - splitPosition) % 3) == 0) {
-                break;
-            }
-            splitPosition--;
-        }
-        Board boardA = new Board(splitPosition, this.width);
-        Board boardB = new Board(this.height - splitPosition, this.width);
-        if (!isClean()) {
-            // TODO: Redundant to OverlapBoard copy process
-            // copy the data from our current board to the two new ones
-            for (int i = 0; i < height; i++) {
-                for (int j = 0; j < width; j++) {
-                    if (i < splitPosition) {
-                        // "7" for better visualization while debugging; could be any other number != 0
-                        // mirror the data while copying; gives a little speedup
-                        // due to the way the next position is being chosen
-                        if (boardA.hasBeenRotated) {
-                            boardA.data[j][i] = data[splitPosition - i - 1][j] != 0 ? 7 : 0;
-                        } else {
-                            boardA.data[i][j] = data[splitPosition - i - 1][j] != 0 ? 7 : 0;
-                        }
-//                  TODO: use this instead of the above for slightly better performance if needed:
-//                  topBoard.data[i][j] = this.data[this.splitPosition - i - 1][j];
-                    } else {
-                        // "7" for better visualization while debugging; could be any other number != 0
-                        if (boardB.hasBeenRotated) {
-                            boardB.data[j][i - splitPosition] = data[i][j] != 0 ? 7 : 0;
-                        } else {
-                            boardB.data[i - splitPosition][j] = data[i][j] != 0 ? 7 : 0;
-                        }
-//                  TODO: use this instead of the above for slightly better performance if needed:
-//                  bottomBoard.data[i - this.splitPosition][j] = this.data[i][j];
-                    }
-                }
-            }
-        }
-        // both together have a total number of combinations of multiplying them
-        // and additionally, every combination that is possible by melting the borders of the blocks together
-        OverlapBoard overlapBoard = new OverlapBoard(this.height, this.width, splitPosition);
-//        overlapBoard.prefill(data);
-        BigInteger mutationsA = boardA.calculateMutations();
-        BigInteger mutationsB = boardB.calculateMutations();
-
-        BigInteger overlapMutations = overlapBoard.calculateMutations(true);
-        if (!isClean()) {
-            printAllBoards();
-        }
-        this.result = mutationsA.multiply(mutationsB).add(overlapMutations);
-        Board.allBoards.remove(boardA);
-        Board.allBoards.remove(boardB);
-        Board.allBoards.remove(overlapBoard);
+        nextPosition(findNextPosition());
+        return result;
     }
 
     void nextPosition(Integer[] position) {
-        BigInteger cacheValue = Tetris.getCache(this.data);
-//        if (cacheValue >= 0) {
-        if (cacheValue != null) {
-            this.result = this.result.add(cacheValue);
-            return;
-        }
-        if (this.unsolvable()) {
-            return;
-        }
-        int[] subRect = this.isRect();
-        int longSide = subRect[0];
-        int shortSide = subRect[1];
-        BigInteger resultBefore = this.result;
-        boolean saveToRectCache = false;
-        if (longSide > 0) {
-            // we might have already computed the number of mutations
-            // for the sub rectangle
-            cacheValue = Tetris.getCache(longSide, shortSide);
-//            if (cacheValue > 0) {
-            if (cacheValue != null) {
-                this.result = this.result.add(cacheValue);
-                return;
-            } else if (height >= 6 && width >= 4) {
-                Board subBoard = new Board(longSide, shortSide);
-                result = result.add(subBoard.calculateMutations());
-                return;
-            }
-            saveToRectCache = true;
-        }
         for (Block block : Tetris.blocks) {
-            ArrayList<Integer[]> validOffsets = this.findValidOffsets(block, position);
+            ArrayList<Integer[]> validOffsets = findValidOffsets(block, position);
             for (Integer[] offset : validOffsets) {
-                this.placeBlockAt(block, offset);
-                if (visualize) {
-                    Board.printAllBoards();
+                placeBlockAt(block, offset);
+                print();
+                if (!isFull()) {
+                    nextPosition(findNextPosition());
+                } else {
+                    result = result.add(BigInteger.ONE);
                 }
-                Integer[] nextPos = this.findNextPosition();
-                if (this.isFull()) {
-                    // if the board is full we have found one solution
-                    this.result = this.result.add(BigInteger.ONE);
-                } else if (nextPos[0] != -1) {
-                    this.nextPosition(nextPos);
-                }
-
-                this.removeBlockAt(block, offset);
-                if (visualize) {
-                    Board.printAllBoards();
-                }
+                removeBlockAt(block, offset);
+                print();
             }
         }
-
-        if (saveToRectCache) {
-            Tetris.setCache(longSide, shortSide, this.result.subtract(resultBefore));
-        }
-        if (this.saveToCache) {
-            Tetris.setCache(this.data, this.result.subtract(resultBefore));
-        }
-    }
-
-    private boolean isFull() {
-        for (int i = 0; i < this.height; i++) {
-            for (int j = 0; j < this.width; j++) {
-                if (this.data[i][j] == 0) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    protected boolean unsolvable() {
-        // returns true if there are gaps which cant be filled (smaller than 3 tiles)
-        for (int i = 0; i < this.height; i++) {
-            for (int j = 0; j < this.width; j++) {
-                if (this.data[i][j] == 0) {
-                    int neighbours = this.numberOfFreeNeighbours(new int[]{i, j});
-                    if (neighbours > 1) {
-                        continue;
-                    } else if (neighbours == 1) {
-                        int[] neighbourPosition = this.freeNeighbour(new int[]{i, j});
-                        if (this.numberOfFreeNeighbours(neighbourPosition) > 1) {
-                            continue;
-                        }
-                    }
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    int numberOfFreeNeighbours(int[] position) {
-        // returns the number of free tiles around a give position
-        int x = position[0];
-        int y = position[1];
-        int n = 0;
-        if (x > 0 && this.data[x - 1][y] == 0) {
-            n++;
-        }
-        if (y > 0 && this.data[x][y - 1] == 0) {
-            n++;
-        }
-        if (x < this.height - 1 && this.data[x + 1][y] == 0) {
-            n++;
-        }
-        if (y < this.width - 1 && this.data[x][y + 1] == 0) {
-            n++;
-        }
-        return n;
-    }
-
-    int[] freeNeighbour(int[] position) {
-        // returns one free neighbour position
-        int x = position[0];
-        int y = position[1];
-        int n = 0;
-        if (x > 0 && this.data[x - 1][y] == 0) {
-            return new int[]{x - 1, y};
-        }
-        if (y > 0 && this.data[x][y - 1] == 0) {
-            return new int[]{x, y - 1};
-        }
-        if (x < this.height - 1 && this.data[x + 1][y] == 0) {
-            return new int[]{x + 1, y};
-        }
-        if (y < this.width - 1 && this.data[x][y + 1] == 0) {
-            return new int[]{x, y + 1};
-        }
-        return new int[]{-1, -1};
     }
 
     protected Integer[] findNextPosition() {
-        // to make best use of the cache, we should try to find
-        // a position for the next block which makes a rectangle
-        // TODO: not implemented anymore, the used method was actually slower. Maybe try again another way
         for (int i = 0; i < this.height; i++) {
             for (int j = 0; j < this.width; j++) {
                 if (this.data[i][j] == 0) {
@@ -293,7 +49,6 @@ public class Board {
     }
 
     protected void placeBlockAt(Block block, Integer[] offset) {
-//        Tetris.setBlocks++;
         for (int i = 0; i < block.width; i++) {
             for (int j = 0; j < block.height; j++) {
                 if (block.data[i][j] != 0) {
@@ -363,90 +118,15 @@ public class Board {
         return true;
     }
 
-    int[] isRect() {
-        // returns height and width if the remaining fields are ordered in rectangle with
-        // a number of blocks that is a multiple of 3
-        // this is important for caching
-        // returns {0, 0} if it is not a rectangle
-        int top = -1;
-        int right = -1;
-        int bottom = -1;
-        int left = -1;
-        boolean rectangleEnded = false;
+    private boolean isFull() {
         for (int i = 0; i < this.height; i++) {
             for (int j = 0; j < this.width; j++) {
                 if (this.data[i][j] == 0) {
-                    if (left == -1) {
-                        // found the top left edge
-                        left = j;
-                        top = i;
-                        continue;
-                    }
-                    if (j < left) {
-                        // the block is empty, but it is left from our
-                        // top left edge. This can't be a rectangle
-                        return new int[]{0, 0};
-                    }
-                    if (right != -1 && j > right) {
-                        // right from our right edge. Can't be rect.
-                        return new int[]{0, 0};
-                    }
-                    if (rectangleEnded) {
-                        // we already found the end of the rect.
-                        // therefore there can't be another empty tile.
-                        return new int[]{0, 0};
-                    }
-                } else {
-                    // filled block
-                    if (left != -1 && right == -1) {
-                        // we already found the left edge, but this block is
-                        // filled - so this is the right border
-                        right = j - 1;
-                        continue;
-                    }
-                    if (!rectangleEnded && j > left && j <= right) {
-                        // this looks kinda like that:
-                        // ########
-                        // ##    ##
-                        // ##  ####
-                        // ########
-                        // obviously not a rectangle
-                        return new int[]{0, 0};
-                    } else if (!rectangleEnded && j == left) {
-                        // the rectangle ends here. Remember that.
-                        rectangleEnded = true;
-                        bottom = i - 1;
-                    }
+                    return false;
                 }
             }
-            if (left != -1 && right == -1) {
-                // we jumped to the next line, found the left edge,
-                // but not the right. This means the rectangle goes
-                // to the edge of the board
-                right = this.width - 1;
-            }
         }
-        if (left == -1 || right == -1) {
-            return new int[]{0, 0};
-        }
-        if (bottom == -1) {
-            bottom = this.height - 1;
-        }
-        int width = right - left + 1;
-        int height = bottom - top + 1;
-        if (height > width) {
-            // it doesn't matter for calculation number of calculation if it is rotated or not
-            // but always putting the larger coordinate on one side uses the cache more efficiently
-            int tmp = width;
-            width = height;
-            height = tmp;
-        }
-//        I think it isn't possible to get a rect with a wrong size,
-//        so skip this calculation
-//        if (height * width % 3 == 0) {
-//            return true;
-//        }
-        return new int[]{width, height};
+        return true;
     }
 
     void print() {
@@ -465,37 +145,6 @@ public class Board {
             System.out.println();
         }
         System.out.format("Solutions: %d\n", result);
-        try {
-            Thread.sleep(Tetris.printDelay);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void printAllBoards() {
-        if (!Tetris.debugPrint) {
-            return;
-        }
-        int maxHeight = 0;
-        for (Board board : Board.allBoards) {
-            maxHeight = Math.max(maxHeight, board.height);
-        }
-        for (int row = 0; row <= maxHeight; row++) {
-            for (Board board : Board.allBoards) {
-                if (row < board.height) {
-                    for (int value : board.data[row]) {
-                        System.out.format("\u001B[4%dm %d \u001B[0m", value, value);
-                    }
-                } else if (row == board.height) {
-                    System.out.format("%" + board.width * 3 + "d", board.result);
-                } else {
-                    System.out.format("%" + board.width * 3 + "s", "");
-                }
-                System.out.print(" ");
-            }
-            System.out.println();
-        }
-        System.out.println();
         try {
             Thread.sleep(Tetris.printDelay);
         } catch (InterruptedException e) {
