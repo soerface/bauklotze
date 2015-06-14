@@ -35,4 +35,18 @@ public class Area {
     public String toString() {
         return String.format("%d / %d  %d / %d", x1, y1, x2, y2);
     }
+
+    public static Area reducedArea(Area area) {
+        /* return an area which is shrinked to a rect containing only the empty blocks
+         * example:
+         * _________
+         * |########|      ____
+         * |### ####|     |# ##|
+         * |##    ##|  -->|    |
+         * |#### ###|     |## #|
+         * |########|     -----
+         * --------
+         **/
+         return area;
+    }
 }

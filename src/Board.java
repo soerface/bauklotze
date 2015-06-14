@@ -30,7 +30,7 @@ public class Board {
             }
             return splitUp(area);
         }
-        BigInteger cacheValue = Tetris.getCache(data, area);
+        BigInteger cacheValue = Tetris.getCache(area);
         if (cacheValue != null) {
             return cacheValue;
         }
@@ -38,7 +38,7 @@ public class Board {
             ArrayList<Integer[]> validOffsets = findValidOffsets(block, position);
             for (Integer[] offset : validOffsets) {
                 placeBlockAt(block, offset);
-                print(result, area);
+//                print(result, area);
                 if (isFull(area)) {
                     result = result.add(BigInteger.ONE);
                 } else {
@@ -49,11 +49,11 @@ public class Board {
                         result = result.add(processNextPosition(nextPosition, area));
                     }
                 }
-                print(result, area);
+//                print(result, area);
                 removeBlockAt(block, offset);
             }
         }
-        Tetris.setCache(data, result, area);
+        Tetris.setCache(result, area);
         return result;
     }
 
@@ -213,8 +213,11 @@ public class Board {
     public static void print(BigInteger result) {
         print(result, new Area(0, 0, width, height));
     }
-
     public static void print(BigInteger result, Area area) {
+        print(result, data, area);
+    }
+
+    public static void print(BigInteger result, int[][] data, Area area) {
         if (!Tetris.debugPrint) {
             return;
         }
