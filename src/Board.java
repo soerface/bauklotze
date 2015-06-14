@@ -6,7 +6,6 @@ public class Board {
     public static int[][] data;
     public static int height;
     public static int width;
-    public static int depth;
 
     public Board(int m, int n) {
         Board.height = m > n ? m : n;
@@ -17,7 +16,6 @@ public class Board {
     public BigInteger calculateMutations() {
         Board.data = new int[height][width];
         Area area = new Area(0, 0, width, height);
-        depth = 1;
         return processNextPosition(findNextPosition(area), area);
     }
 
@@ -30,14 +28,7 @@ public class Board {
             if (!area.solvable()) {
                 return BigInteger.ZERO;
             }
-            Area[] areas = shrinkArea(area);
-            if (areas[0].solvable() && areas[1].solvable()) {
-                BigInteger resultA = processNextPosition(findNextPosition(areas[0]), areas[0]);
-                BigInteger resultB = processNextPosition(findNextPosition(areas[1]), areas[1]);
-                return resultA.multiply(resultB);
-            } else {
-                return BigInteger.ZERO;
-            }
+            return splitUp(area);
         }
         BigInteger cacheValue = Tetris.getCache(data, area);
         if (cacheValue != null) {
@@ -53,20 +44,7 @@ public class Board {
                 } else {
                     Integer[] nextPosition = findNextPosition(area);
                     if (nextPosition == null) {
-                        Area[] areas = shrinkArea(area);
-
-                        if (areas[0].solvable() && areas[1].solvable()) {
-                            BigInteger resultA = processNextPosition(findNextPosition(areas[0]), areas[0]);
-                            BigInteger resultB = processNextPosition(findNextPosition(areas[1]), areas[1]);
-                            result = result.add(resultA.multiply(resultB));
-                            if (depth == 1 && areas[0].freeBlocks() == 4 * 3) {
-                                print(resultA, areas[0]);
-                                print(resultB, areas[1]);
-                                print(resultA.multiply(resultB), area);
-                            }
-
-                        }
-
+                        result = result.add(splitUp(area));
                     } else {
                         result = result.add(processNextPosition(nextPosition, area));
                     }
@@ -77,6 +55,16 @@ public class Board {
         }
         Tetris.setCache(data, result, area);
         return result;
+    }
+
+    private BigInteger splitUp(Area area) {
+        Area[] areas = shrinkArea(area);
+        if (areas[0].solvable() && areas[1].solvable()) {
+            BigInteger resultA = processNextPosition(findNextPosition(areas[0]), areas[0]);
+            BigInteger resultB = processNextPosition(findNextPosition(areas[1]), areas[1]);
+            return resultA.multiply(resultB);
+        }
+        return BigInteger.ZERO;
     }
 
     private Area[] shrinkArea(Area area) {
@@ -227,7 +215,7 @@ public class Board {
     }
 
     public static void print(BigInteger result, Area area) {
-        if (!Tetris.debugPrint || depth > 1) {
+        if (!Tetris.debugPrint) {
             return;
         }
         System.out.println();
