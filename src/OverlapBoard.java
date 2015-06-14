@@ -77,10 +77,13 @@ public class OverlapBoard extends Board {
             }
         }
         BigInteger top = topBoard.calculateMutations();
-        BigInteger bottom = bottomBoard.calculateMutations();
+        // no need to calculate anything more if one half is already zero since we are multiplying
+        if (top.compareTo(BigInteger.ZERO) != 0) {
+            BigInteger bottom = bottomBoard.calculateMutations();
+            this.result = this.result.add(top.multiply(bottom));
+        }
         Board.allBoards.remove(topBoard);
         Board.allBoards.remove(bottomBoard);
-        this.result = this.result.add(top.multiply(bottom));
         return new Integer[]{-1, -1};
     }
 

@@ -94,7 +94,7 @@ public class Tetris {
     public static BigInteger getCache(int[][] data) {
         // This method returns null if there is no solution available.
         // "0" as a solution is valid, since not all boards with pre set blocks are solvable!
-       return Tetris.partialsCache.get(dataToString(data));
+        return Tetris.partialsCache.get(dataToString(data));
     }
 
     public static String dataToString(int[][] data) {
