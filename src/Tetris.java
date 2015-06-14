@@ -11,6 +11,7 @@ public class Tetris {
     public static int printDelay;
     public static int setCaches;
     public static int getCaches;
+    public static int getCachesNull;
 
     public static void main(String[] args) {
         int m = Integer.parseInt(args[0]);
@@ -58,6 +59,7 @@ public class Tetris {
 
         Tetris.partialsCache = new HashMap<String, BigInteger>();
         Tetris.getCaches = 0;
+        Tetris.getCachesNull = 0;
         Tetris.setCaches = 0;
         Board board = new Board(m, n);
         return board.calculateMutations();

@@ -21,12 +21,12 @@ public class Board {
 
     BigInteger processNextPosition(Integer[] position, Area area) {
         BigInteger result = BigInteger.ZERO;
+        if (!area.solvable()) {
+            return BigInteger.ZERO;
+        }
         if (position == null) {
             if (isFull(area)) {
                 return BigInteger.ONE;
-            }
-            if (!area.solvable()) {
-                return BigInteger.ZERO;
             }
             return splitUp(area);
         }
@@ -34,11 +34,12 @@ public class Board {
         if (cacheValue != null) {
             return cacheValue;
         }
+        Tetris.getCachesNull++;
         for (Block block : Tetris.blocks) {
             ArrayList<Integer[]> validOffsets = findValidOffsets(block, position);
             for (Integer[] offset : validOffsets) {
                 placeBlockAt(block, offset);
-//                print(result, area);
+                print(result, area);
                 if (isFull(area)) {
                     result = result.add(BigInteger.ONE);
                 } else {
@@ -49,7 +50,7 @@ public class Board {
                         result = result.add(processNextPosition(nextPosition, area));
                     }
                 }
-//                print(result, area);
+                print(result, area);
                 removeBlockAt(block, offset);
             }
         }
@@ -213,6 +214,7 @@ public class Board {
     public static void print(BigInteger result) {
         print(result, new Area(0, 0, width, height));
     }
+
     public static void print(BigInteger result, Area area) {
         print(result, data, area);
     }

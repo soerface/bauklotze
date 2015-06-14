@@ -16,7 +16,65 @@ public class Area {
     }
 
     public boolean solvable() {
-        return freeBlocks() % 3 == 0;
+        if (freeBlocks() % 3 != 0) {
+            return false;
+        }
+        for (int i = y1; i < y2; i++) {
+            for (int j = x1; j < x2; j++) {
+                if (Board.data[i][j] == 0) {
+                    int neighbours = numberOfFreeNeighbours(new int[]{i, j});
+                    if (neighbours > 1) {
+                        continue;
+                    } else if (neighbours == 1) {
+                        int[] neighbourPosition = freeNeighbour(new int[]{i, j});
+                        if (numberOfFreeNeighbours(neighbourPosition) > 1) {
+                            continue;
+                        }
+                    }
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    int numberOfFreeNeighbours(int[] position) {
+        // returns the number of free tiles around a give position
+        int y = position[0];
+        int x = position[1];
+        int n = 0;
+        if (y > y1 && Board.data[y - 1][x] == 0) {
+            n++;
+        }
+        if (x > x1 && Board.data[y][x - 1] == 0) {
+            n++;
+        }
+        if (y < y2 - 1 && Board.data[y + 1][x] == 0) {
+            n++;
+        }
+        if (x < x2 - 1 && Board.data[y][x + 1] == 0) {
+            n++;
+        }
+        return n;
+    }
+
+    int[] freeNeighbour(int[] position) {
+        // returns one free neighbour position
+        int y = position[0];
+        int x = position[1];
+        if (y > y1 && Board.data[y - 1][x] == 0) {
+            return new int[]{y - 1, x};
+        }
+        if (x > x1 && Board.data[y][x - 1] == 0) {
+            return new int[]{y, x - 1};
+        }
+        if (y < y2 - 1 && Board.data[y + 1][x] == 0) {
+            return new int[]{y + 1, x};
+        }
+        if (x < x2 - 1 && Board.data[y][x + 1] == 0) {
+            return new int[]{y, x + 1};
+        }
+        return new int[]{-1, -1};
     }
 
     public int freeBlocks() {
@@ -60,7 +118,7 @@ public class Area {
                     if (y1 == -1 || i < y1) {
                         y1 = i;
                     }
-                    y2 = i+1;
+                    y2 = i + 1;
                     x2 = j + 1 > x2 ? j + 1 : x2;
                 }
             }
