@@ -47,6 +47,27 @@ public class Area {
          * |########|     -----
          * --------
          **/
-         return area;
+        int x1 = -1;
+        int x2 = -1;
+        int y1 = -1;
+        int y2 = -1;
+        for (int i = area.y1; i < area.y2; i++) {
+            for (int j = area.x1; j < area.x2; j++) {
+                if (Board.data[i][j] == 0) {
+                    if (x1 == -1 || j < x1) {
+                        x1 = j;
+                    }
+                    if (y1 == -1 || i < y1) {
+                        y1 = i;
+                    }
+                    y2 = i+1;
+                    x2 = j + 1 > x2 ? j + 1 : x2;
+                }
+            }
+        }
+        if (x1 == -1) { // or any other, doesn't matter
+            return new Area(0, 0, 0, 0);
+        }
+        return new Area(x1, y1, x2, y2);
     }
 }
