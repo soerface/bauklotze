@@ -38,9 +38,9 @@ public class Board {
     }
 
     protected Integer[] findNextPosition() {
-        for (int i = 0; i < this.height; i++) {
-            for (int j = 0; j < this.width; j++) {
-                if (this.data[i][j] == 0) {
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if (data[i][j] == 0) {
                     return new Integer[]{i, j};
                 }
             }
@@ -52,7 +52,7 @@ public class Board {
         for (int i = 0; i < block.width; i++) {
             for (int j = 0; j < block.height; j++) {
                 if (block.data[i][j] != 0) {
-                    this.data[i + offset[0]][j + offset[1]] = block.data[i][j];
+                    data[i + offset[0]][j + offset[1]] = block.data[i][j];
                 }
             }
         }
@@ -62,7 +62,7 @@ public class Board {
         for (int i = 0; i < block.width; i++) {
             for (int j = 0; j < block.height; j++) {
                 if (block.data[i][j] != 0) {
-                    this.data[i + offset[0]][j + offset[1]] = 0;
+                    data[i + offset[0]][j + offset[1]] = 0;
                 }
             }
         }
@@ -75,7 +75,7 @@ public class Board {
                     pos[0] - coordinate[0],
                     pos[1] - coordinate[1]
             };
-            if (this.blockPlaceableAt(block, offset)) {
+            if (blockPlaceableAt(block, offset)) {
                 validOffsets.add(offset);
             }
         }
@@ -88,7 +88,7 @@ public class Board {
         }
         for (int i = 0; i < block.width; i++) {
             for (int j = 0; j < block.height; j++) {
-                if (i + offset[0] >= this.height) {
+                if (i + offset[0] >= height) {
                     // out of bounds
                     if (block.data[i][j] != 0) {
                         // but the block might have a zero here, so
@@ -98,7 +98,7 @@ public class Board {
                         continue;
                     }
                 }
-                if (j + offset[1] >= this.width) {
+                if (j + offset[1] >= width) {
                     // out of bounds
                     if (block.data[i][j] != 0) {
                         // but the block might have a zero here, so
@@ -108,7 +108,7 @@ public class Board {
                         continue;
                     }
                 }
-                if (block.data[i][j] != 0 && this.data[i + offset[0]][j + offset[1]] != 0) {
+                if (block.data[i][j] != 0 && data[i + offset[0]][j + offset[1]] != 0) {
                     // there is already a block; can't place this one
                     return false;
                 }
@@ -119,9 +119,9 @@ public class Board {
     }
 
     private boolean isFull() {
-        for (int i = 0; i < this.height; i++) {
-            for (int j = 0; j < this.width; j++) {
-                if (this.data[i][j] == 0) {
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if (data[i][j] == 0) {
                     return false;
                 }
             }
@@ -130,7 +130,7 @@ public class Board {
     }
 
     void print() {
-        Board.print(this.data, this.result);
+        Board.print(data, result);
     }
 
     public static void print(int[][] data, BigInteger result) {
