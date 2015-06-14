@@ -27,7 +27,17 @@ public class Board {
             if (isFull(area)) {
                 return BigInteger.ONE;
             }
-            return BigInteger.ZERO;
+            if (!area.solvable()) {
+                return BigInteger.ZERO;
+            }
+            Area[] areas = shrinkArea(area);
+            if (areas[0].solvable() && areas[1].solvable()) {
+                BigInteger resultA = processNextPosition(findNextPosition(areas[0]), areas[0]);
+                BigInteger resultB = processNextPosition(findNextPosition(areas[1]), areas[1]);
+                return resultA.multiply(resultB);
+            } else {
+                return BigInteger.ZERO;
+            }
         }
         BigInteger cacheValue = Tetris.getCache(data, area);
         if (cacheValue != null) {
@@ -46,15 +56,15 @@ public class Board {
                         Area[] areas = shrinkArea(area);
 
                         if (areas[0].solvable() && areas[1].solvable()) {
-//                            depth++;
                             BigInteger resultA = processNextPosition(findNextPosition(areas[0]), areas[0]);
                             BigInteger resultB = processNextPosition(findNextPosition(areas[1]), areas[1]);
-//                            depth--;
-//                            System.out.format("a: %d b: %d", resultA, resultB);
                             result = result.add(resultA.multiply(resultB));
-                            print(resultA, areas[0]);
-                            print(resultB, areas[1]);
-                            print(resultA.multiply(resultB), area);
+                            if (depth == 1 && areas[0].freeBlocks() == 4 * 3) {
+                                print(resultA, areas[0]);
+                                print(resultB, areas[1]);
+                                print(resultA.multiply(resultB), area);
+                            }
+
                         }
 
                     } else {
@@ -65,15 +75,6 @@ public class Board {
                 removeBlockAt(block, offset);
             }
         }
-//        print(result);
-        if (result.compareTo(BigInteger.ZERO) != 0) {
-//            print(result, area);
-//            printArea(result, area);
-        }
-//        System.out.format("%s\n", area);
-//        if (result.compareTo(BigInteger.ZERO) != 0) {
-//            printArea(result, area);
-//        }
         Tetris.setCache(data, result, area);
         return result;
     }
@@ -91,15 +92,16 @@ public class Board {
     }
 
     protected Integer[] findNextPosition(Area area) {
-        /*for (int i = area.y1; i < area.y2; i++) {
-            for (int j = area.x1; j < area.x2; j++) {
-                if (data[i][j] == 0) {
-                    return new Integer[]{i, j};
+        if (area.width < 4 || area.height < 4) {
+            for (int i = area.y1; i < area.y2; i++) {
+                for (int j = area.x1; j < area.x2; j++) {
+                    if (data[i][j] == 0) {
+                        return new Integer[]{i, j};
+                    }
                 }
             }
+            return null;
         }
-
-        return null;*/
 
         if (area.width < area.height) {
             int j = area.y1 + area.height / 2;

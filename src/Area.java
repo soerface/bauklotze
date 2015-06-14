@@ -16,6 +16,10 @@ public class Area {
     }
 
     public boolean solvable() {
+        return freeBlocks() % 3 == 0;
+    }
+
+    public int freeBlocks() {
         int freeBlocks = 0;
         for (int i = y1; i < y2; i++) {
             for (int j = x1; j < x2; j++) {
@@ -24,7 +28,7 @@ public class Area {
                 }
             }
         }
-        return freeBlocks % 3 == 0;
+        return freeBlocks;
     }
 
     @Override
