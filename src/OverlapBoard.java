@@ -70,9 +70,13 @@ public class OverlapBoard extends Board {
                     // mirror the data while copying; gives a little speedup
                     // due to the way the next position is being chosen
                     topBoard.data[i][j] = this.data[this.splitPosition - i - 1][j] != 0 ? 7 : 0;
+//                  TODO: use this instead of the above for slightly better performance if needed:
+//                  topBoard.data[i][j] = this.data[this.splitPosition - i - 1][j];
                 } else {
                     // "7" for better visualization while debugging; could be any other number != 0
                     bottomBoard.data[i - this.splitPosition][j] = this.data[i][j] != 0 ? 7 : 0;
+//                  TODO: use this instead of the above for slightly better performance if needed:
+//                  bottomBoard.data[i - this.splitPosition][j] = this.data[i][j];
                 }
             }
         }
