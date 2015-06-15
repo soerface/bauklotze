@@ -227,17 +227,16 @@ public class Board {
         for (int i = 0; i < Math.max(height, area.height); i++) {
             for (int j = 0; j < Math.max(width, area.width); j++) {
                 int value = data[i][j];
-                String paddingChar = "";
-                String content = "   ";
+                String fontColor = "\u001B[30m"; // black font
+                String content = String.format(" %d ", value);
                 int color = 4; // dark bg colors
                 if (i >= area.y1 && i < area.y2 && j >= area.x1 && j < area.x2) {
-//                    paddingChar = "\u001B[30m"; // black font
-                    content = String.format(" %d ", value);
+                    fontColor = "";
 //                    if (value != 0) {
 //                        color = 10; // bright bg colors
 //                    }
                 }
-                System.out.format("\u001B[%d%dm%s%s\u001B[0m", color, value, paddingChar, content);
+                System.out.format("\u001B[%d%dm%s%s\u001B[0m", color, value, fontColor, content);
             }
             System.out.println();
         }
