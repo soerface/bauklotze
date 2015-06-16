@@ -20,7 +20,7 @@ public class Board {
     }
 
     BigInteger calculateMutations(Area area) {
-        BigInteger result = BigInteger.ZERO;
+        BigInteger result;
         if (!area.solvable()) {
             return BigInteger.ZERO;
         }
@@ -47,6 +47,7 @@ public class Board {
             result = calculateSimpleMutations(area);
         }
         Tetris.setCache(result, area);
+        print(result, area);
         return result;
     }
 
@@ -83,7 +84,7 @@ public class Board {
             ArrayList<Integer[]> validOffsets = findValidOffsets(block, position, area);
             for (Integer[] offset : validOffsets) {
                 placeBlockAt(block, offset);
-                print(result, area);
+//                print(result, area);
                 if (area.isFull()) {
                     result = result.add(BigInteger.ONE);
                 } else {
@@ -106,7 +107,7 @@ public class Board {
                     }
                 }
                 removeBlockAt(block, offset);
-                print(result, area);
+//                print(result, area);
             }
         }
         return result;
@@ -183,8 +184,8 @@ public class Board {
     }
 
     protected void placeBlockAt(Block block, Integer[] offset) {
-        for (int i = 0; i < block.width; i++) {
-            for (int j = 0; j < block.height; j++) {
+        for (int i = 0; i < block.height; i++) {
+            for (int j = 0; j < block.width; j++) {
                 if (block.data[i][j] != 0) {
                     data[i + offset[0]][j + offset[1]] = block.data[i][j];
                 }
@@ -193,8 +194,8 @@ public class Board {
     }
 
     protected void removeBlockAt(Block block, Integer[] offset) {
-        for (int i = 0; i < block.width; i++) {
-            for (int j = 0; j < block.height; j++) {
+        for (int i = 0; i < block.height; i++) {
+            for (int j = 0; j < block.width; j++) {
                 if (block.data[i][j] != 0) {
                     data[i + offset[0]][j + offset[1]] = 0;
                 }
@@ -220,8 +221,8 @@ public class Board {
         if (offset[0] < 0 || offset[1] < 0) {
             return false;
         }
-        for (int i = 0; i < block.width; i++) {
-            for (int j = 0; j < block.height; j++) {
+        for (int i = 0; i < block.height; i++) {
+            for (int j = 0; j < block.width; j++) {
                 if (i + offset[0] >= area.y2) {
                     // out of bounds
                     if (block.data[i][j] != 0) {
