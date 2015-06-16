@@ -81,17 +81,6 @@ public class Board {
     }
 
     protected Integer[] findNextPosition(Area area) {
-        if (area.width < 4 && area.height < 4) {
-            for (int i = area.y1; i < area.y2; i++) {
-                for (int j = area.x1; j < area.x2; j++) {
-                    if (data[i][j] == 0) {
-                        return new Integer[]{i, j};
-                    }
-                }
-            }
-            return null;
-        }
-
         if (area.width < area.height) {
             int j = area.y1 + area.height / 2;
             for (int i = area.x1; i < area.x2; i++) {
