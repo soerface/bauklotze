@@ -45,15 +45,14 @@ public class Board {
             this.result = value;
             return value;
         }
-        if (this.isClean()) {
+        if (isClean()) {
             value = Tetris.getCache(this.height, this.width);
             if (value != null) {
                 this.result = value;
                 return value;
             }
         }
-        if (isClean() && this.height >= 6 && this.width >= 4) {
-            // still even slower when leaving out isClean(), something is wrong...
+        if (isClean() && height >= 6 && width >= 4) {
             this.splitBoard();
         } else {
             this.nextPosition(this.findNextPosition());

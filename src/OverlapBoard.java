@@ -35,7 +35,6 @@ public class OverlapBoard extends Board {
 
     public BigInteger calculateMutations() {
         this.nextPosition(this.findNextPosition());
-//        allBoards.remove(this);
         return this.result;
     }
 
@@ -55,8 +54,6 @@ public class OverlapBoard extends Board {
         if (!this.correctlySplitted()) {
             return new Integer[]{-1, -1};
         }
-//        System.out.println("SPLitTinG!");
-//        this.print();
         // the board is now separated in half;
         // we just need to calculate the combinations of the top and
         // the bottom half and multiply them
@@ -81,32 +78,10 @@ public class OverlapBoard extends Board {
             }
         }
         BigInteger top = topBoard.calculateMutations();
-        // no need to calculate anything more if one half is already zero since we are multiplying
-        if (top.compareTo(BigInteger.ZERO) != 0) {
             BigInteger bottom = bottomBoard.calculateMutations();
             this.result = this.result.add(top.multiply(bottom));
-        }
-//        Board.allBoards.remove(topBoard);
-//        Board.allBoards.remove(bottomBoard);
         return new Integer[]{-1, -1};
     }
-
-//    public void prefill(int[][] data) {
-//        this.data = data;
-//        blocksInTopHalf = 0;
-//        blocksInBottomHalf = 0;
-//        for (int i = 0; i < height; i++) {
-//            for (int j = 0; j < width; j++) {
-//                if (this.data[i][j] != 0) {
-//                    if (i < this.splitPosition) {
-//                        blocksInTopHalf++;
-//                    } else {
-//                        blocksInBottomHalf++;
-//                    }
-//                }
-//            }
-//        }
-//    }
 
     private boolean correctlySplitted() {
         // we have now placed all blocks which are separating top and bottom rect.
@@ -115,8 +90,6 @@ public class OverlapBoard extends Board {
         // by 3 inside, otherwise, it won't be possible to find a solution
         int blocksInsideTopHalf = 0;
         int blocksInsideBottomHalf = 0;
-        int blocksFreeTopHalf = 0;
-        int blocksFreeBottomHalf = 0;
 
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -126,23 +99,13 @@ public class OverlapBoard extends Board {
                     } else {
                         blocksInsideBottomHalf++;
                     }
-                } else {
-                    if (i < splitPosition) {
-                        blocksFreeTopHalf++;
-                    } else {
-                        blocksFreeBottomHalf++;
-                    }
                 }
             }
         }
         if (blocksInsideTopHalf == 0 || blocksInsideBottomHalf == 0) {
             return false;
         }
-        // TODO: not sure if this still works
-        if (blocksFreeTopHalf % 3 != 0 || blocksFreeBottomHalf % 3 != 0) {
-            return false;
-        }
-        return true;
+        return blocksInsideTopHalf % 3 == 0;
     }
 
     @Override
