@@ -20,16 +20,15 @@ public class Board {
             width = n;
             height = m;
         }
-//        hasBeenRotated = height != m && width != n;
         this.saveToCache = saveToCache;
         data = new int[height][width];
     }
 
 
     boolean isClean() {
-        for (int i = 0; i < this.height; i++) {
-            for (int j = 0; j < this.width; j++) {
-                if (this.data[i][j] != 0) {
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if (data[i][j] != 0) {
                     return false;
                 }
             }
@@ -60,12 +59,10 @@ public class Board {
     }
 
     BigInteger splitBoard() {
-//        Board.allBoards.remove(this);
         // Splits the board into two smaller boards
         // The number of combinations will be boardA * boardB + all combinations, where both are overlapping
         int splitPosition = height / 2;
         // check if both blocks contains a number of squares dividable by three
-        // TODO: may need better check for prefilled boards
         while (true) {
             if (width % 3 == 0) {
                 break;
@@ -91,9 +88,6 @@ public class Board {
         BigInteger result = Tetris.getCache(data);
         if (result != null) {
             return result;
-        }
-        if (unsolvable()) {
-            return BigInteger.ZERO;
         }
         int[] subRect = isRect();
         int longSide = subRect[0];
@@ -147,71 +141,9 @@ public class Board {
         return true;
     }
 
-    protected boolean unsolvable() {
-        // returns true if there are gaps which cant be filled (smaller than 3 tiles)
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                if (data[i][j] == 0) {
-                    int neighbours = numberOfFreeNeighbours(new int[]{i, j});
-                    if (neighbours > 1) {
-                        continue;
-                    } else if (neighbours == 1) {
-                        int[] neighbourPosition = this.freeNeighbour(new int[]{i, j});
-                        if (numberOfFreeNeighbours(neighbourPosition) > 1) {
-                            continue;
-                        }
-                    }
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    int numberOfFreeNeighbours(int[] position) {
-        // returns the number of free tiles around a give position
-        int x = position[0];
-        int y = position[1];
-        int n = 0;
-        if (x > 0 && data[x - 1][y] == 0) {
-            n++;
-        }
-        if (y > 0 && data[x][y - 1] == 0) {
-            n++;
-        }
-        if (x < height - 1 && data[x + 1][y] == 0) {
-            n++;
-        }
-        if (y < width - 1 && data[x][y + 1] == 0) {
-            n++;
-        }
-        return n;
-    }
-
-    int[] freeNeighbour(int[] position) {
-        // returns one free neighbour position
-        int x = position[0];
-        int y = position[1];
-        int n = 0;
-        if (x > 0 && data[x - 1][y] == 0) {
-            return new int[]{x - 1, y};
-        }
-        if (y > 0 && data[x][y - 1] == 0) {
-            return new int[]{x, y - 1};
-        }
-        if (x < height - 1 && data[x + 1][y] == 0) {
-            return new int[]{x + 1, y};
-        }
-        if (y < width - 1 && data[x][y + 1] == 0) {
-            return new int[]{x, y + 1};
-        }
-        return new int[]{-1, -1};
-    }
-
     protected Integer[] findNextPosition() {
         // to make best use of the cache, we should try to find
         // a position for the next block which makes a rectangle
-        // TODO: not implemented anymore, the used method was actually slower. Maybe try again another way
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 if (data[i][j] == 0) {
