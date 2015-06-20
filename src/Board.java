@@ -40,10 +40,6 @@ public class Board {
     }
 
     public BigInteger calculateMutations() {
-        if (isFull()) {
-            result = BigInteger.ONE;
-            return result;
-        }
         BigInteger value = Tetris.getCache(this.data);
         if (value != null) {
             this.result = value;
