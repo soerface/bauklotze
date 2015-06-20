@@ -17,6 +17,7 @@ public class OverlapBoard extends Board {
     private Integer[][] positions;
     private int currentPosition;
     private int splitPosition;
+    private BigInteger additionalResults = BigInteger.ZERO;
 
     public OverlapBoard(int m, int n, int splitPosition) {
         this(m, n, splitPosition, false);
@@ -34,8 +35,7 @@ public class OverlapBoard extends Board {
     }
 
     public BigInteger calculateMutations() {
-        nextPosition(findNextPosition());
-        return result;
+        return nextPosition(findNextPosition()).add(additionalResults);
     }
 
     @Override
@@ -79,7 +79,7 @@ public class OverlapBoard extends Board {
         }
         BigInteger top = topBoard.calculateMutations();
         BigInteger bottom = bottomBoard.calculateMutations();
-        result = result.add(top.multiply(bottom));
+        additionalResults = additionalResults.add(top.multiply(bottom));
         return new Integer[]{-1, -1};
     }
 

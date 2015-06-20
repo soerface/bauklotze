@@ -4,7 +4,6 @@ import java.util.ArrayList;
 public class Board {
 
     public int[][] data;
-    public BigInteger result;
     int height;
     int width;
     boolean saveToCache;
@@ -24,7 +23,6 @@ public class Board {
 //        hasBeenRotated = height != m && width != n;
         this.saveToCache = saveToCache;
         data = new int[height][width];
-        result = BigInteger.ZERO;
     }
 
 
@@ -40,20 +38,20 @@ public class Board {
     }
 
     public BigInteger calculateMutations() {
-        BigInteger value = Tetris.getCache(data);
-        if (value != null) {
-            return value;
+        BigInteger result = Tetris.getCache(data);
+        if (result != null) {
+            return result;
         }
         if (isClean()) {
-            value = Tetris.getCache(height, width);
-            if (value != null) {
-                return value;
+            result = Tetris.getCache(height, width);
+            if (result != null) {
+                return result;
             }
         }
         if (isClean() && height >= 6 && width >= 4) {
-            splitBoard();
+            result = splitBoard();
         } else {
-            nextPosition(findNextPosition());
+            result = nextPosition(findNextPosition());
         }
 
         if (isClean()) {
@@ -61,10 +59,10 @@ public class Board {
         } else {
             Tetris.setCache(data, result);
         }
-        return this.result;
+        return result;
     }
 
-    void splitBoard() {
+    BigInteger splitBoard() {
 //        Board.allBoards.remove(this);
         // Splits the board into two smaller boards
         // The number of combinations will be boardA * boardB + all combinations, where both are overlapping
@@ -89,65 +87,62 @@ public class Board {
         BigInteger mutationsB = boardB.calculateMutations();
 
         BigInteger overlapMutations = overlapBoard.calculateMutations();
-        result = mutationsA.multiply(mutationsB).add(overlapMutations);
+        return mutationsA.multiply(mutationsB).add(overlapMutations);
     }
 
-    void nextPosition(Integer[] position) {
-        BigInteger cacheValue = Tetris.getCache(this.data);
-        if (cacheValue != null) {
-            result = result.add(cacheValue);
-            return;
+    BigInteger nextPosition(Integer[] position) {
+        BigInteger result = Tetris.getCache(data);
+        if (result != null) {
+            return result;
         }
         if (this.unsolvable()) {
-            return;
+            return BigInteger.ZERO;
         }
         int[] subRect = isRect();
         int longSide = subRect[0];
         int shortSide = subRect[1];
-        BigInteger resultBefore = result;
         boolean saveToRectCache = false;
         if (longSide > 0) {
             // we might have already computed the number of mutations
             // for the sub rectangle
-            cacheValue = Tetris.getCache(longSide, shortSide);
-            if (cacheValue != null) {
-                result = result.add(cacheValue);
-                return;
+            result = Tetris.getCache(longSide, shortSide);
+            if (result != null) {
+                return result;
             } else if (height >= 6 && width >= 4) {
                 Board subBoard = new Board(longSide, shortSide);
-                result = result.add(subBoard.calculateMutations());
-                return;
+                return subBoard.calculateMutations();
             }
             saveToRectCache = true;
         }
+        result = BigInteger.ZERO;
         for (Block block : Tetris.blocks) {
-            ArrayList<Integer[]> validOffsets = this.findValidOffsets(block, position);
+            ArrayList<Integer[]> validOffsets = findValidOffsets(block, position);
             for (Integer[] offset : validOffsets) {
-                this.placeBlockAt(block, offset);
-                Integer[] nextPos = this.findNextPosition();
+                placeBlockAt(block, offset);
+                Integer[] nextPos = findNextPosition();
                 if (isFull()) {
                     // if the board is full we have found one solution
-                    this.result = this.result.add(BigInteger.ONE);
+                    result = result.add(BigInteger.ONE);
                 } else if (nextPos[0] != -1) {
-                    this.nextPosition(nextPos);
+                    result = result.add(nextPosition(nextPos));
                 }
-
-                this.removeBlockAt(block, offset);
+                removeBlockAt(block, offset);
             }
         }
 
         if (saveToRectCache) {
-            Tetris.setCache(longSide, shortSide, result.subtract(resultBefore));
+            Tetris.setCache(longSide, shortSide, result);
         }
         if (saveToCache) {
-            Tetris.setCache(data, result.subtract(resultBefore));
+            Tetris.setCache(data, result);
         }
+        return result;
     }
 
     private boolean isFull() {
-        for (int i = 0; i < this.height; i++) {
-            for (int j = 0; j < this.width; j++) {
-                if (this.data[i][j] == 0) {
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if (data[i][j] == 0) {
                     return false;
                 }
             }
@@ -387,7 +382,7 @@ public class Board {
     }
 
     void print() {
-        Board.print(data, result);
+        Board.print(data, BigInteger.ZERO);
     }
 
     public static void print(int[][] data, BigInteger result) {
