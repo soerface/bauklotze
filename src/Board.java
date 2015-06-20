@@ -8,16 +8,12 @@ public class Board {
     int height;
     int width;
     boolean saveToCache;
-//    public static ArrayList<Board> allBoards = new ArrayList<Board>();
-//    protected boolean visualize;
-//    public boolean hasBeenRotated;
 
     public Board(int m, int n) {
         this(m, n, true, true);
     }
 
     public Board(int m, int n, boolean allowRotate, boolean saveToCache) {
-//        allBoards.add(this);
         if (allowRotate) {
             width = n < m ? n : m;
             height = m > n ? m : n;
@@ -29,8 +25,6 @@ public class Board {
         this.saveToCache = saveToCache;
         data = new int[height][width];
         result = BigInteger.ZERO;
-//        visualize = false;
-//        Board.printAllBoards();
     }
 
 
@@ -44,11 +38,6 @@ public class Board {
         }
         return true;
     }
-
-//    public BigInteger calculateMutations(boolean visualize) {
-//        this.visualize = visualize;
-//        return this.calculateMutations();
-//    }
 
     public BigInteger calculateMutations() {
         if (isFull()) {
@@ -100,55 +89,18 @@ public class Board {
         }
         Board boardA = new Board(splitPosition, this.width);
         Board boardB = new Board(this.height - splitPosition, this.width);
-//        if (!isClean()) {
-//            // TODO: Redundant to OverlapBoard copy process
-//            // copy the data from our current board to the two new ones
-//            for (int i = 0; i < height; i++) {
-//                for (int j = 0; j < width; j++) {
-//                    if (i < splitPosition) {
-//                        // "7" for better visualization while debugging; could be any other number != 0
-//                        // mirror the data while copying; gives a little speedup
-//                        // due to the way the next position is being chosen
-//                        if (boardA.hasBeenRotated) {
-//                            boardA.data[j][i] = data[splitPosition - i - 1][j] != 0 ? 7 : 0;
-//                        } else {
-//                            boardA.data[i][j] = data[splitPosition - i - 1][j] != 0 ? 7 : 0;
-//                        }
-////                  TODO: use this instead of the above for slightly better performance if needed:
-////                  topBoard.data[i][j] = this.data[this.splitPosition - i - 1][j];
-//                    } else {
-//                        // "7" for better visualization while debugging; could be any other number != 0
-//                        if (boardB.hasBeenRotated) {
-//                            boardB.data[j][i - splitPosition] = data[i][j] != 0 ? 7 : 0;
-//                        } else {
-//                            boardB.data[i - splitPosition][j] = data[i][j] != 0 ? 7 : 0;
-//                        }
-////                  TODO: use this instead of the above for slightly better performance if needed:
-////                  bottomBoard.data[i - this.splitPosition][j] = this.data[i][j];
-//                    }
-//                }
-//            }
-//        }
         // both together have a total number of combinations of multiplying them
         // and additionally, every combination that is possible by melting the borders of the blocks together
         OverlapBoard overlapBoard = new OverlapBoard(this.height, this.width, splitPosition);
-//        overlapBoard.prefill(data);
         BigInteger mutationsA = boardA.calculateMutations();
         BigInteger mutationsB = boardB.calculateMutations();
 
         BigInteger overlapMutations = overlapBoard.calculateMutations();
-//        if (!isClean()) {
-//            printAllBoards();
-//        }
         this.result = mutationsA.multiply(mutationsB).add(overlapMutations);
-//        Board.allBoards.remove(boardA);
-//        Board.allBoards.remove(boardB);
-//        Board.allBoards.remove(overlapBoard);
     }
 
     void nextPosition(Integer[] position) {
         BigInteger cacheValue = Tetris.getCache(this.data);
-//        if (cacheValue >= 0) {
         if (cacheValue != null) {
             this.result = this.result.add(cacheValue);
             return;
@@ -179,9 +131,6 @@ public class Board {
             ArrayList<Integer[]> validOffsets = this.findValidOffsets(block, position);
             for (Integer[] offset : validOffsets) {
                 this.placeBlockAt(block, offset);
-//                if (visualize) {
-//                    Board.printAllBoards();
-//                }
                 Integer[] nextPos = this.findNextPosition();
                 if (this.isFull()) {
                     // if the board is full we have found one solution
@@ -191,9 +140,6 @@ public class Board {
                 }
 
                 this.removeBlockAt(block, offset);
-//                if (visualize) {
-//                    Board.printAllBoards();
-//                }
             }
         }
 
@@ -470,35 +416,4 @@ public class Board {
             e.printStackTrace();
         }
     }
-
-//    public static void printAllBoards() {
-//        if (!Tetris.debugPrint) {
-//            return;
-//        }
-//        int maxHeight = 0;
-//        for (Board board : Board.allBoards) {
-//            maxHeight = Math.max(maxHeight, board.height);
-//        }
-//        for (int row = 0; row <= maxHeight; row++) {
-//            for (Board board : Board.allBoards) {
-//                if (row < board.height) {
-//                    for (int value : board.data[row]) {
-//                        System.out.format("\u001B[4%dm %d \u001B[0m", value, value);
-//                    }
-//                } else if (row == board.height) {
-//                    System.out.format("%" + board.width * 3 + "d", board.result);
-//                } else {
-//                    System.out.format("%" + board.width * 3 + "s", "");
-//                }
-//                System.out.print(" ");
-//            }
-//            System.out.println();
-//        }
-//        System.out.println();
-//        try {
-//            Thread.sleep(Tetris.printDelay);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//    }
 }
