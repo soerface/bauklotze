@@ -17,8 +17,8 @@ public class OverlapBoard extends Board {
     private Integer[][] positions;
     private int currentPosition;
     private int splitPosition;
-    private int blocksInTopHalf;
-    private int blocksInBottomHalf;
+//    private int blocksInTopHalf;
+//    private int blocksInBottomHalf;
 
     public OverlapBoard(int m, int n, int splitPosition) {
         this(m, n, splitPosition, false);
@@ -37,7 +37,7 @@ public class OverlapBoard extends Board {
 
     public BigInteger calculateMutations() {
         this.nextPosition(this.findNextPosition());
-        allBoards.remove(this);
+//        allBoards.remove(this);
         return this.result;
     }
 
@@ -82,33 +82,33 @@ public class OverlapBoard extends Board {
                 }
             }
         }
-        BigInteger top = topBoard.calculateMutations(visualize);
+        BigInteger top = topBoard.calculateMutations();
         // no need to calculate anything more if one half is already zero since we are multiplying
         if (top.compareTo(BigInteger.ZERO) != 0) {
-            BigInteger bottom = bottomBoard.calculateMutations(visualize);
+            BigInteger bottom = bottomBoard.calculateMutations();
             this.result = this.result.add(top.multiply(bottom));
         }
-        Board.allBoards.remove(topBoard);
-        Board.allBoards.remove(bottomBoard);
+//        Board.allBoards.remove(topBoard);
+//        Board.allBoards.remove(bottomBoard);
         return new Integer[]{-1, -1};
     }
 
-    public void prefill(int[][] data) {
-        this.data = data;
-        blocksInTopHalf = 0;
-        blocksInBottomHalf = 0;
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                if (this.data[i][j] != 0) {
-                    if (i < this.splitPosition) {
-                        blocksInTopHalf++;
-                    } else {
-                        blocksInBottomHalf++;
-                    }
-                }
-            }
-        }
-    }
+//    public void prefill(int[][] data) {
+//        this.data = data;
+//        blocksInTopHalf = 0;
+//        blocksInBottomHalf = 0;
+//        for (int i = 0; i < height; i++) {
+//            for (int j = 0; j < width; j++) {
+//                if (this.data[i][j] != 0) {
+//                    if (i < this.splitPosition) {
+//                        blocksInTopHalf++;
+//                    } else {
+//                        blocksInBottomHalf++;
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     private boolean correctlySplitted() {
         // we have now placed all blocks which are separating top and bottom rect.
@@ -137,9 +137,9 @@ public class OverlapBoard extends Board {
                 }
             }
         }
-        if (blocksInsideTopHalf == blocksInTopHalf || blocksInsideBottomHalf == blocksInBottomHalf) {
-            return false;
-        }
+//        if (blocksInsideTopHalf == blocksInTopHalf || blocksInsideBottomHalf == blocksInBottomHalf) {
+//            return false;
+//        }
         // TODO: not sure if this still works
         if (blocksFreeTopHalf % 3 != 0 || blocksFreeBottomHalf % 3 != 0) {
             return false;
