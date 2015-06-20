@@ -38,23 +38,20 @@ public class Board {
     }
 
     public BigInteger calculateMutations() {
-        BigInteger result = Tetris.getCache(data);
+        BigInteger result;
+        // assignment to not call it multiple times inside this method
+        boolean isClean = isClean();
+        result = isClean ? Tetris.getCache(height, width) : Tetris.getCache(data);
         if (result != null) {
             return result;
         }
-        if (isClean()) {
-            result = Tetris.getCache(height, width);
-            if (result != null) {
-                return result;
-            }
-        }
-        if (isClean() && height >= 6 && width >= 4) {
+
+        if (isClean && height >= 6 && width >= 4) {
             result = splitBoard();
         } else {
             result = nextPosition(findNextPosition());
         }
-
-        if (isClean()) {
+        if (isClean) {
             Tetris.setCache(height, width, result);
         } else {
             Tetris.setCache(data, result);
@@ -95,7 +92,7 @@ public class Board {
         if (result != null) {
             return result;
         }
-        if (this.unsolvable()) {
+        if (unsolvable()) {
             return BigInteger.ZERO;
         }
         int[] subRect = isRect();
