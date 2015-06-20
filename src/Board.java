@@ -124,7 +124,7 @@ public class Board {
         if (saveToRectCache) {
             Tetris.setCache(longSide, shortSide, result);
         }
-        if (saveToCache) {
+        else if (saveToCache) {
             Tetris.setCache(data, result);
         }
         return result;
