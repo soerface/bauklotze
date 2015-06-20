@@ -34,19 +34,19 @@ public class OverlapBoard extends Board {
     }
 
     public BigInteger calculateMutations() {
-        this.nextPosition(this.findNextPosition());
-        return this.result;
+        nextPosition(findNextPosition());
+        return result;
     }
 
     @Override
     protected Integer[] findNextPosition() {
         int offset = 0;
 
-        while (this.currentPosition + offset < this.positions.length) {
-            Integer[] coordinate = this.positions[this.currentPosition + offset];
+        while (currentPosition + offset < positions.length) {
+            Integer[] coordinate = positions[currentPosition + offset];
             int m = coordinate[0];
             int n = coordinate[1];
-            if (this.data[m][n] == 0) {
+            if (data[m][n] == 0) {
                 return coordinate;
             }
             offset++;
@@ -57,29 +57,29 @@ public class OverlapBoard extends Board {
         // the board is now separated in half;
         // we just need to calculate the combinations of the top and
         // the bottom half and multiply them
-        Board topBoard = new Board(this.splitPosition, this.data[0].length, false, true);
-        Board bottomBoard = new Board(this.height - this.splitPosition, this.data[0].length, false, true);
+        Board topBoard = new Board(splitPosition, data[0].length, false, true);
+        Board bottomBoard = new Board(height - splitPosition, data[0].length, false, true);
         // copy the data from our current board to the two new ones
-        for (int i = 0; i < this.data.length; i++) {
-            for (int j = 0; j < this.data[i].length; j++) {
-                if (i < this.splitPosition) {
+        for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < data[i].length; j++) {
+                if (i < splitPosition) {
                     // "7" for better visualization while debugging; could be any other number != 0
                     // mirror the data while copying; gives a little speedup
                     // due to the way the next position is being chosen
-                        topBoard.data[i][j] = this.data[this.splitPosition - i - 1][j] != 0 ? 7 : 0;
+                    topBoard.data[i][j] = data[splitPosition - i - 1][j] != 0 ? 7 : 0;
 //                  TODO: use this instead of the above for slightly better performance if needed:
 //                  topBoard.data[i][j] = this.data[this.splitPosition - i - 1][j];
                 } else {
                     // "7" for better visualization while debugging; could be any other number != 0
-                        bottomBoard.data[i - this.splitPosition][j] = this.data[i][j] != 0 ? 7 : 0;
+                    bottomBoard.data[i - splitPosition][j] = data[i][j] != 0 ? 7 : 0;
 //                  TODO: use this instead of the above for slightly better performance if needed:
 //                  bottomBoard.data[i - this.splitPosition][j] = this.data[i][j];
                 }
             }
         }
         BigInteger top = topBoard.calculateMutations();
-            BigInteger bottom = bottomBoard.calculateMutations();
-            this.result = this.result.add(top.multiply(bottom));
+        BigInteger bottom = bottomBoard.calculateMutations();
+        result = result.add(top.multiply(bottom));
         return new Integer[]{-1, -1};
     }
 
@@ -111,8 +111,8 @@ public class OverlapBoard extends Board {
     @Override
     int[] isRect() {
         int[] res = super.isRect();
-        int m = this.data.length;
-        int n = this.data[0].length;
+        int m = data.length;
+        int n = data[0].length;
         if (res[0] == Math.max(m, n) && res[1] == Math.min(m, n)) {
             return new int[]{-1, -1};
         }
@@ -122,12 +122,12 @@ public class OverlapBoard extends Board {
     @Override
     protected void placeBlockAt(Block block, Integer[] offset) {
         super.placeBlockAt(block, offset);
-        this.currentPosition++;
+        currentPosition++;
     }
 
     @Override
     protected void removeBlockAt(Block block, Integer[] offset) {
         super.removeBlockAt(block, offset);
-        this.currentPosition--;
+        currentPosition--;
     }
 }

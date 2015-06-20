@@ -40,28 +40,26 @@ public class Board {
     }
 
     public BigInteger calculateMutations() {
-        BigInteger value = Tetris.getCache(this.data);
+        BigInteger value = Tetris.getCache(data);
         if (value != null) {
-            this.result = value;
             return value;
         }
         if (isClean()) {
-            value = Tetris.getCache(this.height, this.width);
+            value = Tetris.getCache(height, width);
             if (value != null) {
-                this.result = value;
                 return value;
             }
         }
         if (isClean() && height >= 6 && width >= 4) {
-            this.splitBoard();
+            splitBoard();
         } else {
-            this.nextPosition(this.findNextPosition());
+            nextPosition(findNextPosition());
         }
 
         if (isClean()) {
-            Tetris.setCache(this.height, this.width, this.result);
+            Tetris.setCache(height, width, result);
         } else {
-            Tetris.setCache(this.data, this.result);
+            Tetris.setCache(data, result);
         }
         return this.result;
     }
@@ -70,50 +68,50 @@ public class Board {
 //        Board.allBoards.remove(this);
         // Splits the board into two smaller boards
         // The number of combinations will be boardA * boardB + all combinations, where both are overlapping
-        int splitPosition = this.height / 2;
+        int splitPosition = height / 2;
         // check if both blocks contains a number of squares dividable by three
         // TODO: may need better check for prefilled boards
         while (true) {
-            if (this.width % 3 == 0) {
+            if (width % 3 == 0) {
                 break;
             }
-            if (splitPosition % 3 == 0 && ((this.height - splitPosition) % 3) == 0) {
+            if (splitPosition % 3 == 0 && ((height - splitPosition) % 3) == 0) {
                 break;
             }
             splitPosition--;
         }
-        Board boardA = new Board(splitPosition, this.width);
-        Board boardB = new Board(this.height - splitPosition, this.width);
+        Board boardA = new Board(splitPosition, width);
+        Board boardB = new Board(height - splitPosition, width);
         // both together have a total number of combinations of multiplying them
         // and additionally, every combination that is possible by melting the borders of the blocks together
-        OverlapBoard overlapBoard = new OverlapBoard(this.height, this.width, splitPosition);
+        OverlapBoard overlapBoard = new OverlapBoard(height, width, splitPosition);
         BigInteger mutationsA = boardA.calculateMutations();
         BigInteger mutationsB = boardB.calculateMutations();
 
         BigInteger overlapMutations = overlapBoard.calculateMutations();
-        this.result = mutationsA.multiply(mutationsB).add(overlapMutations);
+        result = mutationsA.multiply(mutationsB).add(overlapMutations);
     }
 
     void nextPosition(Integer[] position) {
         BigInteger cacheValue = Tetris.getCache(this.data);
         if (cacheValue != null) {
-            this.result = this.result.add(cacheValue);
+            result = result.add(cacheValue);
             return;
         }
         if (this.unsolvable()) {
             return;
         }
-        int[] subRect = this.isRect();
+        int[] subRect = isRect();
         int longSide = subRect[0];
         int shortSide = subRect[1];
-        BigInteger resultBefore = this.result;
+        BigInteger resultBefore = result;
         boolean saveToRectCache = false;
         if (longSide > 0) {
             // we might have already computed the number of mutations
             // for the sub rectangle
             cacheValue = Tetris.getCache(longSide, shortSide);
             if (cacheValue != null) {
-                this.result = this.result.add(cacheValue);
+                result = result.add(cacheValue);
                 return;
             } else if (height >= 6 && width >= 4) {
                 Board subBoard = new Board(longSide, shortSide);
@@ -127,7 +125,7 @@ public class Board {
             for (Integer[] offset : validOffsets) {
                 this.placeBlockAt(block, offset);
                 Integer[] nextPos = this.findNextPosition();
-                if (this.isFull()) {
+                if (isFull()) {
                     // if the board is full we have found one solution
                     this.result = this.result.add(BigInteger.ONE);
                 } else if (nextPos[0] != -1) {
@@ -139,10 +137,10 @@ public class Board {
         }
 
         if (saveToRectCache) {
-            Tetris.setCache(longSide, shortSide, this.result.subtract(resultBefore));
+            Tetris.setCache(longSide, shortSide, result.subtract(resultBefore));
         }
-        if (this.saveToCache) {
-            Tetris.setCache(this.data, this.result.subtract(resultBefore));
+        if (saveToCache) {
+            Tetris.setCache(data, result.subtract(resultBefore));
         }
     }
 
@@ -159,15 +157,15 @@ public class Board {
 
     protected boolean unsolvable() {
         // returns true if there are gaps which cant be filled (smaller than 3 tiles)
-        for (int i = 0; i < this.height; i++) {
-            for (int j = 0; j < this.width; j++) {
-                if (this.data[i][j] == 0) {
-                    int neighbours = this.numberOfFreeNeighbours(new int[]{i, j});
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if (data[i][j] == 0) {
+                    int neighbours = numberOfFreeNeighbours(new int[]{i, j});
                     if (neighbours > 1) {
                         continue;
                     } else if (neighbours == 1) {
                         int[] neighbourPosition = this.freeNeighbour(new int[]{i, j});
-                        if (this.numberOfFreeNeighbours(neighbourPosition) > 1) {
+                        if (numberOfFreeNeighbours(neighbourPosition) > 1) {
                             continue;
                         }
                     }
@@ -183,16 +181,16 @@ public class Board {
         int x = position[0];
         int y = position[1];
         int n = 0;
-        if (x > 0 && this.data[x - 1][y] == 0) {
+        if (x > 0 && data[x - 1][y] == 0) {
             n++;
         }
-        if (y > 0 && this.data[x][y - 1] == 0) {
+        if (y > 0 && data[x][y - 1] == 0) {
             n++;
         }
-        if (x < this.height - 1 && this.data[x + 1][y] == 0) {
+        if (x < height - 1 && data[x + 1][y] == 0) {
             n++;
         }
-        if (y < this.width - 1 && this.data[x][y + 1] == 0) {
+        if (y < width - 1 && data[x][y + 1] == 0) {
             n++;
         }
         return n;
@@ -203,16 +201,16 @@ public class Board {
         int x = position[0];
         int y = position[1];
         int n = 0;
-        if (x > 0 && this.data[x - 1][y] == 0) {
+        if (x > 0 && data[x - 1][y] == 0) {
             return new int[]{x - 1, y};
         }
-        if (y > 0 && this.data[x][y - 1] == 0) {
+        if (y > 0 && data[x][y - 1] == 0) {
             return new int[]{x, y - 1};
         }
-        if (x < this.height - 1 && this.data[x + 1][y] == 0) {
+        if (x < height - 1 && data[x + 1][y] == 0) {
             return new int[]{x + 1, y};
         }
-        if (y < this.width - 1 && this.data[x][y + 1] == 0) {
+        if (y < width - 1 && data[x][y + 1] == 0) {
             return new int[]{x, y + 1};
         }
         return new int[]{-1, -1};
@@ -222,9 +220,9 @@ public class Board {
         // to make best use of the cache, we should try to find
         // a position for the next block which makes a rectangle
         // TODO: not implemented anymore, the used method was actually slower. Maybe try again another way
-        for (int i = 0; i < this.height; i++) {
-            for (int j = 0; j < this.width; j++) {
-                if (this.data[i][j] == 0) {
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if (data[i][j] == 0) {
                     return new Integer[]{i, j};
                 }
             }
@@ -233,11 +231,10 @@ public class Board {
     }
 
     protected void placeBlockAt(Block block, Integer[] offset) {
-//        Tetris.setBlocks++;
         for (int i = 0; i < block.width; i++) {
             for (int j = 0; j < block.height; j++) {
                 if (block.data[i][j] != 0) {
-                    this.data[i + offset[0]][j + offset[1]] = block.data[i][j];
+                    data[i + offset[0]][j + offset[1]] = block.data[i][j];
                 }
             }
         }
@@ -247,7 +244,7 @@ public class Board {
         for (int i = 0; i < block.width; i++) {
             for (int j = 0; j < block.height; j++) {
                 if (block.data[i][j] != 0) {
-                    this.data[i + offset[0]][j + offset[1]] = 0;
+                    data[i + offset[0]][j + offset[1]] = 0;
                 }
             }
         }
@@ -260,7 +257,7 @@ public class Board {
                     pos[0] - coordinate[0],
                     pos[1] - coordinate[1]
             };
-            if (this.blockPlaceableAt(block, offset)) {
+            if (blockPlaceableAt(block, offset)) {
                 validOffsets.add(offset);
             }
         }
@@ -273,7 +270,7 @@ public class Board {
         }
         for (int i = 0; i < block.width; i++) {
             for (int j = 0; j < block.height; j++) {
-                if (i + offset[0] >= this.height) {
+                if (i + offset[0] >= height) {
                     // out of bounds
                     if (block.data[i][j] != 0) {
                         // but the block might have a zero here, so
@@ -283,7 +280,7 @@ public class Board {
                         continue;
                     }
                 }
-                if (j + offset[1] >= this.width) {
+                if (j + offset[1] >= width) {
                     // out of bounds
                     if (block.data[i][j] != 0) {
                         // but the block might have a zero here, so
@@ -293,7 +290,7 @@ public class Board {
                         continue;
                     }
                 }
-                if (block.data[i][j] != 0 && this.data[i + offset[0]][j + offset[1]] != 0) {
+                if (block.data[i][j] != 0 && data[i + offset[0]][j + offset[1]] != 0) {
                     // there is already a block; can't place this one
                     return false;
                 }
@@ -313,9 +310,9 @@ public class Board {
         int bottom = -1;
         int left = -1;
         boolean rectangleEnded = false;
-        for (int i = 0; i < this.height; i++) {
-            for (int j = 0; j < this.width; j++) {
-                if (this.data[i][j] == 0) {
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if (data[i][j] == 0) {
                     if (left == -1) {
                         // found the top left edge
                         left = j;
@@ -370,7 +367,7 @@ public class Board {
             return new int[]{0, 0};
         }
         if (bottom == -1) {
-            bottom = this.height - 1;
+            bottom = height - 1;
         }
         int width = right - left + 1;
         int height = bottom - top + 1;
@@ -390,7 +387,7 @@ public class Board {
     }
 
     void print() {
-        Board.print(this.data, this.result);
+        Board.print(data, result);
     }
 
     public static void print(int[][] data, BigInteger result) {
