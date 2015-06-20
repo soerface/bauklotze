@@ -17,8 +17,6 @@ public class OverlapBoard extends Board {
     private Integer[][] positions;
     private int currentPosition;
     private int splitPosition;
-//    private int blocksInTopHalf;
-//    private int blocksInBottomHalf;
 
     public OverlapBoard(int m, int n, int splitPosition) {
         this(m, n, splitPosition, false);
@@ -137,9 +135,9 @@ public class OverlapBoard extends Board {
                 }
             }
         }
-//        if (blocksInsideTopHalf == blocksInTopHalf || blocksInsideBottomHalf == blocksInBottomHalf) {
-//            return false;
-//        }
+        if (blocksInsideTopHalf == 0 || blocksInsideBottomHalf == 0) {
+            return false;
+        }
         // TODO: not sure if this still works
         if (blocksFreeTopHalf % 3 != 0 || blocksFreeBottomHalf % 3 != 0) {
             return false;
