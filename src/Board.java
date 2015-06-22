@@ -7,6 +7,8 @@ public class Board {
     int height;
     int width;
     boolean useCache;
+    Boolean isFull;
+    Boolean isClean;
 
     public Board(int m, int n) {
         this(m, n, true, true);
@@ -21,14 +23,20 @@ public class Board {
             height = m;
         }
         this.useCache = useCache;
+        isClean = isFull = null;
         data = new int[height][width];
     }
 
 
     boolean isClean() {
+        if (isClean != null) {
+            return isClean;
+        }
+        isClean = true;
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 if (data[i][j] != 0) {
+                    isClean = false;
                     return false;
                 }
             }
@@ -38,22 +46,20 @@ public class Board {
 
     public BigInteger calculateMutations() {
         BigInteger result;
-        // assignment to not call it multiple times inside this method
         if (isFull()) {
             return BigInteger.ONE;
         }
-        boolean isClean = isClean();
-        result = isClean ? Tetris.getCache(height, width) : Tetris.getCache(data);
+        result = isClean() ? Tetris.getCache(height, width) : Tetris.getCache(data);
         if (result != null) {
             return result;
         }
 
-        if (isClean && height >= 6 && width >= 4) {
-            result = splitBoard(isClean);
+        if (isClean() && height >= 6 && width >= 4) {
+            result = splitBoard();
         } else {
             result = nextPosition(findNextPosition());
         }
-        if (isClean) {
+        if (isClean()) {
             Tetris.setCache(height, width, result);
         } else {
             Tetris.setCache(data, result);
@@ -61,7 +67,7 @@ public class Board {
         return result;
     }
 
-    BigInteger splitBoard(boolean isClean) {
+    BigInteger splitBoard() {
         // Splits the board into two smaller boards
         // The number of combinations will be boardA * boardB + all combinations, where both are overlapping
         int splitPosition = height / 2;
@@ -80,7 +86,7 @@ public class Board {
         // both together have a total number of combinations of multiplying them
         // and additionally, every combination that is possible by melting the borders of the blocks together
         OverlapBoard overlapBoard;
-        if (isClean) {
+        if (isClean()) {
             overlapBoard = new OverlapBoard(height, width, splitPosition);
         } else {
             overlapBoard = new OverlapBoard(height, width, splitPosition, data);
@@ -144,9 +150,14 @@ public class Board {
     }
 
     private boolean isFull() {
+        if (isFull != null) {
+            return isFull;
+        }
+        isFull = true;
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 if (data[i][j] == 0) {
+                    isFull = false;
                     return false;
                 }
             }
@@ -168,6 +179,7 @@ public class Board {
     }
 
     protected void placeBlockAt(Block block, Integer[] offset) {
+        isClean = isFull = null;
         for (int i = 0; i < block.width; i++) {
             for (int j = 0; j < block.height; j++) {
                 if (block.data[i][j] != 0) {
@@ -178,6 +190,7 @@ public class Board {
     }
 
     protected void removeBlockAt(Block block, Integer[] offset) {
+        isClean = isFull = null;
         for (int i = 0; i < block.width; i++) {
             for (int j = 0; j < block.height; j++) {
                 if (block.data[i][j] != 0) {

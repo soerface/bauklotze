@@ -146,6 +146,7 @@ public class OverlapBoard extends Board {
 
     @Override
     protected void placeBlockAt(Block block, Integer[] offset) {
+        isClean = isFull = null;
         for (int i = 0; i < block.width; i++) {
             for (int j = 0; j < block.height; j++) {
                 if (block.data[i][j] != 0) {
@@ -161,6 +162,7 @@ public class OverlapBoard extends Board {
 
     @Override
     protected void removeBlockAt(Block block, Integer[] offset) {
+        isClean = isFull = null;
         for (int i = 0; i < block.width; i++) {
             for (int j = 0; j < block.height; j++) {
                 if (block.data[i][j] != 0) {
