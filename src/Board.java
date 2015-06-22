@@ -7,11 +7,17 @@ public class Board {
     int height;
     int width;
     boolean useCache;
+    public static ArrayList<Board> allBoards = new ArrayList<Board>();
     Boolean isFull;
     Boolean isClean;
 
     public Board(int m, int n) {
         this(m, n, true, true);
+    }
+
+    public Board(int m, int n, int[][] data) {
+        this(m, n, false, true);
+        this.data = data;
     }
 
     public Board(int m, int n, boolean allowRotate, boolean useCache) {
@@ -53,12 +59,15 @@ public class Board {
         if (result != null) {
             return result;
         }
-
+        allBoards.add(this);
         if (isClean() && height >= 6 && width >= 4) {
             result = splitBoard();
         } else {
+
             result = nextPosition(findNextPosition());
+
         }
+        allBoards.remove(this);
         if (isClean()) {
             Tetris.setCache(height, width, result);
         } else {
@@ -81,8 +90,24 @@ public class Board {
             }
             splitPosition--;
         }
-        Board boardA = new Board(splitPosition, width);
-        Board boardB = new Board(height - splitPosition, width);
+//        System.out.format("Split: %d %d -> %d %d, %d %d\n", height, width, splitPosition, width, height - splitPosition, width);
+        Board boardA;
+        Board boardB;
+        if (isClean()) {
+            boardA = new Board(splitPosition, width);
+            boardB = new Board(height - splitPosition, width);
+        } else {
+            int[][] newBoardData = new int[splitPosition][width];
+            for (int i = 0; i < splitPosition; i++) {
+                System.arraycopy(data[i], 0, newBoardData[i], 0, width);
+            }
+            boardA = new Board(splitPosition, width, newBoardData);
+            newBoardData = new int[height - splitPosition][width];
+            for (int i = splitPosition; i < height; i++) {
+                System.arraycopy(data[i], 0, newBoardData[i - splitPosition], 0, width);
+            }
+            boardB = new Board(height - splitPosition, width, newBoardData);
+        }
         // both together have a total number of combinations of multiplying them
         // and additionally, every combination that is possible by melting the borders of the blocks together
         OverlapBoard overlapBoard;
@@ -127,7 +152,8 @@ public class Board {
             ArrayList<Integer[]> validOffsets = findValidOffsets(block, position);
             for (Integer[] offset : validOffsets) {
                 placeBlockAt(block, offset);
-                Board.print(data, result);
+//                Board.print(data, result);
+                printAllBoards();
                 Integer[] nextPos = findNextPosition();
                 if (isFull()) {
                     // if the board is full we have found one solution
@@ -136,14 +162,14 @@ public class Board {
                     result = result.add(nextPosition(nextPos));
                 }
                 removeBlockAt(block, offset);
-                Board.print(data, result);
+//                Board.print(data, result);
+                printAllBoards();
             }
         }
 
         if (saveToRectCache) {
             Tetris.setCache(longSide, shortSide, result);
-        }
-        else if (useCache) {
+        } else if (useCache) {
             Tetris.setCache(data, result);
         }
         return result;
@@ -179,6 +205,7 @@ public class Board {
     }
 
     protected void placeBlockAt(Block block, Integer[] offset) {
+        Tetris.setBlocks++;
         isClean = isFull = null;
         for (int i = 0; i < block.width; i++) {
             for (int j = 0; j < block.height; j++) {
@@ -352,6 +379,37 @@ public class Board {
             System.out.println();
         }
         System.out.format("Solutions: %d\n", result);
+        try {
+            Thread.sleep(Tetris.printDelay);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void printAllBoards() {
+        if (!Tetris.debugPrint) {
+            return;
+        }
+        int maxHeight = 0;
+        for (Board board : Board.allBoards) {
+            maxHeight = Math.max(maxHeight, board.height);
+        }
+        for (int row = 0; row <= maxHeight; row++) {
+            for (Board board : Board.allBoards) {
+                if (row < board.height) {
+                    for (int value : board.data[row]) {
+                        System.out.format("\u001B[4%dm %d \u001B[0m", value, value);
+                    }
+                } else if (row == board.height) {
+                    System.out.format("%" + board.width * 3 + "d", 0);
+                } else {
+                    System.out.format("%" + board.width * 3 + "s", "");
+                }
+                System.out.print(" ");
+            }
+            System.out.println();
+        }
+        System.out.println();
         try {
             Thread.sleep(Tetris.printDelay);
         } catch (InterruptedException e) {

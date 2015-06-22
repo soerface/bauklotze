@@ -19,6 +19,7 @@ public class OverlapBoard extends Board {
     private int splitPosition;
     private BigInteger additionalResults = BigInteger.ZERO;
     private int freeBlocksInBottomHalf;
+    private int originalFreeBlocksInBottomHalf;
 
     public OverlapBoard(int m, int n, int splitPosition) {
         this(m, n, splitPosition, false);
@@ -36,6 +37,7 @@ public class OverlapBoard extends Board {
                 }
             }
         }
+        originalFreeBlocksInBottomHalf = freeBlocksInBottomHalf;
     }
 
     public OverlapBoard(int m, int n, int splitPosition, boolean allowRotate) {
@@ -47,11 +49,13 @@ public class OverlapBoard extends Board {
             positions[i][0] = splitPosition - 1;
             positions[i][1] = i;
         }
-        freeBlocksInBottomHalf = width * (height - splitPosition);
+        originalFreeBlocksInBottomHalf = freeBlocksInBottomHalf = width * (height - splitPosition);
     }
 
     public BigInteger calculateMutations() {
+        allBoards.add(this);
         BigInteger result = nextPosition(findNextPosition());
+        allBoards.remove(this);
         return result;
     }
 
@@ -127,7 +131,7 @@ public class OverlapBoard extends Board {
 //                }
 //            }
 //        }
-        if (/*freeBlocksInTopHalf == width * splitPosition || */freeBlocksInBottomHalf == width * (height - splitPosition)) {
+        if (/*freeBlocksInTopHalf == width * splitPosition || */freeBlocksInBottomHalf == originalFreeBlocksInBottomHalf) {
             return false;
         }
         return freeBlocksInBottomHalf % 3 == 0/* && freeBlocksInTopHalf % 3 == 0*/;
@@ -146,6 +150,7 @@ public class OverlapBoard extends Board {
 
     @Override
     protected void placeBlockAt(Block block, Integer[] offset) {
+        Tetris.setBlocks++;
         isClean = isFull = null;
         for (int i = 0; i < block.width; i++) {
             for (int j = 0; j < block.height; j++) {

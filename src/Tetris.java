@@ -10,7 +10,7 @@ public class Tetris {
     private static HashMap<String, BigInteger> partialsCache;
     public static boolean debugPrint = false;
     public static int printDelay;
-//    public static long setBlocks;
+    public static long setBlocks = 0;
 //    public static long getCaches;
 
     public static void main(String[] args) {
@@ -59,12 +59,14 @@ public class Tetris {
 
         Tetris.cache = new BigInteger[(m > n ? m : n) + 1][(m > n ? n : m) + 1];
         Tetris.partialsCache = new HashMap<String, BigInteger>();
-        Tetris.debugPrint = false;
+//        Tetris.debugPrint = false;
 //        Tetris.debugPrint = false;
 //        Tetris.getCaches = 0;
-//        Tetris.setBlocks = 0;
+        Tetris.setBlocks = 0;
         Board board = new Board(m, n);
-        return board.calculateMutations();
+        BigInteger result = board.calculateMutations();
+//        System.out.format("Blocks set: %12d\n", setBlocks);
+        return result;
     }
 
     public static void setCache(int m, int n, BigInteger value) {
