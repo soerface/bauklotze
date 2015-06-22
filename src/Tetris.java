@@ -8,6 +8,7 @@ public class Tetris {
     public static Block[] blocks;
     private static BigInteger[][] cache;
     private static HashMap<String, BigInteger> partialsCache;
+    private static HashMap<String, BigInteger> overlapCache;
     public static boolean debugPrint = false;
     public static int printDelay;
 //    public static long setBlocks;
@@ -59,6 +60,7 @@ public class Tetris {
 
         Tetris.cache = new BigInteger[(m > n ? m : n) + 1][(m > n ? n : m) + 1];
         Tetris.partialsCache = new HashMap<String, BigInteger>();
+        Tetris.overlapCache = new HashMap<String, BigInteger>();
 //        Tetris.getCaches = 0;
 //        Tetris.setBlocks = 0;
         Board board = new Board(m, n);
@@ -74,9 +76,20 @@ public class Tetris {
         Tetris.cache[m][n] = value;
     }
 
+    public static void setOverlapCache(int[][] data, BigInteger value) {
+        //for (String key : Tetris.dataToStrings(data)) {
+            //Tetris.overlapCache.put(key, value);
+            Tetris.overlapCache.put(Tetris.dataToString(data), value);
+        //}
+    }
+
+    public static BigInteger getOverlapCache(int[][] data) {
+        // This method returns null if there is no solution available.
+        // "0" as a solution is valid, since not all boards with pre set blocks are solvable!
+        return Tetris.overlapCache.get(dataToString(data));
+    }
+
     public static void setCache(int[][] data, BigInteger value) {
-//        Board.print(data, value);
-//        System.out.println(value);
         for (String key : Tetris.dataToStrings(data)) {
             Tetris.partialsCache.put(key, value);
         }

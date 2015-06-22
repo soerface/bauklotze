@@ -6,13 +6,13 @@ public class Board {
     public int[][] data;
     int height;
     int width;
-    boolean saveToCache;
+    boolean useCache;
 
     public Board(int m, int n) {
         this(m, n, true, true);
     }
 
-    public Board(int m, int n, boolean allowRotate, boolean saveToCache) {
+    public Board(int m, int n, boolean allowRotate, boolean useCache) {
         if (allowRotate) {
             width = n < m ? n : m;
             height = m > n ? m : n;
@@ -20,7 +20,7 @@ public class Board {
             width = n;
             height = m;
         }
-        this.saveToCache = saveToCache;
+        this.useCache = useCache;
         data = new int[height][width];
     }
 
@@ -85,9 +85,12 @@ public class Board {
     }
 
     BigInteger nextPosition(Integer[] position) {
-        BigInteger result = Tetris.getCache(data);
-        if (result != null) {
-            return result;
+        BigInteger result = null;
+        if (useCache) {
+            result = Tetris.getCache(data);
+            if (result != null) {
+                return result;
+            }
         }
         int[] subRect = isRect();
         int longSide = subRect[0];
@@ -110,6 +113,7 @@ public class Board {
             ArrayList<Integer[]> validOffsets = findValidOffsets(block, position);
             for (Integer[] offset : validOffsets) {
                 placeBlockAt(block, offset);
+                //Board.print(data, result);
                 Integer[] nextPos = findNextPosition();
                 if (isFull()) {
                     // if the board is full we have found one solution
@@ -118,13 +122,14 @@ public class Board {
                     result = result.add(nextPosition(nextPos));
                 }
                 removeBlockAt(block, offset);
+                //Board.print(data, result);
             }
         }
 
         if (saveToRectCache) {
             Tetris.setCache(longSide, shortSide, result);
         }
-        else if (saveToCache) {
+        else if (useCache) {
             Tetris.setCache(data, result);
         }
         return result;

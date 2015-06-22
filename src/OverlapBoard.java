@@ -35,7 +35,22 @@ public class OverlapBoard extends Board {
     }
 
     public BigInteger calculateMutations() {
-        return nextPosition(findNextPosition()).add(additionalResults);
+        BigInteger result = nextPosition(findNextPosition());
+        return result;
+    }
+
+    @Override
+    BigInteger nextPosition(Integer[] position) {
+        BigInteger result = Tetris.getOverlapCache(data);
+        if (result != null) {
+            return result;
+        }
+        result = super.nextPosition(position);
+        result = result.add(additionalResults);
+        additionalResults = BigInteger.ZERO;
+        Tetris.setOverlapCache(data, result);
+        Board.print(data, result);
+        return result;
     }
 
     @Override
