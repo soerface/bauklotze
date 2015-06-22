@@ -12,6 +12,7 @@ public class Tetris {
     public static int setCaches;
     public static int getCaches;
     public static int getCachesNull;
+    public static int setBlocks;
 
     public static void main(String[] args) {
         int m = Integer.parseInt(args[0]);
@@ -61,6 +62,7 @@ public class Tetris {
         Tetris.getCaches = 0;
         Tetris.getCachesNull = 0;
         Tetris.setCaches = 0;
+        Tetris.setBlocks = 0;
         Board board = new Board(m, n);
         return board.calculateMutations();
     }

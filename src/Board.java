@@ -84,7 +84,7 @@ public class Board {
             ArrayList<Integer[]> validOffsets = findValidOffsets(block, position, area);
             for (Integer[] offset : validOffsets) {
                 placeBlockAt(block, offset);
-//                print(result, area);
+                print(result, area);
                 if (area.isFull()) {
                     result = result.add(BigInteger.ONE);
                 } else {
@@ -107,7 +107,7 @@ public class Board {
                     }
                 }
                 removeBlockAt(block, offset);
-//                print(result, area);
+                print(result, area);
             }
         }
         return result;
@@ -184,6 +184,7 @@ public class Board {
     }
 
     protected void placeBlockAt(Block block, Integer[] offset) {
+        Tetris.setBlocks++;
         for (int i = 0; i < block.height; i++) {
             for (int j = 0; j < block.width; j++) {
                 if (block.data[i][j] != 0) {
