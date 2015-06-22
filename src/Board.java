@@ -39,6 +39,9 @@ public class Board {
     public BigInteger calculateMutations() {
         BigInteger result;
         // assignment to not call it multiple times inside this method
+        if (isFull()) {
+            return BigInteger.ONE;
+        }
         boolean isClean = isClean();
         result = isClean ? Tetris.getCache(height, width) : Tetris.getCache(data);
         if (result != null) {
@@ -46,7 +49,7 @@ public class Board {
         }
 
         if (isClean && height >= 6 && width >= 4) {
-            result = splitBoard();
+            result = splitBoard(isClean);
         } else {
             result = nextPosition(findNextPosition());
         }
@@ -58,7 +61,7 @@ public class Board {
         return result;
     }
 
-    BigInteger splitBoard() {
+    BigInteger splitBoard(boolean isClean) {
         // Splits the board into two smaller boards
         // The number of combinations will be boardA * boardB + all combinations, where both are overlapping
         int splitPosition = height / 2;
@@ -76,8 +79,12 @@ public class Board {
         Board boardB = new Board(height - splitPosition, width);
         // both together have a total number of combinations of multiplying them
         // and additionally, every combination that is possible by melting the borders of the blocks together
-        OverlapBoard overlapBoard = new OverlapBoard(height, width, splitPosition);
-        overlapBoard.data = data;
+        OverlapBoard overlapBoard;
+        if (isClean) {
+            overlapBoard = new OverlapBoard(height, width, splitPosition);
+        } else {
+            overlapBoard = new OverlapBoard(height, width, splitPosition, data);
+        }
         BigInteger mutationsA = boardA.calculateMutations();
         BigInteger mutationsB = boardB.calculateMutations();
 

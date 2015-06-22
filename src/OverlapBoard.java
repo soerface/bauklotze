@@ -24,6 +24,20 @@ public class OverlapBoard extends Board {
         this(m, n, splitPosition, false);
     }
 
+    public OverlapBoard(int m, int n, int splitPosition, int[][] data) {
+        this(m, n, splitPosition, false);
+        this.data = data;
+        freeBlocksInBottomHalf = 0;
+//        Tetris.debugPrint = true;
+        for (int i = splitPosition; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if (data[i][j] == 0) {
+                    freeBlocksInBottomHalf++;
+                }
+            }
+        }
+    }
+
     public OverlapBoard(int m, int n, int splitPosition, boolean allowRotate) {
         super(m, n, allowRotate, false);
         this.positions = new Integer[n][2];
