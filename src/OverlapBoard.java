@@ -18,6 +18,7 @@ public class OverlapBoard extends Board {
     private int currentPosition;
     private int splitPosition;
     private BigInteger additionalResults = BigInteger.ZERO;
+    private int freeBlocksInBottomHalf;
 
     public OverlapBoard(int m, int n, int splitPosition) {
         this(m, n, splitPosition, false);
@@ -32,6 +33,7 @@ public class OverlapBoard extends Board {
             positions[i][0] = splitPosition - 1;
             positions[i][1] = i;
         }
+        freeBlocksInBottomHalf = width * (height - splitPosition);
     }
 
     public BigInteger calculateMutations() {
@@ -69,8 +71,8 @@ public class OverlapBoard extends Board {
         Board topBoard = new Board(splitPosition, data[0].length, false, true);
         Board bottomBoard = new Board(height - splitPosition, data[0].length, false, true);
         // copy the data from our current board to the two new ones
-        for (int i = 0; i < data.length; i++) {
-            for (int j = 0; j < data[i].length; j++) {
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
                 if (i < splitPosition) {
                     // "7" for better visualization while debugging; could be any other number != 0
                     // mirror the data while copying; gives a little speedup
@@ -97,24 +99,24 @@ public class OverlapBoard extends Board {
         // To make sure they are overlapping, both top half and bottom half need to have
         // blocks inside them. Additionally, both of them need a number of blocks dividable
         // by 3 inside, otherwise, it won't be possible to find a solution
-        int blocksInsideTopHalf = 0;
-        int blocksInsideBottomHalf = 0;
-
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                if (data[i][j] != 0) {
-                    if (i < splitPosition) {
-                        blocksInsideTopHalf++;
-                    } else {
-                        blocksInsideBottomHalf++;
-                    }
-                }
-            }
-        }
-        if (blocksInsideTopHalf == 0 || blocksInsideBottomHalf == 0) {
+//        int freeBlocksInTopHalf = 0;
+//        int freeBlocksInBottomHalf = 0;
+//
+//        for (int i = 0; i < height; i++) {
+//            for (int j = 0; j < width; j++) {
+//                if (data[i][j] == 0) {
+//                    if (i < splitPosition) {
+////                        freeBlocksInTopHalf++;
+//                    } else {
+//                        freeBlocksInBottomHalf++;
+//                    }
+//                }
+//            }
+//        }
+        if (/*freeBlocksInTopHalf == width * splitPosition || */freeBlocksInBottomHalf == width * (height - splitPosition)) {
             return false;
         }
-        return blocksInsideTopHalf % 3 == 0;
+        return freeBlocksInBottomHalf % 3 == 0/* && freeBlocksInTopHalf % 3 == 0*/;
     }
 
     @Override
@@ -130,13 +132,31 @@ public class OverlapBoard extends Board {
 
     @Override
     protected void placeBlockAt(Block block, Integer[] offset) {
-        super.placeBlockAt(block, offset);
+        for (int i = 0; i < block.width; i++) {
+            for (int j = 0; j < block.height; j++) {
+                if (block.data[i][j] != 0) {
+                    data[i + offset[0]][j + offset[1]] = block.data[i][j];
+                    if (i + offset[0] >= splitPosition) {
+                        freeBlocksInBottomHalf--;
+                    }
+                }
+            }
+        }
         currentPosition++;
     }
 
     @Override
     protected void removeBlockAt(Block block, Integer[] offset) {
-        super.removeBlockAt(block, offset);
+        for (int i = 0; i < block.width; i++) {
+            for (int j = 0; j < block.height; j++) {
+                if (block.data[i][j] != 0) {
+                    data[i + offset[0]][j + offset[1]] = 0;
+                    if (i + offset[0] >= splitPosition) {
+                        freeBlocksInBottomHalf++;
+                    }
+                }
+            }
+        }
         currentPosition--;
     }
 }

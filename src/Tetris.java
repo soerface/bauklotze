@@ -59,6 +59,7 @@ public class Tetris {
 
         Tetris.cache = new BigInteger[(m > n ? m : n) + 1][(m > n ? n : m) + 1];
         Tetris.partialsCache = new HashMap<String, BigInteger>();
+        Tetris.debugPrint = false;
 //        Tetris.debugPrint = false;
 //        Tetris.getCaches = 0;
 //        Tetris.setBlocks = 0;

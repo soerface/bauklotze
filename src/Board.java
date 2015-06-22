@@ -77,6 +77,7 @@ public class Board {
         // both together have a total number of combinations of multiplying them
         // and additionally, every combination that is possible by melting the borders of the blocks together
         OverlapBoard overlapBoard = new OverlapBoard(height, width, splitPosition);
+        overlapBoard.data = data;
         BigInteger mutationsA = boardA.calculateMutations();
         BigInteger mutationsB = boardB.calculateMutations();
 
@@ -85,7 +86,7 @@ public class Board {
     }
 
     BigInteger nextPosition(Integer[] position) {
-        BigInteger result = null;
+        BigInteger result;
         if (useCache) {
             result = Tetris.getCache(data);
             if (result != null) {
@@ -113,7 +114,7 @@ public class Board {
             ArrayList<Integer[]> validOffsets = findValidOffsets(block, position);
             for (Integer[] offset : validOffsets) {
                 placeBlockAt(block, offset);
-                //Board.print(data, result);
+                Board.print(data, result);
                 Integer[] nextPos = findNextPosition();
                 if (isFull()) {
                     // if the board is full we have found one solution
@@ -122,7 +123,7 @@ public class Board {
                     result = result.add(nextPosition(nextPos));
                 }
                 removeBlockAt(block, offset);
-                //Board.print(data, result);
+                Board.print(data, result);
             }
         }
 
