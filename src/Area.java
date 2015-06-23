@@ -88,4 +88,15 @@ public class Area {
         }
         return true;
     }
+
+    public boolean isEmpty() {
+        for (int i = x1; i < x2; i++) {
+            for (int j = y1; j < y2; j++) {
+                if (Board.data[j][i] != 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }

@@ -8,175 +8,58 @@ public class Board {
     public static int width;
 
     public Board(int m, int n) {
-        Board.height = m > n ? m : n;
-        Board.width = n < m ? n : m;
-
+        if (m % 3 == 0) {
+            Board.height = m;
+            Board.width = n;
+        } else {
+            Board.height = n;
+            Board.width = m;
+        }
     }
 
     public BigInteger calculateMutations() {
         Board.data = new int[height][width];
-        Area area = new Area(0, 0, width, height);
-        return calculateMutations(area);
-    }
-
-    BigInteger calculateMutations(Area area) {
-        BigInteger result;
-        if (!area.solvable()) {
-            return BigInteger.ZERO;
+        BigInteger result = BigInteger.ONE;
+        for (int i=0; i<height; i+=3) {
+            Area area = new Area(0, i, width, i+3);
+            result = result.multiply(calculateStripeMutations(area));
         }
-        BigInteger cacheValue = Tetris.getCache(area);
-        if (cacheValue != null) {
-            return cacheValue;
-        }
-        Tetris.getCachesNull++;
-
-        boolean splitOnXAxis = area.width < area.height;
-        int splitPosition = findSplitPosition(area, splitOnXAxis);
-        Area[] areas = divideArea(area, splitOnXAxis, splitPosition);
-        Area firstArea = areas[0];
-        Area secondArea = areas[1];
-        if (firstArea.freeBlocks() != 0 && secondArea.freeBlocks() != 0) {
-            BigInteger firstAreaResult = calculateMutations(firstArea);
-            BigInteger secondAreaResult = calculateMutations(secondArea);
-            result = firstAreaResult.multiply(secondAreaResult);
-            int firstAreaFreeBlocks = firstArea.freeBlocks();
-            int secondAreaFreeBlocks = secondArea.freeBlocks();
-            result = result.add(calculateOverlapMutations(area, firstArea, firstAreaFreeBlocks, secondArea, secondAreaFreeBlocks, splitOnXAxis, splitPosition));
-        } else {
-            // no split up possible, calculate it ordinary
-            result = calculateSimpleMutations(area);
-        }
-        Tetris.setCache(result, area);
-        print(result, area);
         return result;
     }
 
-    private BigInteger calculateSimpleMutations(Area area) {
+    BigInteger calculateStripeMutations(Area area) {
+        BigInteger result;
         Integer[] position = findNextPosition(area);
         if (position == null) {
             return area.isFull() ? BigInteger.ONE : BigInteger.ZERO;
         }
-        BigInteger result = BigInteger.ZERO;
-        for (Block block : Tetris.blocks) {
-            ArrayList<Integer[]> validOffsets = findValidOffsets(block, position, area);
-            for (Integer[] offset : validOffsets) {
-                placeBlockAt(block, offset);
-                result = result.add(calculateSimpleMutations(area));
-                removeBlockAt(block, offset);
-            }
+        if (position[0] == 0) {
+            area = new Area(position[1], area.y1, area.x2, area.y2);
         }
-        return result;
-    }
-
-    private BigInteger calculateOverlapMutations(Area area, Area firstArea, int firstAreaFreeBlocks, Area secondArea, int secondAreaFreeBlocks, boolean splitOnXAxis, int splitPosition) {
-        BigInteger result = BigInteger.ZERO;
-        Integer[] position = findNextPosition(area, splitOnXAxis, splitPosition);
-        if (position == null) {
-//            System.out.println("pos is null!");
-            if (area.isFull()) {
-                return BigInteger.ONE;
-            } else {
-                return BigInteger.ZERO;
-            }
-//            return calculateMutations(firstArea).multiply(calculateMutations(secondArea));
+        result = Tetris.getCache(area);
+        if (result != null) {
+            return result;
         }
+        result = BigInteger.ZERO;
         for (Block block : Tetris.blocks) {
             ArrayList<Integer[]> validOffsets = findValidOffsets(block, position, area);
             for (Integer[] offset : validOffsets) {
                 placeBlockAt(block, offset);
                 print(result, area);
-                if (area.isFull()) {
-                    result = result.add(BigInteger.ONE);
-                } else {
-                    Integer[] nextPosition = findNextPosition(area, splitOnXAxis, splitPosition);
-                    if (nextPosition == null) {
-                        if (firstArea.freeBlocks() == firstAreaFreeBlocks || secondArea.freeBlocks() == secondAreaFreeBlocks) {
-//                            System.out.format("not an overlap (%d vs %d | %d vs %d)\n", firstArea.freeBlocks(), firstAreaFreeBlocks, secondArea.freeBlocks(), secondAreaFreeBlocks);
-//                            print(new BigInteger("42"), firstArea);
-//                            print(new BigInteger("42"), secondArea);
-                            // this is not a combination where top and bottom are overlapping
-                        } else {
-//                            System.out.format("overlap (%d vs %d | %d vs %d)\n", firstArea.freeBlocks(), firstAreaFreeBlocks, secondArea.freeBlocks(), secondAreaFreeBlocks);
-                            BigInteger firstAreaResult = firstArea.isFull() ? BigInteger.ONE : calculateMutations(firstArea);
-                            BigInteger secondAreaResult = secondArea.isFull() ? BigInteger.ONE : calculateMutations(secondArea);
-                            result = result.add(firstAreaResult.multiply(secondAreaResult));
-//                            print(firstAreaResult.multiply(secondAreaResult), area);
-                        }
-                    } else {
-                        result = result.add(calculateOverlapMutations(area, firstArea, firstAreaFreeBlocks, secondArea, secondAreaFreeBlocks, splitOnXAxis, splitPosition));
-                    }
-                }
+                result = result.add(calculateStripeMutations(area));
                 removeBlockAt(block, offset);
                 print(result, area);
             }
         }
+        Tetris.setCache(result, area);
         return result;
-    }
-
-    private Area[] divideArea(Area area, boolean splitOnXAxis, int splitPosition) {
-        Area[] areas = new Area[2];
-        if (splitOnXAxis) {
-            areas[0] = new Area(area.x1, area.y1, area.x2, splitPosition);
-            areas[1] = new Area(area.x1, splitPosition, area.x2, area.y2);
-        } else {
-            areas[0] = new Area(area.x1, area.y1, splitPosition, area.y2);
-            areas[1] = new Area(splitPosition, area.y1, area.x2, area.y2);
-        }
-        return areas;
-    }
-
-    private int findSplitPosition(Area area, boolean splitOnXAxis) {
-        Area[] areas = new Area[2];
-        int offset = 0;
-        while (true) {
-            if (splitOnXAxis) {
-                areas[0] = new Area(area.x1, area.y1, area.x2, area.y1 + area.height / 2 + offset);
-                areas[1] = new Area(area.x1, area.y1 + area.height / 2 + offset, area.x2, area.y2);
-            } else {
-                areas[0] = new Area(area.x1, area.y1, area.x1 + area.width / 2 + offset, area.y2);
-                areas[1] = new Area(area.x1 + area.width / 2 + offset, area.y1, area.x2, area.y2);
-            }
-            if (!(areas[0].size() % 3 == 0 && areas[1].size() % 3 == 0)) {
-                switch (offset) {
-                    case 0:
-                        offset = 1;
-                        break;
-                    case 1:
-                        offset = -1;
-                }
-            } else {
-                break;
-            }
-        }
-        if (splitOnXAxis) {
-            return area.y1 + area.height / 2 + offset;
-        } else {
-            return area.x1 + area.width / 2 + offset;
-        }
     }
 
     Integer[] findNextPosition(Area area) {
-        for (int i = area.y1; i < area.y2; i++) {
-            for (int j = area.x1; j < area.x2; j++) {
-                if (data[i][j] == 0) {
-                    return new Integer[]{i, j};
-                }
-            }
-        }
-        return null;
-    }
-
-    protected Integer[] findNextPosition(Area area, boolean splitOnXAxis, int splitPosition) {
-        if (splitOnXAxis) {
-            for (int i = area.x1; i < area.x2; i++) {
-                if (data[splitPosition][i] == 0) {
-                    return new Integer[]{splitPosition, i};
-                }
-            }
-        } else {
-            for (int i = area.y1; i < area.y2; i++) {
-                if (data[i][splitPosition] == 0) {
-                    return new Integer[]{i, splitPosition};
+        for (int i = area.x1; i < area.x2; i++) {
+            for (int j = area.y1; j < area.y2; j++) {
+                if (data[j][i] == 0) {
+                    return new Integer[]{j, i};
                 }
             }
         }

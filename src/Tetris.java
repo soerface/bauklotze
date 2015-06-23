@@ -6,7 +6,8 @@ import java.util.HashMap;
 
 public class Tetris {
     public static Block[] blocks;
-    private static HashMap<String, BigInteger> partialsCache;
+    private static HashMap<String, BigInteger> cache;
+    private static BigInteger[][] rectCache;
     public static boolean debugPrint = false;
     public static int printDelay;
     public static int setCaches;
@@ -58,7 +59,8 @@ public class Tetris {
                 {0, 0, 0}
         });
 
-        Tetris.partialsCache = new HashMap<String, BigInteger>();
+        Tetris.cache = new HashMap<String, BigInteger>();
+        Tetris.rectCache = m > n ? new BigInteger[m][n] : new BigInteger[n][m];
         Tetris.getCaches = 0;
         Tetris.getCachesNull = 0;
         Tetris.setCaches = 0;
@@ -70,9 +72,27 @@ public class Tetris {
 
     public static void setCache(BigInteger value, Area area) {
         setCaches++;
-        Area reducedArea = Area.reducedArea(area);
-        for (String key : Tetris.dataToStrings(Board.data, reducedArea)) {
-            Tetris.partialsCache.put(key, value);
+        if (area.isEmpty()) {
+            setCache(value, area.width, area.height);
+        } else {
+//        Area reducedArea = Area.reducedArea(area);
+//            for (String key : Tetris.dataToStrings(Board.data, area)) {
+//                Tetris.cache.put(key, value);
+//            }
+        }
+    }
+
+    private static void setCache(BigInteger value, int m, int n) {
+//        if (m == 0 || n == 0) {
+//            return;
+//        }
+        // decrement since you should pass the width and height of the board to the function
+        m--;
+        n--;
+        if (m > n) {
+            rectCache[m][n] = value;
+        } else {
+            rectCache[n][m] = value;
         }
     }
 
@@ -80,8 +100,32 @@ public class Tetris {
         // This method returns null if there is no solution available.
         // "0" as a solution is valid, since not all boards with pre set blocks are solvable!
         getCaches++;
-        Area reducedArea = Area.reducedArea(area);
-        return Tetris.partialsCache.get(dataToString(Board.data, reducedArea));
+//        Area reducedArea = Area.reducedArea(area);
+        BigInteger result;
+        if (area.isEmpty()) {
+            result = getCache(area.width, area.height);
+        } else {
+            result = null;
+//            result = Tetris.cache.get(dataToString(Board.data, area));
+        }
+        if (result == null) {
+            getCachesNull++;
+        }
+        return result;
+    }
+
+    private static BigInteger getCache(int m, int n) {
+//        if (m == 0 || n == 0) {
+//            return BigInteger.ONE;
+//        }
+        // decrement since you should pass the width and height of the board to the function
+        m--;
+        n--;
+        if (m > n) {
+            return rectCache[m][n];
+        } else {
+            return rectCache[n][m];
+        }
     }
 
     public static String dataToString(int[][] data, Area area) {
