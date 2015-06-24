@@ -78,12 +78,16 @@ public class Tetris {
             Tetris.setCache(value, area.width, area.height);
         } else {
             Tetris.cache.put(Tetris.dataToString(Board.data, area), value);
+            int[][] mirroredData = mirrorData(Board.data, area);
+            Tetris.cache.put(Tetris.dataToString(mirroredData, area), value);
         }
     }
 
     public static void setOverlapCache(BigInteger value, Area area) {
         setCaches++;
         Tetris.overlapCache.put(Tetris.dataToString(Board.data, area), value);
+        int[][] mirroredData = mirrorData(Board.data, area);
+        Tetris.overlapCache.put(Tetris.dataToString(mirroredData, area), value);
     }
 
     private static void setCache(BigInteger value, int m, int n) {
@@ -157,5 +161,15 @@ public class Tetris {
             stringBuilder.append("+");
         }
         return stringBuilder.toString();
+    }
+
+    public static int[][] mirrorData(int[][] data, Area area) {
+        int[][] newData = new int[Board.height][Board.width];
+        for (int i = area.y1; i < area.y2; i++) {
+            for (int j = area.x1; j < area.x2; j++) {
+                newData[i][area.x2 - (j - area.x1) - 1] = data[i][j];
+            }
+        }
+        return newData;
     }
 }
