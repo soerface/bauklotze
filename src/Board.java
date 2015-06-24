@@ -8,18 +8,25 @@ public class Board {
     public static int width;
 
     public Board(int m, int n) {
-        if (m % 3 == 0) {
-            if (n % 3 == 0 && m < n && m > 3) {
-                Board.height = n;
-                Board.width = m;
-            } else {
-                Board.height = m;
-                Board.width = n;
-            }
-        } else {
+        if (m < 3 || n > m) {
             Board.height = n;
             Board.width = m;
+        } else  {
+            Board.height = m;
+            Board.width = n;
         }
+//        if (m % 3 == 0) {
+//            if (n % 3 == 0 && m < n && m > 3) {
+//                Board.height = n;
+//                Board.width = m;
+//            } else {
+//                Board.height = m;
+//                Board.width = n;
+//            }
+//        } else {
+//            Board.height = n;
+//            Board.width = m;
+//        }
     }
 
     public BigInteger calculateMutations() {
@@ -28,7 +35,7 @@ public class Board {
     }
 
     public BigInteger calculateMutations(Area area) {
-        if (area.height == 3) {
+        if (area.height <= 3) {
             return calculateStripeMutations(area);
         }
         BigInteger result;
@@ -78,7 +85,7 @@ public class Board {
 
     BigInteger calculateOverlapMutations(Area area, Area bottomStripe) {
         BigInteger result;
-        result = Tetris.getCache(area);
+        result = Tetris.getOverlapCache(area);
         if (result != null) {
             return result;
         }
@@ -102,7 +109,7 @@ public class Board {
                 print(result, subArea);
             }
         }
-        Tetris.setCache(result, area);
+        Tetris.setOverlapCache(result, area);
         return result;
     }
 

@@ -23,6 +23,8 @@ public class Test {
             {new BigInteger("9"), new BigInteger("5"), new BigInteger("1269900")},
             {new BigInteger("9"), new BigInteger("6"), new BigInteger("45832761")},
             {new BigInteger("9"), new BigInteger("7"), new BigInteger("1064557805")},
+            {new BigInteger("8"), new BigInteger("9"), new BigInteger("30860212081")},
+            {new BigInteger("7"), new BigInteger("9"), new BigInteger("1064557805")},
             {new BigInteger("9"), new BigInteger("8"), new BigInteger("30860212081")},
             {new BigInteger("9"), new BigInteger("9"), new BigInteger("928789262080")},
             {new BigInteger("9"), new BigInteger("10"), new BigInteger("25020222581494")},
