@@ -97,7 +97,6 @@ public class Tetris {
         // This method returns null if there is no solution available.
         // "0" as a solution is valid, since not all boards with pre set blocks are solvable!
         getCaches++;
-//        Area reducedArea = Area.reducedArea(area);
         BigInteger result;
         if (area.isEmpty()) {
             result = Tetris.getCache(area.width, area.height);
@@ -142,40 +141,5 @@ public class Tetris {
             stringBuilder.append("+");
         }
         return stringBuilder.toString();
-    }
-
-    public static String[] dataToStrings(int[][] data, Area area) {
-        // Basically the same as dataToString, but it returns all mirrored and rotated solutions
-        String[] strings = new String[8];
-        for (int i = 0; i < 8; i += 2) {
-            strings[i] = dataToString(data, area);
-            strings[i + 1] = dataToString(mirrorData(data, area), area);
-            data = rotateData(data, area);
-            // this rotates the area
-            area = new Area(area.y1, area.x1, area.y2, area.x2);
-        }
-        return strings;
-    }
-
-    public static int[][] rotateData(int[][] data, Area area) {
-        // on purpose two times Board.height, because one side might be smaller
-        // this could be problematic when rotating
-        int[][] newData = new int[Board.height][Board.height];
-        for (int i = area.y1; i < area.y2; i++) {
-            for (int j = area.x1; j < area.x2; j++) {
-                newData[area.x2 - (j - area.x1) - 1][i] = data[i][j];
-            }
-        }
-        return newData;
-    }
-
-    public static int[][] mirrorData(int[][] data, Area area) {
-        int[][] newData = new int[Board.height][Board.height];
-        for (int i = area.y1; i < area.y2; i++) {
-            for (int j = area.x1; j < area.x2; j++) {
-                newData[i][area.x2 - (j - area.x1) - 1] = data[i][j];
-            }
-        }
-        return newData;
     }
 }

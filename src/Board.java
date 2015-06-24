@@ -27,10 +27,10 @@ public class Board {
             return calculateStripeMutations(area);
         }
         BigInteger result;
-        Area bottomStripe = new Area(area.x1, area.y2-3, area.x2, area.y2);
-        Area remainingArea = new Area(area.x1, area.y1, area.x2, area.y2-3);
+        Area bottomStripe = new Area(area.x1, area.y2 - 3, area.x2, area.y2);
+        Area remainingArea = new Area(area.x1, area.y1, area.x2, area.y2 - 3);
         result = calculateStripeMutations(bottomStripe).multiply(calculateMutations(remainingArea));
-        result = result.add(calculateOverlapMutations(area));
+        result = result.add(calculateOverlapMutations(area, bottomStripe));
         return result;
     }
 
@@ -52,33 +52,52 @@ public class Board {
             ArrayList<Integer[]> validOffsets = findValidOffsets(block, position, area);
             for (Integer[] offset : validOffsets) {
                 placeBlockAt(block, offset);
-                print(result, area);
+//                print(result, area);
                 result = result.add(calculateStripeMutations(area));
                 removeBlockAt(block, offset);
-                print(result, area);
+//                print(result, area);
             }
         }
         Tetris.setCache(result, area);
         return result;
     }
 
-    BigInteger calculateOverlapMutations(Area area) {
-        BigInteger result = BigInteger.ZERO;
-        Area bottomStripe = new Area(area.x1, area.y2-3, area.x2, area.y2);
+    boolean splitCorrectly(Area bottomStripe) {
+            for (int i=0; i<width; i++) {
+                if (data[bottomStripe.y1 - 1][i] != 0) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+    BigInteger calculateOverlapMutations(Area area, Area bottomStripe) {
+        BigInteger result;
+        result = Tetris.getCache(area);
+        if (result != null) {
+            return result;
+        }
+        result = BigInteger.ZERO;
         Integer[] position = findNextPositionFromBottom(bottomStripe);
         if (position == null) {
-            return BigInteger.ZERO;
+            if (!splitCorrectly(bottomStripe)) {
+                return BigInteger.ZERO;
+            }
+            Area subArea = new Area(area.x1, area.y1, area.x2, bottomStripe.y1);
+            return calculateMutations(subArea);
         }
+        Area subArea = new Area(area.x1, area.y1, area.x2, position[0] + 1);
         for (Block block : Tetris.blocks) {
-            ArrayList<Integer[]> validOffsets = findValidOffsets(block, position, area);
+            ArrayList<Integer[]> validOffsets = findValidOffsets(block, position, subArea);
             for (Integer[] offset : validOffsets) {
                 placeBlockAt(block, offset);
-                print(result, area);
-                result = result.add(calculateOverlapMutations(area));
+//                print(result, subArea);
+                result = result.add(calculateOverlapMutations(subArea, bottomStripe));
                 removeBlockAt(block, offset);
-                print(result, area);
+//                print(result, subArea);
             }
         }
+        Tetris.setCache(result, area);
         return result;
     }
 
@@ -94,7 +113,7 @@ public class Board {
     }
 
     Integer[] findNextPositionFromBottom(Area area) {
-        for (int i = area.y2-1; i >= area.y1; i--) {
+        for (int i = area.y2 - 1; i >= area.y1; i--) {
             for (int j = area.x1; j < area.x2; j++) {
                 if (data[i][j] == 0) {
                     return new Integer[]{i, j};

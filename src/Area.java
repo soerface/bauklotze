@@ -15,13 +15,6 @@ public class Area {
         height = y2 - y1;
     }
 
-    public boolean solvable() {
-        if (freeBlocks() % 3 != 0) {
-            return false;
-        }
-        return true;
-    }
-
     public int freeBlocks() {
         int freeBlocks = 0;
         for (int i = y1; i < y2; i++) {
@@ -37,10 +30,6 @@ public class Area {
     @Override
     public String toString() {
         return String.format("%d / %d  %d / %d", x1, y1, x2, y2);
-    }
-
-    public int size() {
-        return width * height;
     }
 
     public boolean isFull() {
@@ -64,4 +53,5 @@ public class Area {
         }
         return true;
     }
+
 }
