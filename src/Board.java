@@ -9,8 +9,13 @@ public class Board {
 
     public Board(int m, int n) {
         if (m % 3 == 0) {
-            Board.height = m;
-            Board.width = n;
+            if (n % 3 == 0 && m < n && m > 3) {
+                Board.height = n;
+                Board.width = m;
+            } else {
+                Board.height = m;
+                Board.width = n;
+            }
         } else {
             Board.height = n;
             Board.width = m;
@@ -52,10 +57,10 @@ public class Board {
             ArrayList<Integer[]> validOffsets = findValidOffsets(block, position, area);
             for (Integer[] offset : validOffsets) {
                 placeBlockAt(block, offset);
-//                print(result, area);
+                print(result, area);
                 result = result.add(calculateStripeMutations(area));
                 removeBlockAt(block, offset);
-//                print(result, area);
+                print(result, area);
             }
         }
         Tetris.setCache(result, area);
@@ -63,13 +68,13 @@ public class Board {
     }
 
     boolean splitCorrectly(Area bottomStripe) {
-            for (int i=0; i<width; i++) {
-                if (data[bottomStripe.y1 - 1][i] != 0) {
-                    return true;
-                }
+        for (int i = 0; i < width; i++) {
+            if (data[bottomStripe.y1 - 1][i] != 0) {
+                return true;
             }
-            return false;
         }
+        return false;
+    }
 
     BigInteger calculateOverlapMutations(Area area, Area bottomStripe) {
         BigInteger result;
@@ -91,10 +96,10 @@ public class Board {
             ArrayList<Integer[]> validOffsets = findValidOffsets(block, position, subArea);
             for (Integer[] offset : validOffsets) {
                 placeBlockAt(block, offset);
-//                print(result, subArea);
+                print(result, subArea);
                 result = result.add(calculateOverlapMutations(subArea, bottomStripe));
                 removeBlockAt(block, offset);
-//                print(result, subArea);
+                print(result, subArea);
             }
         }
         Tetris.setCache(result, area);
