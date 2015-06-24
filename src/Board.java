@@ -19,21 +19,28 @@ public class Board {
 
     public BigInteger calculateMutations() {
         Board.data = new int[height][width];
-        BigInteger result = BigInteger.ONE;
-        for (int i=0; i<height; i+=3) {
-            Area area = new Area(0, i, width, i+3);
-            result = result.multiply(calculateStripeMutations(area));
+        return calculateMutations(new Area(0, 0, width, height));
+    }
+
+    public BigInteger calculateMutations(Area area) {
+        if (area.height == 3) {
+            return calculateStripeMutations(area);
         }
+        BigInteger result;
+        Area bottomStripe = new Area(area.x1, area.y2-3, area.x2, area.y2);
+        Area remainingArea = new Area(area.x1, area.y1, area.x2, area.y2-3);
+        result = calculateStripeMutations(bottomStripe).multiply(calculateMutations(remainingArea));
+        result = result.add(calculateOverlapMutations(area));
         return result;
     }
 
     BigInteger calculateStripeMutations(Area area) {
         BigInteger result;
-        Integer[] position = findNextPosition(area);
+        Integer[] position = findNextPositionFromLeft(area);
         if (position == null) {
             return area.isFull() ? BigInteger.ONE : BigInteger.ZERO;
         }
-        if (position[0] == 0) {
+        if (position[0] == area.y1) {
             area = new Area(position[1], area.y1, area.x2, area.y2);
         }
         result = Tetris.getCache(area);
@@ -55,11 +62,42 @@ public class Board {
         return result;
     }
 
-    Integer[] findNextPosition(Area area) {
+    BigInteger calculateOverlapMutations(Area area) {
+        BigInteger result = BigInteger.ZERO;
+        Area bottomStripe = new Area(area.x1, area.y2-3, area.x2, area.y2);
+        Integer[] position = findNextPositionFromBottom(bottomStripe);
+        if (position == null) {
+            return BigInteger.ZERO;
+        }
+        for (Block block : Tetris.blocks) {
+            ArrayList<Integer[]> validOffsets = findValidOffsets(block, position, area);
+            for (Integer[] offset : validOffsets) {
+                placeBlockAt(block, offset);
+                print(result, area);
+                result = result.add(calculateOverlapMutations(area));
+                removeBlockAt(block, offset);
+                print(result, area);
+            }
+        }
+        return result;
+    }
+
+    Integer[] findNextPositionFromLeft(Area area) {
         for (int i = area.x1; i < area.x2; i++) {
             for (int j = area.y1; j < area.y2; j++) {
                 if (data[j][i] == 0) {
                     return new Integer[]{j, i};
+                }
+            }
+        }
+        return null;
+    }
+
+    Integer[] findNextPositionFromBottom(Area area) {
+        for (int i = area.y2-1; i >= area.y1; i--) {
+            for (int j = area.x1; j < area.x2; j++) {
+                if (data[i][j] == 0) {
+                    return new Integer[]{i, j};
                 }
             }
         }
@@ -157,26 +195,6 @@ public class Board {
         return true;
     }
 
-    void printArea(BigInteger result, Area area) {
-        if (!Tetris.debugPrint) {
-            return;
-        }
-        System.out.println();
-        for (int i = area.y1; i < area.y2; i++) {
-            for (int j = area.x1; j < area.x2; j++) {
-                int value = data[i][j];
-                System.out.format("\u001B[4%dm %d \u001B[0m", value, value);
-            }
-            System.out.println();
-        }
-        System.out.format("Solutions: %d\n", result);
-        try {
-            Thread.sleep(Tetris.printDelay);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void print(BigInteger result, Area area) {
         print(result, data, area);
     }
@@ -202,7 +220,7 @@ public class Board {
             }
             System.out.println();
         }
-        System.out.format("Solutions: %d\n", result);
+        System.out.format("Solutions: %15d SetBlocks: %10d\n", result, Tetris.setBlocks);
         try {
             Thread.sleep(Tetris.printDelay);
         } catch (InterruptedException e) {

@@ -73,12 +73,9 @@ public class Tetris {
     public static void setCache(BigInteger value, Area area) {
         setCaches++;
         if (area.isEmpty()) {
-            setCache(value, area.width, area.height);
+            Tetris.setCache(value, area.width, area.height);
         } else {
-//        Area reducedArea = Area.reducedArea(area);
-//            for (String key : Tetris.dataToStrings(Board.data, area)) {
-//                Tetris.cache.put(key, value);
-//            }
+            Tetris.cache.put(Tetris.dataToString(Board.data, area), value);
         }
     }
 
@@ -103,10 +100,9 @@ public class Tetris {
 //        Area reducedArea = Area.reducedArea(area);
         BigInteger result;
         if (area.isEmpty()) {
-            result = getCache(area.width, area.height);
+            result = Tetris.getCache(area.width, area.height);
         } else {
-            result = null;
-//            result = Tetris.cache.get(dataToString(Board.data, area));
+            result = Tetris.cache.get(dataToString(Board.data, area));
         }
         if (result == null) {
             getCachesNull++;
