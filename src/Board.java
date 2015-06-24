@@ -126,7 +126,7 @@ public class Board {
 
     Integer[] findNextPositionFromBottom(Area area) {
         for (int i = area.y2 - 1; i >= area.y1; i--) {
-            for (int j = area.x1; j < area.x2; j++) {
+            for (int j = area.x2 - 1; j >= area.x1; j--) {
                 if (data[i][j] == 0) {
                     return new Integer[]{i, j};
                 }
