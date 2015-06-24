@@ -5,6 +5,7 @@ public class Area {
     public final int y2;
     public final int width;
     public final int height;
+    public final int size;
 
     public Area(int x1, int y1, int x2, int y2) {
         this.x1 = x1;
@@ -13,6 +14,7 @@ public class Area {
         this.y2 = y2;
         width = x2 - x1;
         height = y2 - y1;
+        size = width * height;
     }
 
     public int freeBlocks() {

@@ -1,4 +1,5 @@
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 // After the contest is over, the sourcecode will be available at
@@ -6,8 +7,8 @@ import java.util.HashMap;
 
 public class Tetris {
     public static Block[] blocks;
-    private static HashMap<String, BigInteger> cache;
-    private static HashMap<String, BigInteger> overlapCache;
+    private static HashMap<ArrayList<Integer>, BigInteger> cache;
+    private static HashMap<ArrayList<Integer>, BigInteger> overlapCache;
     private static BigInteger[][] rectCache;
     public static boolean debugPrint = false;
     public static int printDelay;
@@ -60,8 +61,8 @@ public class Tetris {
                 {0, 0, 0}
         });
 
-        Tetris.cache = new HashMap<String, BigInteger>();
-        Tetris.overlapCache = new HashMap<String, BigInteger>();
+        Tetris.cache = new HashMap<ArrayList<Integer>, BigInteger>();
+        Tetris.overlapCache = new HashMap<ArrayList<Integer>, BigInteger>();
         Tetris.rectCache = m > n ? new BigInteger[m][n] : new BigInteger[n][m];
         Tetris.getCaches = 0;
         Tetris.getCachesNull = 0;
@@ -77,17 +78,17 @@ public class Tetris {
         if (area.isEmpty()) {
             Tetris.setCache(value, area.width, area.height);
         } else {
-            Tetris.cache.put(Tetris.dataToString(Board.data, area), value);
+            Tetris.cache.put(Tetris.dataToKey(Board.data, area), value);
             int[][] mirroredData = mirrorData(Board.data, area);
-            Tetris.cache.put(Tetris.dataToString(mirroredData, area), value);
+            Tetris.cache.put(Tetris.dataToKey(mirroredData, area), value);
         }
     }
 
     public static void setOverlapCache(BigInteger value, Area area) {
         setCaches++;
-        Tetris.overlapCache.put(Tetris.dataToString(Board.data, area), value);
+        Tetris.overlapCache.put(Tetris.dataToKey(Board.data, area), value);
         int[][] mirroredData = mirrorData(Board.data, area);
-        Tetris.overlapCache.put(Tetris.dataToString(mirroredData, area), value);
+        Tetris.overlapCache.put(Tetris.dataToKey(mirroredData, area), value);
     }
 
     private static void setCache(BigInteger value, int m, int n) {
@@ -109,7 +110,7 @@ public class Tetris {
         if (area.isEmpty()) {
             result = Tetris.getCache(area.width, area.height);
         } else {
-            result = Tetris.cache.get(dataToString(Board.data, area));
+            result = Tetris.cache.get(dataToKey(Board.data, area));
         }
         if (result == null) {
             getCachesNull++;
@@ -122,7 +123,7 @@ public class Tetris {
         // "0" as a solution is valid, since not all boards with pre set blocks are solvable!
         getCaches++;
         BigInteger result;
-        result = Tetris.overlapCache.get(dataToString(Board.data, area));
+        result = Tetris.overlapCache.get(dataToKey(Board.data, area));
         if (result == null) {
             getCachesNull++;
         }
@@ -143,24 +144,18 @@ public class Tetris {
         }
     }
 
-    public static String dataToString(int[][] data, Area area) {
-        // This method is used to provide a key for the "overlap cache"
-        // Often, the same for the top or bottom board is being calculated, though it is usually not a rectangle
-        // Therefore, we can save a lot of work by caching those situations.
-        StringBuilder stringBuilder = new StringBuilder();
+    public static ArrayList<Integer> dataToKey(int[][] data, Area area) {
+//        This method is used to provide a key for the "overlap cache"
+//        Often, the same for the top or bottom board is being calculated, though it is usually not a rectangle
+//        Therefore, we can save a lot of work by caching those situations.
+        ArrayList<Integer> key = new ArrayList<Integer>(area.size + area.height);
         for (int i = area.y1; i < area.y2; i++) {
-            StringBuilder row = new StringBuilder();
             for (int j = area.x1; j < area.x2; j++) {
-                if (data[i][j] != 0) {
-                    row.append(1);
-                } else {
-                    row.append(0);
-                }
+                key.add(data[i][j] != 0 ? 1 : 0);
             }
-            stringBuilder.append(row);
-            stringBuilder.append("+");
+            key.add(-1);
         }
-        return stringBuilder.toString();
+        return key;
     }
 
     public static int[][] mirrorData(int[][] data, Area area) {
