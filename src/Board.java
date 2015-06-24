@@ -119,7 +119,6 @@ public class Board {
     }
 
     ArrayList<Integer[]> findValidOffsets(Block block, Integer[] pos, Area area) {
-        long start = System.currentTimeMillis();
         ArrayList<Integer[]> validOffsets = new ArrayList<Integer[]>(block.coordinates.length);
         for (int[] coordinate : block.coordinates) {
             if (coordinate[0] == 2) {
@@ -133,9 +132,6 @@ public class Board {
                 validOffsets.add(offset);
             }
         }
-
-        long delta = System.currentTimeMillis() - start;
-        Tetris.fooCounter += delta;
         return validOffsets;
     }
 
