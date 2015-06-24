@@ -115,7 +115,7 @@ public class Board {
 
     Integer[] findNextPositionFromLeft(Area area) {
         for (int i = area.x1; i < area.x2; i++) {
-            for (int j = area.y1; j < area.y2; j++) {
+            for (int j = area.y2 - 1; j >= area.y1; j--) {
                 if (data[j][i] == 0) {
                     return new Integer[]{j, i};
                 }
