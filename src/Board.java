@@ -52,7 +52,7 @@ public class Board {
         if (position == null) {
             return area.isFull() ? BigInteger.ONE : BigInteger.ZERO;
         }
-        if (position[0] == area.y1) {
+        if (position[0] == area.y2-1) {
             area = new Area(position[1], area.y1, area.x2, area.y2);
         }
         result = Tetris.getCache(area);
