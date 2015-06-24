@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public class Tetris {
     public static Block[] blocks;
-    private static HashMap<ArrayList<Integer>, BigInteger> cache;
+    private static HashMap<ArrayList<Boolean>, BigInteger> cache;
     private static BigInteger[][] rectCache;
     public static boolean debugPrint = false;
     public static int printDelay;
@@ -62,7 +62,7 @@ public class Tetris {
                 {0, 0, 0}
         });
 
-        Tetris.cache = new HashMap<ArrayList<Integer>, BigInteger>();
+        Tetris.cache = new HashMap<ArrayList<Boolean>, BigInteger>();
         Tetris.rectCache = m > n ? new BigInteger[m][n] : new BigInteger[n][m];
         Tetris.getCaches = 0;
         Tetris.getCachesNull = 0;
@@ -126,25 +126,21 @@ public class Tetris {
         }
     }
 
-    public static ArrayList<Integer> dataToKey(int[][] data, Area area) {
+    public static ArrayList<Boolean> dataToKey(int[][] data, Area area) {
 //        This method is used to provide a key for the "overlap cache"
 //        Often, the same for the top or bottom board is being calculated, though it is usually not a rectangle
 //        Therefore, we can save a lot of work by caching those situations.
-        long start = System.currentTimeMillis();
-//        String string = String.format("%1$" + area.size() + "s");
-//        StringBuilder stringBuilder = new StringBuilder();
-        ArrayList<Integer> key = new ArrayList<Integer>(area.size + area.height);
+//        long start = System.currentTimeMillis();
+        ArrayList<Boolean> key = new ArrayList<Boolean>(area.size + area.height);
         for (int i = area.y1; i < area.y2; i++) {
             for (int j = area.x1; j < area.x2; j++) {
-                key.add(data[i][j] != 0 ? 1 : 0);
+                key.add(data[i][j] != 0);
             }
-            key.add(-1);
+            key.add(null);
         }
-//            stringBuilder.append('x');
-        long delta = System.currentTimeMillis() - start;
-        Tetris.fooCounter += delta;
+//        long delta = System.currentTimeMillis() - start;
+//        Tetris.fooCounter += delta;
         return key;
-//        return stringBuilder.toString();
     }
 
     public static int[][] mirrorData(int[][] data, Area area) {
