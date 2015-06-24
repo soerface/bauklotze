@@ -7,7 +7,6 @@ import java.util.HashMap;
 public class Tetris {
     public static Block[] blocks;
     private static HashMap<String, BigInteger> cache;
-    private static HashMap<String, BigInteger> overlapCache;
     private static BigInteger[][] rectCache;
     public static boolean debugPrint = false;
     public static int printDelay;
@@ -61,7 +60,6 @@ public class Tetris {
         });
 
         Tetris.cache = new HashMap<String, BigInteger>();
-        Tetris.overlapCache = new HashMap<String, BigInteger>();
         Tetris.rectCache = m > n ? new BigInteger[m][n] : new BigInteger[n][m];
         Tetris.getCaches = 0;
         Tetris.getCachesNull = 0;
@@ -81,13 +79,6 @@ public class Tetris {
             int[][] mirroredData = mirrorData(Board.data, area);
             Tetris.cache.put(Tetris.dataToString(mirroredData, area), value);
         }
-    }
-
-    public static void setOverlapCache(BigInteger value, Area area) {
-        setCaches++;
-        Tetris.overlapCache.put(Tetris.dataToString(Board.data, area), value);
-        int[][] mirroredData = mirrorData(Board.data, area);
-        Tetris.overlapCache.put(Tetris.dataToString(mirroredData, area), value);
     }
 
     private static void setCache(BigInteger value, int m, int n) {
@@ -111,18 +102,6 @@ public class Tetris {
         } else {
             result = Tetris.cache.get(dataToString(Board.data, area));
         }
-        if (result == null) {
-            getCachesNull++;
-        }
-        return result;
-    }
-
-    public static BigInteger getOverlapCache(Area area) {
-        // This method returns null if there is no solution available.
-        // "0" as a solution is valid, since not all boards with pre set blocks are solvable!
-        getCaches++;
-        BigInteger result;
-        result = Tetris.overlapCache.get(dataToString(Board.data, area));
         if (result == null) {
             getCachesNull++;
         }
