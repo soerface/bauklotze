@@ -36,14 +36,29 @@ public class Board {
 
     public BigInteger calculateMutations(Area area) {
         BigInteger result;
+        Integer[] position;
+        if (area.height > 3) {
+            position = findNextPositionFromTop(area);
+            if (position == null) {
+                return area.isFull() ? BigInteger.ONE : BigInteger.ZERO;
+            }
+            area = new Area(area.x1, position[0], area.x2, area.y2);
+            if (area.height <= 3) {
+                position = findNextPositionFromRight(area);
+                area = new Area(area.x1, area.y1, position[1] + 1, area.y2);
+            }
+        } else {
+            position = findNextPositionFromRight(area);
+            if (position == null) {
+                return area.isFull() ? BigInteger.ONE : BigInteger.ZERO;
+            }
+            area = new Area(area.x1, area.y1, position[1] + 1, area.y2);
+        }
         result = Tetris.getCache(area);
         if (result != null) {
             return result;
         }
-        Integer[] position = findNextPosition(area);
-        if (position == null) {
-            return area.isFull() ? BigInteger.ONE : BigInteger.ZERO;
-        }
+
         result = BigInteger.ZERO;
         for (Block block : Tetris.blocks) {
             ArrayList<Integer[]> validOffsets = findValidOffsets(block, position, area);
@@ -55,11 +70,12 @@ public class Board {
                 print(result, area);
             }
         }
+//        print(result, area);
         Tetris.setCache(result, area);
         return result;
     }
 
-    Integer[] findNextPosition(Area area) {
+    Integer[] findNextPositionFromTop(Area area) {
         for (int i = area.y1; i < area.y2; i++) {
             for (int j = area.x1; j < area.x2; j++) {
                 if (data[i][j] == 0) {
@@ -69,7 +85,18 @@ public class Board {
         }
         return null;
     }
-    
+
+    Integer[] findNextPositionFromRight(Area area) {
+        for (int i = area.x2 - 1; i >= area.x1; i--) {
+            for (int j = area.y1; j < area.y2; j++) {
+                if (data[j][i] == 0) {
+                    return new Integer[]{j, i};
+                }
+            }
+        }
+        return null;
+    }
+
     protected void placeBlockAt(Block block, Integer[] offset) {
         Tetris.setBlocks++;
         for (int i = 0; i < block.height; i++) {

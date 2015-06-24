@@ -172,7 +172,7 @@ public class Test {
             if (values[2].compareTo(BigInteger.ZERO) == 0 || res.compareTo(values[2]) == 0) {
 //                System.out.format("OK %6dms mutations: %15d setBlock: %15d setCache: %15d\n", delta, res, Tetris.setBlocks, Tetris.getCaches);
                 if (delta > 200 || true) {
-                    System.out.format("%3d %3d - %6dms mutations: %40d Cache set / get / setBlocks: %8d / %8d / %8d\n", values[0], values[1], delta, res, Tetris.setCaches, Tetris.getCaches - Tetris.getCachesNull, Tetris.setBlocks);
+                    System.out.format("%3d %3d - %6dms mutations: %40d Cache set / get / setBlocks / foocounter: %8d / %8d / %8d / %8d\n", values[0], values[1], delta, res, Tetris.setCaches, Tetris.getCaches - Tetris.getCachesNull, Tetris.setBlocks, Tetris.fooCounter);
                 }
             } else {
                 System.out.format("%3d %3d - ERROR\n", values[0], values[1]);
