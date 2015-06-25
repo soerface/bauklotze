@@ -1,4 +1,5 @@
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -8,7 +9,7 @@ import java.util.HashMap;
 
 public class Tetris {
     public static Block[] blocks;
-    private static HashMap<ArrayList<Integer>, BigInteger> cache;
+    private static HashMap<ByteBuffer, BigInteger> cache;
     private static BigInteger[][] rectCache;
     public static boolean debugPrint = false;
     public static int printDelay;
@@ -62,7 +63,7 @@ public class Tetris {
                 {0, 0, 0}
         });
 
-        Tetris.cache = new HashMap<ArrayList<Integer>, BigInteger>();
+        Tetris.cache = new HashMap<ByteBuffer, BigInteger>();
         Tetris.rectCache = m > n ? new BigInteger[m][n] : new BigInteger[n][m];
         Tetris.getCaches = 0;
         Tetris.getCachesNull = 0;
@@ -130,19 +131,21 @@ public class Tetris {
         }
     }
 
-    public static ArrayList<Integer> dataToKey(int[][] data, Area area) {
+    public static ByteBuffer dataToKey(int[][] data, Area area) {
 //        This method is used to provide a key for the "overlap cache"
 //        Often, the same for the top or bottom board is being calculated, though it is usually not a rectangle
 //        Therefore, we can save a lot of work by caching those situations.
-        ArrayList<Integer> key = new ArrayList<Integer>(area.size + 2);
-        key.add(area.height);
-        key.add(area.width);
+        byte[] key = new byte[area.size + 2];
+        key[0] = (byte) area.height;
+        key[1] = (byte) area.width;
+        int k = 2;
         for (int i = area.y1; i < area.y2; i++) {
             for (int j = area.x1; j < area.x2; j++) {
-                key.add(data[i][j] != 0 ? 1 : 0);
+                key[k] = (byte) (data[i][j] != 0 ? 1 : 0);
+                k++;
             }
         }
-        return key;
+        return ByteBuffer.wrap(key);
     }
 
     public static int[][] mirrorData(int[][] data, Area area) {
