@@ -16,6 +16,7 @@ public class Tetris {
     public static int getCachesNull;
     public static int setBlocks;
     public static long fooCounter;
+    private static byte[] key;
 
     public static void main(String[] args) {
         int m = Integer.parseInt(args[0]);
@@ -68,6 +69,7 @@ public class Tetris {
         Tetris.setCaches = 0;
         Tetris.setBlocks = 0;
         Tetris.fooCounter = 0;
+        key = new byte[m * n];
         Board board = new Board(m, n);
         return board.calculateMutations();
     }
@@ -132,12 +134,10 @@ public class Tetris {
     }
 
     public static ByteBuffer dataToKey(BoardData boardData) {
-//        This method is used to provide a key for the "overlap cache"
-//        Often, the same for the top or bottom board is being calculated, though it is usually not a rectangle
-//        Therefore, we can save a lot of work by caching those situations.
         int[][] data = boardData.data;
-        byte[] key = new byte[boardData.size];
         int k = 0;
+        // TODO: WHY THE HELL WE NEED A NEW ONE?!
+        key = new byte[boardData.size];
         for (int i = 0; i < boardData.height; i++) {
             for (int j = 0; j < boardData.width; j++) {
                 key[k] = (byte) (data[i][j] != 0 ? 1 : 0);
