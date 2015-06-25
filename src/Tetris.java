@@ -136,13 +136,10 @@ public class Tetris {
 //        Often, the same for the top or bottom board is being calculated, though it is usually not a rectangle
 //        Therefore, we can save a lot of work by caching those situations.
         int[][] data = boardData.data;
-        Area area = boardData.area;
-        byte[] key = new byte[area.size + 2];
-        key[0] = (byte) area.height;
-        key[1] = (byte) area.width;
-        int k = 2;
-        for (int i = area.y1; i < area.y2; i++) {
-            for (int j = area.x1; j < area.x2; j++) {
+        byte[] key = new byte[boardData.size];
+        int k = 0;
+        for (int i = 0; i < boardData.height; i++) {
+            for (int j = 0; j < boardData.width; j++) {
                 key[k] = (byte) (data[i][j] != 0 ? 1 : 0);
                 k++;
             }
