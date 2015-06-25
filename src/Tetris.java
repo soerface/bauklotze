@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public class Tetris {
     public static Block[] blocks;
-    private static HashMap<ArrayList<Boolean>, BigInteger> cache;
+    private static HashMap<ArrayList<Integer>, BigInteger> cache;
     private static BigInteger[][] rectCache;
     public static boolean debugPrint = false;
     public static int printDelay;
@@ -62,7 +62,7 @@ public class Tetris {
                 {0, 0, 0}
         });
 
-        Tetris.cache = new HashMap<ArrayList<Boolean>, BigInteger>();
+        Tetris.cache = new HashMap<ArrayList<Integer>, BigInteger>();
         Tetris.rectCache = m > n ? new BigInteger[m][n] : new BigInteger[n][m];
         Tetris.getCaches = 0;
         Tetris.getCachesNull = 0;
@@ -79,9 +79,11 @@ public class Tetris {
         if (area.isEmpty()) {
             Tetris.setCache(value, area.width, area.height);
         } else {
+            long start = System.currentTimeMillis();
             Tetris.cache.put(Tetris.dataToKey(Board.data, area), value);
             int[][] mirroredData = mirrorData(Board.data, area);
             Tetris.cache.put(Tetris.dataToKey(mirroredData, area), value);
+            Tetris.fooCounter += System.currentTimeMillis() - start;
         }
     }
 
@@ -104,7 +106,9 @@ public class Tetris {
         if (area.isEmpty()) {
             result = Tetris.getCache(area.width, area.height);
         } else {
+            long start = System.currentTimeMillis();
             result = Tetris.cache.get(dataToKey(Board.data, area));
+            Tetris.fooCounter += System.currentTimeMillis() - start;
         }
         if (result == null) {
             getCachesNull++;
@@ -126,20 +130,18 @@ public class Tetris {
         }
     }
 
-    public static ArrayList<Boolean> dataToKey(int[][] data, Area area) {
+    public static ArrayList<Integer> dataToKey(int[][] data, Area area) {
 //        This method is used to provide a key for the "overlap cache"
 //        Often, the same for the top or bottom board is being calculated, though it is usually not a rectangle
 //        Therefore, we can save a lot of work by caching those situations.
-//        long start = System.currentTimeMillis();
-        ArrayList<Boolean> key = new ArrayList<Boolean>(area.size + area.height);
+        ArrayList<Integer> key = new ArrayList<Integer>(area.size + 2);
+        key.add(area.height);
+        key.add(area.width);
         for (int i = area.y1; i < area.y2; i++) {
             for (int j = area.x1; j < area.x2; j++) {
-                key.add(data[i][j] != 0);
+                key.add(data[i][j] != 0 ? 1 : 0);
             }
-            key.add(null);
         }
-//        long delta = System.currentTimeMillis() - start;
-//        Tetris.fooCounter += delta;
         return key;
     }
 
