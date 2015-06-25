@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class Board {
 
-    public static int[][] data;
+    public static BoardData boardData;
     public static int height;
     public static int width;
 
@@ -15,22 +15,10 @@ public class Board {
             Board.height = m;
             Board.width = n;
         }
-//        if (m % 3 == 0) {
-//            if (n % 3 == 0 && m < n && m > 3) {
-//                Board.height = n;
-//                Board.width = m;
-//            } else {
-//                Board.height = m;
-//                Board.width = n;
-//            }
-//        } else {
-//            Board.height = n;
-//            Board.width = m;
-//        }
+        Board.boardData = new BoardData(height, width);
     }
 
     public BigInteger calculateMutations() {
-        Board.data = new int[height][width];
         return calculateMutations(new Area(0, 0, width, height));
     }
 
@@ -78,7 +66,7 @@ public class Board {
     Integer[] findNextPositionFromTop(Area area) {
         for (int i = area.y1; i < area.y2; i++) {
             for (int j = area.x1; j < area.x2; j++) {
-                if (data[i][j] == 0) {
+                if (boardData.data[i][j] == 0) {
                     return new Integer[]{i, j};
                 }
             }
@@ -89,7 +77,7 @@ public class Board {
     Integer[] findNextPositionFromRight(Area area) {
         for (int i = area.x2 - 1; i >= area.x1; i--) {
             for (int j = area.y1; j < area.y2; j++) {
-                if (data[j][i] == 0) {
+                if (boardData.data[j][i] == 0) {
                     return new Integer[]{j, i};
                 }
             }
@@ -102,7 +90,7 @@ public class Board {
         for (int i = 0; i < block.height; i++) {
             for (int j = 0; j < block.width; j++) {
                 if (block.data[i][j] != 0) {
-                    data[i + offset[0]][j + offset[1]] = block.data[i][j];
+                    boardData.data[i + offset[0]][j + offset[1]] = block.data[i][j];
                 }
             }
         }
@@ -112,7 +100,7 @@ public class Board {
         for (int i = 0; i < block.height; i++) {
             for (int j = 0; j < block.width; j++) {
                 if (block.data[i][j] != 0) {
-                    data[i + offset[0]][j + offset[1]] = 0;
+                    boardData.data[i + offset[0]][j + offset[1]] = 0;
                 }
             }
         }
@@ -181,7 +169,7 @@ public class Board {
                         continue;
                     }
                 }
-                if (block.data[i][j] != 0 && data[i + offset[0]][j + offset[1]] != 0) {
+                if (block.data[i][j] != 0 && boardData.data[i + offset[0]][j + offset[1]] != 0) {
                     // there is already a block; can't place this one
                     return false;
                 }
@@ -192,7 +180,7 @@ public class Board {
     }
 
     public static void print(BigInteger result, Area area) {
-        print(result, data, area);
+        print(result, boardData.data, area);
     }
 
     public static void print(BigInteger result, int[][] data, Area area) {

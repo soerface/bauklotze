@@ -1,7 +1,5 @@
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 // After the contest is over, the sourcecode will be available at
@@ -80,10 +78,11 @@ public class Tetris {
         if (area.isEmpty()) {
             Tetris.setCache(value, area.width, area.height);
         } else {
+            Board.boardData.area = area;
             long start = System.currentTimeMillis();
-            Tetris.cache.put(Tetris.dataToKey(Board.data, area), value);
-            int[][] mirroredData = mirrorData(Board.data, area);
-            Tetris.cache.put(Tetris.dataToKey(mirroredData, area), value);
+            Tetris.cache.put(Tetris.dataToKey(Board.boardData), value);
+//            int[][] mirroredData = mirrorData(Board.data.data);
+//            Tetris.cache.put(Tetris.dataToKey(mirroredData, area), value);
             Tetris.fooCounter += System.currentTimeMillis() - start;
         }
     }
@@ -107,8 +106,9 @@ public class Tetris {
         if (area.isEmpty()) {
             result = Tetris.getCache(area.width, area.height);
         } else {
+            Board.boardData.area = area;
             long start = System.currentTimeMillis();
-            result = Tetris.cache.get(dataToKey(Board.data, area));
+            result = Tetris.cache.get(dataToKey(Board.boardData));
             Tetris.fooCounter += System.currentTimeMillis() - start;
         }
         if (result == null) {
@@ -131,10 +131,12 @@ public class Tetris {
         }
     }
 
-    public static ByteBuffer dataToKey(int[][] data, Area area) {
+    public static ByteBuffer dataToKey(BoardData boardData) {
 //        This method is used to provide a key for the "overlap cache"
 //        Often, the same for the top or bottom board is being calculated, though it is usually not a rectangle
 //        Therefore, we can save a lot of work by caching those situations.
+        int[][] data = boardData.data;
+        Area area = boardData.area;
         byte[] key = new byte[area.size + 2];
         key[0] = (byte) area.height;
         key[1] = (byte) area.width;

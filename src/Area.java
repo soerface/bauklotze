@@ -20,7 +20,7 @@ public class Area {
     public boolean isFull() {
         for (int i = x1; i < x2; i++) {
             for (int j = y1; j < y2; j++) {
-                if (Board.data[j][i] == 0) {
+                if (Board.boardData.data[j][i] == 0) {
                     return false;
                 }
             }
@@ -31,7 +31,7 @@ public class Area {
     public boolean isEmpty() {
         for (int i = x1; i < x2; i++) {
             for (int j = y1; j < y2; j++) {
-                if (Board.data[j][i] != 0) {
+                if (Board.boardData.data[j][i] != 0) {
                     return false;
                 }
             }
