@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 public class Tetris {
     public static Block[] blocks;
-    private static HashMap<ByteBuffer, BigInteger> cache;
+    private static HashMap<BoardData, BigInteger> cache;
     private static BigInteger[][] rectCache;
     public static boolean debugPrint = false;
     public static int printDelay;
@@ -62,7 +62,7 @@ public class Tetris {
                 {0, 0, 0}
         });
 
-        Tetris.cache = new HashMap<ByteBuffer, BigInteger>();
+        Tetris.cache = new HashMap<BoardData, BigInteger>();
         Tetris.rectCache = m > n ? new BigInteger[m][n] : new BigInteger[n][m];
         Tetris.getCaches = 0;
         Tetris.getCachesNull = 0;
@@ -80,9 +80,9 @@ public class Tetris {
         if (area.isEmpty()) {
             Tetris.setCache(value, area.width, area.height);
         } else {
-            Board.boardData.area = area;
             long start = System.currentTimeMillis();
-            Tetris.cache.put(Tetris.dataToKey(Board.boardData), value);
+            BoardData copy = new BoardData(Board.boardData);
+            Tetris.cache.put(copy, value);
 //            int[][] mirroredData = mirrorData(Board.data.data);
 //            Tetris.cache.put(Tetris.dataToKey(mirroredData, area), value);
             Tetris.fooCounter += System.currentTimeMillis() - start;
@@ -108,9 +108,8 @@ public class Tetris {
         if (area.isEmpty()) {
             result = Tetris.getCache(area.width, area.height);
         } else {
-            Board.boardData.area = area;
             long start = System.currentTimeMillis();
-            result = Tetris.cache.get(dataToKey(Board.boardData));
+            result = Tetris.cache.get(Board.boardData);
             Tetris.fooCounter += System.currentTimeMillis() - start;
         }
         if (result == null) {
@@ -131,20 +130,6 @@ public class Tetris {
         } else {
             return rectCache[n][m];
         }
-    }
-
-    public static ByteBuffer dataToKey(BoardData boardData) {
-        int[][] data = boardData.data;
-        int k = 0;
-        // TODO: WHY THE HELL WE NEED A NEW ONE?!
-        key = new byte[boardData.size];
-        for (int i = 0; i < boardData.height; i++) {
-            for (int j = 0; j < boardData.width; j++) {
-                key[k] = (byte) (data[i][j] != 0 ? 1 : 0);
-                k++;
-            }
-        }
-        return ByteBuffer.wrap(key);
     }
 
     public static int[][] mirrorData(int[][] data, Area area) {
