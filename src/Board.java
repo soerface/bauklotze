@@ -94,23 +94,11 @@ public class Board {
 
     protected void placeBlockAt(Block block, int[] position) {
         Tetris.setBlocks++;
-        for (int i = 0; i < block.height; i++) {
-            for (int j = 0; j < block.width; j++) {
-                if (block.get(i, j)) {
-                    boardData.set(i + position[0], j + position[1], true);
-                }
-            }
-        }
+        boardData.toggleBlock(block, position);
     }
 
     protected void removeBlockAt(Block block, int[] position) {
-        for (int i = 0; i < block.height; i++) {
-            for (int j = 0; j < block.width; j++) {
-                if (block.get(i, j)) {
-                    boardData.set(i + position[0], j + position[1], false);
-                }
-            }
-        }
+        boardData.toggleBlock(block, position);
     }
 
     private boolean blockPlaceableAt(Block block, int[] position) {
