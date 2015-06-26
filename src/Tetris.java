@@ -11,7 +11,7 @@ public class Tetris {
     private static BigInteger[][] rectCache;
     public static boolean debugPrint = false;
     public static int printDelay;
-//    public static int setCaches;
+    //    public static int setCaches;
 //    public static int getCaches;
 //    public static int getCachesNull;
 //    public static int setBlocks;
@@ -82,6 +82,7 @@ public class Tetris {
             Board.boardData.area = area;
             BoardData copy = new BoardData(Board.boardData);
             Tetris.cache.put(copy, value);
+//            System.out.println(Integer.toBinaryString(copy.hashCode()));
 //            int[][] mirroredData = mirrorData(Board.boardData.data, area);
 //            copy = new BoardData(Board.boardData);
 //            copy.mirrorData();
@@ -113,7 +114,9 @@ public class Tetris {
             result = Tetris.cache.get(Board.boardData);
             if (result == null) {
                 BoardData copy = new BoardData(Board.boardData);
+//                long start = System.currentTimeMillis();
                 copy.mirrorData();
+//                Tetris.fooCounter += System.currentTimeMillis() - start;
                 result = Tetris.cache.get(copy);
                 if (result != null) {
                     Tetris.cache.put(new BoardData(Board.boardData), result);
