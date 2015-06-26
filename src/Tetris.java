@@ -28,36 +28,31 @@ public class Tetris {
 
     public static BigInteger solve(int m, int n) {
         Tetris.blocks = new Block[6];
-        blocks[0] = new Block(new boolean[][]{
-                {true, false, false},
-                {true, false, false},
-                {true, false, false}
-        }, 3, 1);
-        blocks[1] = new Block(new boolean[][]{
-                {true, true, true},
-                {false, false, false},
-                {false, false, false}
-        }, 1, 3);
-        blocks[2] = new Block(new boolean[][]{
-                {true, true, false},
-                {true, false, false},
-                {false, false, false}
-        }, 2, 2);
-        blocks[3] = new Block(new boolean[][]{
-                {true, true, false},
-                {false, true, false},
-                {false, false, false}
-        }, 2, 2);
-        blocks[4] = new Block(new boolean[][]{
-                {false, true, false},
-                {true, true, false},
-                {false, false, false}
-        }, 2, 2);
-        blocks[5] = new Block(new boolean[][]{
-                {true, false, false},
-                {true, true, false},
-                {false, false, false}
-        }, 2, 2);
+        /// TODO: Could use binary literals (0b00101...), but stay compatible with Java 6. Not sure what version the contest server runs
+        // X      100
+        // X   -> 100 -> 001001001 -> 73
+        // X      100
+        blocks[0] = new Block((short) 73, 3, 1);
+        // XXX    111
+        //     -> 000 -> 000000111 -> 7
+        //        000
+        blocks[1] = new Block((short) 7, 1, 3);
+        // XX     110
+        // X   -> 100 -> 000001011 -> 11
+        //        000
+        blocks[2] = new Block((short) 11, 2, 2);
+        // XX     110
+        //  X  -> 010 -> 000010011 -> 19
+        //        000
+        blocks[3] = new Block((short) 19, 2, 2);
+        //  X     010
+        // XX  -> 110 -> 000011010 -> 26
+        //        000
+        blocks[4] = new Block((short) 26, 2, 2);
+        // X      100
+        // XX  -> 110 -> 000011001 -> 25
+        //        000
+        blocks[5] = new Block((short) 25, 2, 2);
 
         Tetris.cache = new HashMap<BoardData, BigInteger>();
         Tetris.rectCache = m > n ? new BigInteger[m][n] : new BigInteger[n][m];

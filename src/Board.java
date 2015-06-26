@@ -60,7 +60,7 @@ public class Board {
     }
 
     int[] findValidOffset(Block block, int[] pos) {
-        if (block.data[0][0]) {
+        if ((block.data & 1) == 1) {
             if (blockPlaceableAt(block, pos)) {
                 return pos;
             }
@@ -96,7 +96,7 @@ public class Board {
         Tetris.setBlocks++;
         for (int i = 0; i < block.height; i++) {
             for (int j = 0; j < block.width; j++) {
-                if (block.data[i][j]) {
+                if (block.get(i, j)) {
                     boardData.set(i + position[0], j + position[1], true);
                 }
             }
@@ -106,7 +106,7 @@ public class Board {
     protected void removeBlockAt(Block block, int[] position) {
         for (int i = 0; i < block.height; i++) {
             for (int j = 0; j < block.width; j++) {
-                if (block.data[i][j]) {
+                if (block.get(i, j)) {
                     boardData.set(i + position[0], j + position[1], false);
                 }
             }
@@ -126,7 +126,7 @@ public class Board {
         // check if there is already a block
         for (int i = 0; i < block.height && i < 2; i++) {
             for (int j = 0; j < block.width; j++) {
-                if (block.data[i][j] && boardData.get(i + position[0], j + position[1])) {
+                if (block.get(i, j) && boardData.get(i + position[0], j + position[1])) {
                     // there is already a block; can't place this one
                     return false;
                 }

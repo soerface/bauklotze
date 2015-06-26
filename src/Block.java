@@ -1,12 +1,15 @@
 public class Block {
-    public boolean[][] data;
+    public short data;
     public int height;
     public int width;
 
-    public Block(boolean[][] data, int height, int width) {
+    public Block(short data, int height, int width) {
         this.data = data;
         this.height = height;
         this.width = width;
-        int k = 0;
+    }
+
+    public boolean get(int y, int x) {
+        return (data & (1 << (y * 3 + x))) != 0;
     }
 }
