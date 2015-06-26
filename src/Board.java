@@ -19,6 +19,11 @@ public class Board {
     }
 
     public BigInteger calculateMutations() {
+        if (Board.width > 32) {
+            // not possible to calculate since we are using an
+            // int array to hold the data. Use long for bigger sizes
+            return BigInteger.ZERO;
+        }
         return calculateMutations(new Area(0, 0, width, height));
     }
 
