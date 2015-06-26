@@ -35,6 +35,10 @@ public class BoardData {
         }
     }
 
+    public void set(int y, int row) {
+        data[y] = row;
+    }
+
     public void mirrorData() {
         int[] newData = new int[Board.height];
         for (int i = area.y1; i < area.y2; i++) {
