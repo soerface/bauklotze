@@ -10,55 +10,55 @@ public class Tetris {
     private static HashMap<BoardData, BigInteger> cache;
     private static BigInteger[][] rectCache;
     public static boolean debugPrint = false;
-//    public static int printDelay;
+    public static int printDelay;
 //    public static int setCaches;
 //    public static int getCaches;
 //    public static int getCachesNull;
 //    public static int setBlocks;
-//    public static long fooCounter;
+    public static long fooCounter;
 
     public static void main(String[] args) {
         int m = Integer.parseInt(args[0]);
         int n = Integer.parseInt(args[1]);
-//        if (args.length > 2) {
-//            Tetris.debugPrint = true;
-//            Tetris.printDelay = Integer.parseInt(args[2]);
-//        }
+        if (args.length > 2) {
+            Tetris.debugPrint = true;
+            Tetris.printDelay = Integer.parseInt(args[2]);
+        }
 
         System.out.println(Tetris.solve(m, n));
     }
 
     public static BigInteger solve(int m, int n) {
         Tetris.blocks = new Block[6];
-        blocks[0] = new Block(new int[][]{
-                {1, 0, 0},
-                {1, 0, 0},
-                {1, 0, 0}
+        blocks[0] = new Block(new boolean[][]{
+                {true, false, false},
+                {true, false, false},
+                {true, false, false}
         });
-        blocks[1] = new Block(new int[][]{
-                {2, 2, 2},
-                {0, 0, 0},
-                {0, 0, 0}
+        blocks[1] = new Block(new boolean[][]{
+                {true, true, true},
+                {false, false, false},
+                {false, false, false}
         });
-        blocks[2] = new Block(new int[][]{
-                {3, 3, 0},
-                {3, 0, 0},
-                {0, 0, 0}
+        blocks[2] = new Block(new boolean[][]{
+                {true, true, false},
+                {true, false, false},
+                {false, false, false}
         });
-        blocks[3] = new Block(new int[][]{
-                {4, 4, 0},
-                {0, 4, 0},
-                {0, 0, 0}
+        blocks[3] = new Block(new boolean[][]{
+                {true, true, false},
+                {false, true, false},
+                {false, false, false}
         });
-        blocks[4] = new Block(new int[][]{
-                {0, 5, 0},
-                {5, 5, 0},
-                {0, 0, 0}
+        blocks[4] = new Block(new boolean[][]{
+                {false, true, false},
+                {true, true, false},
+                {false, false, false}
         });
-        blocks[5] = new Block(new int[][]{
-                {6, 0, 0},
-                {6, 6, 0},
-                {0, 0, 0}
+        blocks[5] = new Block(new boolean[][]{
+                {true, false, false},
+                {true, true, false},
+                {false, false, false}
         });
 
         Tetris.cache = new HashMap<BoardData, BigInteger>();
@@ -80,12 +80,12 @@ public class Tetris {
         } else {
 //            long start = System.currentTimeMillis();
             Board.boardData.area = area;
-            BoardData copy = new BoardData(Board.boardData, true);
+            BoardData copy = new BoardData(Board.boardData);
             Tetris.cache.put(copy, value);
 //            int[][] mirroredData = mirrorData(Board.boardData.data, area);
-//            copy = new BoardData(Board.boardData, false);
-//            copy.data = mirroredData;
-//            Tetris.cache.put(copy, value);
+            copy = new BoardData(Board.boardData);
+            copy.mirrorData();
+            Tetris.cache.put(copy, value);
 //            Tetris.fooCounter += System.currentTimeMillis() - start;
         }
     }
@@ -111,15 +111,15 @@ public class Tetris {
         } else {
             Board.boardData.area = area;
             result = Tetris.cache.get(Board.boardData);
-            if (result == null) {
-                int[][] mirroredData = mirrorData(Board.boardData.data, area);
-                BoardData copy = new BoardData(Board.boardData, false);
-                copy.data = mirroredData;
-                result = Tetris.cache.get(copy);
-                if (result != null) {
-                    Tetris.cache.put(new BoardData(Board.boardData, true), result);
-                }
-            }
+//            if (result == null) {
+//                int[][] mirroredData = mirrorData(Board.boardData.data, area);
+//                BoardData copy = new BoardData(Board.boardData, false);
+//                copy.data = mirroredData;
+//                result = Tetris.cache.get(copy);
+//                if (result != null) {
+//                    Tetris.cache.put(new BoardData(Board.boardData, true), result);
+//                }
+//            }
         }
 //        if (result == null) {
 //            getCachesNull++;
@@ -139,15 +139,5 @@ public class Tetris {
         } else {
             return rectCache[n][m];
         }
-    }
-
-    public static int[][] mirrorData(int[][] data, Area area) {
-        int[][] newData = new int[Board.height][Board.width];
-        for (int i = area.y1; i < area.y2; i++) {
-            for (int j = area.x1; j < area.x2; j++) {
-                newData[i][area.x2 - (j - area.x1) - 1] = data[i][j];
-            }
-        }
-        return newData;
     }
 }

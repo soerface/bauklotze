@@ -61,6 +61,7 @@ public class Board {
 //        if (area.height == 7) {
 //            print(result, area);
 //        }
+//        System.out.println(area.height);
         Tetris.setCache(result, area);
         return result;
     }
@@ -68,7 +69,7 @@ public class Board {
     Integer[] findNextPositionFromTop(Area area) {
         for (int i = area.y1; i < area.y2; i++) {
             for (int j = area.x1; j < area.x2; j++) {
-                if (boardData.data[i][j] == 0) {
+                if (!boardData.get(i, j)) {
                     return new Integer[]{i, j};
                 }
             }
@@ -79,7 +80,7 @@ public class Board {
     Integer[] findNextPositionFromRight(Area area) {
         for (int i = area.x2 - 1; i >= area.x1; i--) {
             for (int j = area.y1; j < area.y2; j++) {
-                if (boardData.data[j][i] == 0) {
+                if (!boardData.get(j, i)) {
                     return new Integer[]{j, i};
                 }
             }
@@ -91,8 +92,8 @@ public class Board {
 //        Tetris.setBlocks++;
         for (int i = 0; i < block.height; i++) {
             for (int j = 0; j < block.width; j++) {
-                if (block.data[i][j] != 0) {
-                    boardData.data[i + offset[0]][j + offset[1]] = block.data[i][j];
+                if (block.data[i][j]) {
+                    boardData.set(i + offset[0], j + offset[1], true);
                 }
             }
         }
@@ -101,8 +102,8 @@ public class Board {
     protected void removeBlockAt(Block block, Integer[] offset) {
         for (int i = 0; i < block.height; i++) {
             for (int j = 0; j < block.width; j++) {
-                if (block.data[i][j] != 0) {
-                    boardData.data[i + offset[0]][j + offset[1]] = 0;
+                if (block.data[i][j]) {
+                    boardData.set(i + offset[0], j + offset[1], false);
                 }
             }
         }
@@ -133,7 +134,7 @@ public class Board {
             for (int j = 0; j < block.width; j++) {
                 if (i + offset[0] >= area.y2) {
                     // out of bounds
-                    if (block.data[i][j] != 0) {
+                    if (block.data[i][j]) {
                         // but the block might have a zero here, so
                         // just return if this is not the case
                         return false;
@@ -143,7 +144,7 @@ public class Board {
                 }
                 if (i + offset[0] < area.y1) {
                     // out of bounds
-                    if (block.data[i][j] != 0) {
+                    if (block.data[i][j]) {
                         // but the block might have a zero here, so
                         // just return if this is not the case
                         return false;
@@ -153,7 +154,7 @@ public class Board {
                 }
                 if (j + offset[1] >= area.x2) {
                     // out of bounds
-                    if (block.data[i][j] != 0) {
+                    if (block.data[i][j]) {
                         // but the block might have a zero here, so
                         // just return if this is not the case
                         return false;
@@ -163,7 +164,7 @@ public class Board {
                 }
                 if (j + offset[1] < area.x1) {
                     // out of bounds
-                    if (block.data[i][j] != 0) {
+                    if (block.data[i][j]) {
                         // but the block might have a zero here, so
                         // just return if this is not the case
                         return false;
@@ -171,7 +172,7 @@ public class Board {
                         continue;
                     }
                 }
-                if (block.data[i][j] != 0 && boardData.data[i + offset[0]][j + offset[1]] != 0) {
+                if (block.data[i][j] && boardData.get(i + offset[0], j + offset[1])) {
                     // there is already a block; can't place this one
                     return false;
                 }
@@ -182,19 +183,19 @@ public class Board {
     }
 
 //    public static void print(BigInteger result, Area area) {
-//        print(result, boardData.data, area);
+//        print(result, boardData, area);
 //    }
 //
-//    public static void print(BigInteger result, int[][] data, Area area) {
+//    public static void print(BigInteger result, BoardData boardData, Area area) {
 //        if (!Tetris.debugPrint) {
 //            return;
 //        }
 //        System.out.println();
 //        for (int i = 0; i < Math.max(height, area.height); i++) {
 //            for (int j = 0; j < Math.max(width, area.width); j++) {
-//                int value = data[i][j];
+//                boolean value = boardData.get(i, j);
 //                String fontColor = "\u001B[30m"; // black font
-//                String content = String.format(" %d ", value);
+//                String content = String.format(" %d ", value ? 1 : 0);
 //                int color = 4; // dark bg colors
 //                if (i >= area.y1 && i < area.y2 && j >= area.x1 && j < area.x2) {
 //                    fontColor = "";
@@ -202,11 +203,11 @@ public class Board {
 ////                        color = 10; // bright bg colors
 ////                    }
 //                }
-//                System.out.format("\u001B[%d%dm%s%s\u001B[0m", color, value, fontColor, content);
+//                System.out.format("\u001B[%d%dm%s%s\u001B[0m", color, value ? 1 : 0, fontColor, content);
 //            }
 //            System.out.println();
 //        }
-//        System.out.format("Solutions: %15d SetBlocks: %10d\n", result, Tetris.setBlocks);
+//        System.out.format("Solutions: %15d\n", result);
 //        try {
 //            Thread.sleep(Tetris.printDelay);
 //        } catch (InterruptedException e) {
