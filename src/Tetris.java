@@ -32,32 +32,32 @@ public class Tetris {
                 {true, false, false},
                 {true, false, false},
                 {true, false, false}
-        });
+        }, 3, 1);
         blocks[1] = new Block(new boolean[][]{
                 {true, true, true},
                 {false, false, false},
                 {false, false, false}
-        });
+        }, 1, 3);
         blocks[2] = new Block(new boolean[][]{
                 {true, true, false},
                 {true, false, false},
                 {false, false, false}
-        });
+        }, 2, 2);
         blocks[3] = new Block(new boolean[][]{
                 {true, true, false},
                 {false, true, false},
                 {false, false, false}
-        });
+        }, 2, 2);
         blocks[4] = new Block(new boolean[][]{
                 {false, true, false},
                 {true, true, false},
                 {false, false, false}
-        });
+        }, 2, 2);
         blocks[5] = new Block(new boolean[][]{
                 {true, false, false},
                 {true, true, false},
                 {false, false, false}
-        });
+        }, 2, 2);
 
         Tetris.cache = new HashMap<BoardData, BigInteger>();
         Tetris.rectCache = m > n ? new BigInteger[m][n] : new BigInteger[n][m];

@@ -60,13 +60,20 @@ public class Board {
     }
 
     int[] findValidOffset(Block block, int[] pos) {
-        for (int[] coordinate : block.coordinates) {
-            int[] offset = new int[]{
-                    pos[0] - coordinate[0],
-                    pos[1] - coordinate[1]
-            };
-            if (blockPlaceableAt(block, offset)) {
-                return offset;
+        if (block.data[0][0]) {
+            if (blockPlaceableAt(block, pos)) {
+                return pos;
+            }
+            return new int[]{-1, -1};
+        } else {
+            // this is the block which has a gap on the first field
+            // .X.
+            // XX.
+            // It has to be shifted one to the left to be placed
+            int[] newPosition = pos.clone();
+            newPosition[1]--;
+            if (blockPlaceableAt(block, newPosition)) {
+                return newPosition;
             }
         }
         return new int[]{-1, -1};
@@ -106,53 +113,20 @@ public class Board {
         }
     }
 
-    private boolean blockPlaceableAt(Block block, int[] offset) {
-        if (offset[0] < 0 || offset[1] < 0) {
+    private boolean blockPlaceableAt(Block block, int[] position) {
+        if (position[0] < 0 || position[1] < 0) {
             return false;
         }
-        for (int i = 0; i < block.height; i++) {
+        if (position[0] + block.height > Board.height) {
+            return false;
+        }
+        if (position[1] + block.width > Board.width) {
+            return false;
+        }
+        // check if there is already a block
+        for (int i = 0; i < block.height && i < 2; i++) {
             for (int j = 0; j < block.width; j++) {
-                if (i + offset[0] >= Board.height) {
-                    // out of bounds
-                    if (block.data[i][j]) {
-                        // but the block might have a zero here, so
-                        // just return if this is not the case
-                        return false;
-                    } else {
-                        continue;
-                    }
-                }
-                if (i + offset[0] < 0) {
-                    // out of bounds
-                    if (block.data[i][j]) {
-                        // but the block might have a zero here, so
-                        // just return if this is not the case
-                        return false;
-                    } else {
-                        continue;
-                    }
-                }
-                if (j + offset[1] >= Board.width) {
-                    // out of bounds
-                    if (block.data[i][j]) {
-                        // but the block might have a zero here, so
-                        // just return if this is not the case
-                        return false;
-                    } else {
-                        continue;
-                    }
-                }
-                if (j + offset[1] < 0) {
-                    // out of bounds
-                    if (block.data[i][j]) {
-                        // but the block might have a zero here, so
-                        // just return if this is not the case
-                        return false;
-                    } else {
-                        continue;
-                    }
-                }
-                if (block.data[i][j] && boardData.get(i + offset[0], j + offset[1])) {
+                if (block.data[i][j] && boardData.get(i + position[0], j + position[1])) {
                     // there is already a block; can't place this one
                     return false;
                 }
