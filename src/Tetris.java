@@ -62,7 +62,7 @@ public class Tetris {
                 {0, 0, 0}
         });
 
-        Tetris.cache = new HashMap<BoardData, BigInteger>();
+        Tetris.cache = new HashMap<>();
         Tetris.rectCache = m > n ? new BigInteger[m][n] : new BigInteger[n][m];
         Tetris.getCaches = 0;
         Tetris.getCachesNull = 0;
@@ -80,14 +80,15 @@ public class Tetris {
         if (area.isEmpty()) {
             Tetris.setCache(value, area.width, area.height);
         } else {
-            long start = System.currentTimeMillis();
+//            long start = System.currentTimeMillis();
             Board.boardData.area = area;
-            BoardData copy = new BoardData(Board.boardData);
-//            System.out.format("%2d %32s\n", area.height, Integer.toBinaryString(copy.hashCode()));
+            BoardData copy = new BoardData(Board.boardData, true);
             Tetris.cache.put(copy, value);
-//            int[][] mirroredData = mirrorData(Board.data.data);
-//            Tetris.cache.put(Tetris.dataToKey(mirroredData, area), value);
-            Tetris.fooCounter += System.currentTimeMillis() - start;
+//            int[][] mirroredData = mirrorData(Board.boardData.data, area);
+//            copy = new BoardData(Board.boardData, false);
+//            copy.data = mirroredData;
+//            Tetris.cache.put(copy, value);
+//            Tetris.fooCounter += System.currentTimeMillis() - start;
         }
     }
 
@@ -111,9 +112,16 @@ public class Tetris {
             result = Tetris.getCache(area.width, area.height);
         } else {
             Board.boardData.area = area;
-            long start = System.currentTimeMillis();
             result = Tetris.cache.get(Board.boardData);
-            Tetris.fooCounter += System.currentTimeMillis() - start;
+            if (result == null) {
+                int[][] mirroredData = mirrorData(Board.boardData.data, area);
+                BoardData copy = new BoardData(Board.boardData, false);
+                copy.data = mirroredData;
+                result = Tetris.cache.get(copy);
+                if (result != null) {
+                    Tetris.cache.put(new BoardData(Board.boardData, true), result);
+                }
+            }
         }
         if (result == null) {
             getCachesNull++;

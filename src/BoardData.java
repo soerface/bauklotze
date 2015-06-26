@@ -1,4 +1,5 @@
 public class BoardData {
+    private static int hashStartPosition;
     public int data[][];
     public final int height;
     public final int width;
@@ -11,16 +12,23 @@ public class BoardData {
         size = width * height;
         this.area = new Area(0, 0, width, height);
         data = new int[height][width];
+        int pos = 0;
+        while(height >> pos != 0) {
+            pos++;
+        }
+        hashStartPosition = pos;
     }
 
-    public BoardData(BoardData boardData) {
+    public BoardData(BoardData boardData, boolean withData) {
         this.height = boardData.height;
         this.width = boardData.width;
         size = width * height;
         this.area = boardData.area;
-        this.data = new int[height][width];
-        for (int i = area.y1; i < area.y2; i++) {
-            System.arraycopy(boardData.data[i], area.x1, this.data[i], area.x1, area.width);
+        if (withData) {
+            this.data = new int[height][width];
+            for (int i = area.y1; i < area.y2; i++) {
+                System.arraycopy(boardData.data[i], area.x1, this.data[i], area.x1, area.width);
+            }
         }
     }
 
@@ -45,30 +53,19 @@ public class BoardData {
 
     @Override
     public int hashCode() {
-//        if (hashCode != 0) {
-//            return hashCode;
-//        }
-//        int k = 0;
-//        byte[] key = new byte[size];
-//        for (int i = 0; i < height; i++) {
-//            for (int j = 0; j < width; j++) {
-//                key[k] = (byte) (data[i][j] != 0 ? 1 : 0);
-//                k++;
-//            }
-//        }
-//        ByteBuffer buffer = ByteBuffer.wrap(key);
-//        System.out.format("limit: %d\nposition: %d\n", buffer.limit(), buffer.position());
-//        return buffer.hashCode();
-        int key = area.height;
-        int startPos = 6;
-        int pos = startPos;
-        for (int i = area.y1; i < area.y1+2; i++) {
-            for (int j = area.x2 - 1; j >= area.x1; j--) {
+        int key = area.height > 3 ? area.height : area.width;
+        int pos = hashStartPosition;
+        int iStart = area.y1 + 2;
+        if (area.y2 - 1 < iStart) {
+            iStart = area.y2 - 1;
+        }
+        int j;
+        for (int i = iStart; i >= area.y1; i--) {
+            for (j = area.x2 - 1; j >= area.x1; j--) {
                 key ^= (data[i][j] != 0 ? 1 : 0) << pos;
-//                System.out.println(Integer.toBinaryString((data[i][j] != 0 ? 1 : 0) << pos));
                 pos++;
                 if (pos == 32) {
-                    pos = startPos;
+                    pos = hashStartPosition;
                 }
             }
         }
