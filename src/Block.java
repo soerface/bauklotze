@@ -12,4 +12,8 @@ public class Block {
     public boolean get(int y, int x) {
         return (data & (1 << (y * 3 + x))) != 0;
     }
+
+    public short get(int y) {
+        return (short) ((data & (7 << (y * 3))) >> y*3);
+    }
 }

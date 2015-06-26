@@ -125,11 +125,8 @@ public class Board {
         }
         // check if there is already a block
         for (int i = 0; i < block.height && i < 2; i++) {
-            for (int j = 0; j < block.width; j++) {
-                if (block.get(i, j) && boardData.get(i + position[0], j + position[1])) {
-                    // there is already a block; can't place this one
-                    return false;
-                }
+            if ((block.get(i) << position[1] & boardData.get(i + position[0])) != 0) {
+                return false;
             }
         }
         // there was no collision with the board / placed outside of area; block can be placed
