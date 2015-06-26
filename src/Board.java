@@ -72,9 +72,11 @@ public class Board {
     }
 
     Integer[] findNextPositionFromTop(Area area) {
+        int row;
         for (int i = area.y1; i < area.y2; i++) {
+            row = boardData.get(i);
             for (int j = area.x1; j < area.x2; j++) {
-                if (!boardData.get(i, j)) {
+                if ((row & 1 << j) == 0) {
                     return new Integer[]{i, j};
                 }
             }

@@ -23,6 +23,10 @@ public class BoardData {
         return (data[y] & 1 << x) != 0;
     }
 
+    public int get(int y) {
+        return data[y];
+    }
+
     public void set(int y, int x, boolean value) {
         if (value) {
             data[y] |= 1 << x;
