@@ -16,7 +16,6 @@ public class Tetris {
     public static int getCachesNull;
     public static int setBlocks;
     public static long fooCounter;
-    private static byte[] key;
 
     public static void main(String[] args) {
         int m = Integer.parseInt(args[0]);
@@ -62,14 +61,13 @@ public class Tetris {
                 {0, 0, 0}
         });
 
-        Tetris.cache = new HashMap<>();
+        Tetris.cache = new HashMap<BoardData, BigInteger>();
         Tetris.rectCache = m > n ? new BigInteger[m][n] : new BigInteger[n][m];
         Tetris.getCaches = 0;
         Tetris.getCachesNull = 0;
         Tetris.setCaches = 0;
         Tetris.setBlocks = 0;
         Tetris.fooCounter = 0;
-        key = new byte[m * n];
         Board board = new Board(m, n);
         return board.calculateMutations();
     }
