@@ -52,13 +52,15 @@ public class Board {
             ArrayList<Integer[]> validOffsets = findValidOffsets(block, position, area);
             for (Integer[] offset : validOffsets) {
                 placeBlockAt(block, offset);
-                print(result, area);
+//                print(result, area);
                 result = result.add(calculateMutations(area));
                 removeBlockAt(block, offset);
-                print(result, area);
+//                print(result, area);
             }
         }
-//        print(result, area);
+//        if (area.height == 7) {
+//            print(result, area);
+//        }
         Tetris.setCache(result, area);
         return result;
     }

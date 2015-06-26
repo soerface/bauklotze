@@ -81,7 +81,9 @@ public class Tetris {
             Tetris.setCache(value, area.width, area.height);
         } else {
             long start = System.currentTimeMillis();
+            Board.boardData.area = area;
             BoardData copy = new BoardData(Board.boardData);
+//            System.out.format("%2d %32s\n", area.height, Integer.toBinaryString(copy.hashCode()));
             Tetris.cache.put(copy, value);
 //            int[][] mirroredData = mirrorData(Board.data.data);
 //            Tetris.cache.put(Tetris.dataToKey(mirroredData, area), value);
@@ -108,6 +110,7 @@ public class Tetris {
         if (area.isEmpty()) {
             result = Tetris.getCache(area.width, area.height);
         } else {
+            Board.boardData.area = area;
             long start = System.currentTimeMillis();
             result = Tetris.cache.get(Board.boardData);
             Tetris.fooCounter += System.currentTimeMillis() - start;
