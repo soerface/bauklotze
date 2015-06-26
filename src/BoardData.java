@@ -1,30 +1,21 @@
 public class BoardData {
     private static int hashStartPosition;
     private long data[];
-    public final int height;
-    public final int width;
-    public final int size;
     public Area area;
 
-    public BoardData(int height, int width) {
-        this.height = height;
-        this.width = width;
-        size = width * height;
-        this.area = new Area(0, 0, width, height);
-        data = new long[height];
+    public BoardData() {
+        this.area = new Area(0, 0, Board.width, Board.height);
+        data = new long[Board.height];
         int pos = 0;
-        while (height >> pos != 0) {
+        while (Board.height >> pos != 0) {
             pos++;
         }
         hashStartPosition = pos;
     }
 
     public BoardData(BoardData boardData) {
-        this.height = boardData.height;
-        this.width = boardData.width;
-        size = width * height;
         this.area = boardData.area;
-        this.data = new long[height];
+        this.data = new long[Board.height];
         System.arraycopy(boardData.data, area.y1, data, area.y1, area.y2 - area.y1);
     }
 
@@ -41,7 +32,7 @@ public class BoardData {
     }
 
     public void mirrorData() {
-        long[] newData = new long[height];
+        long[] newData = new long[Board.height];
         for (int i = area.y1; i < area.y2; i++) {
             for (int j = area.x1; j < area.x2; j++) {
                 newData[i] |= ((data[i] & 1 << j) >> j) << (area.x2 - (j - area.x1) - 1);
@@ -79,7 +70,7 @@ public class BoardData {
             iStart = area.y2 - 1;
         }
         int j;
-        long start = System.currentTimeMillis();
+//        long start = System.currentTimeMillis();
         for (int i = iStart; i >= area.y1; i--) {
             for (j = area.x2 - 1; j >= area.x1; j--) {
                 key ^= (get(i, j) ? 1 : 0) << pos;
@@ -89,7 +80,7 @@ public class BoardData {
                 }
             }
         }
-        Tetris.fooCounter += System.currentTimeMillis() - start;
+//        Tetris.fooCounter += System.currentTimeMillis() - start;
         return key;
     }
 }

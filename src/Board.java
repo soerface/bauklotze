@@ -15,7 +15,7 @@ public class Board {
             Board.height = m;
             Board.width = n;
         }
-        Board.boardData = new BoardData(height, width);
+        Board.boardData = new BoardData();
     }
 
     public BigInteger calculateMutations() {
