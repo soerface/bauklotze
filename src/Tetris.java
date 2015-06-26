@@ -67,7 +67,7 @@ public class Tetris {
 //        Tetris.getCachesNull = 0;
 //        Tetris.setCaches = 0;
 //        Tetris.setBlocks = 0;
-//        Tetris.fooCounter = 0;
+        Tetris.fooCounter = 0;
         Board board = new Board(m, n);
         return board.calculateMutations();
     }
@@ -83,9 +83,9 @@ public class Tetris {
             BoardData copy = new BoardData(Board.boardData);
             Tetris.cache.put(copy, value);
 //            int[][] mirroredData = mirrorData(Board.boardData.data, area);
-            copy = new BoardData(Board.boardData);
-            copy.mirrorData();
-            Tetris.cache.put(copy, value);
+//            copy = new BoardData(Board.boardData);
+//            copy.mirrorData();
+//            Tetris.cache.put(copy, value);
 //            Tetris.fooCounter += System.currentTimeMillis() - start;
         }
     }
@@ -111,15 +111,14 @@ public class Tetris {
         } else {
             Board.boardData.area = area;
             result = Tetris.cache.get(Board.boardData);
-//            if (result == null) {
-//                int[][] mirroredData = mirrorData(Board.boardData.data, area);
-//                BoardData copy = new BoardData(Board.boardData, false);
-//                copy.data = mirroredData;
-//                result = Tetris.cache.get(copy);
-//                if (result != null) {
-//                    Tetris.cache.put(new BoardData(Board.boardData, true), result);
-//                }
-//            }
+            if (result == null) {
+                BoardData copy = new BoardData(Board.boardData);
+                copy.mirrorData();
+                result = Tetris.cache.get(copy);
+                if (result != null) {
+                    Tetris.cache.put(new BoardData(Board.boardData), result);
+                }
+            }
         }
 //        if (result == null) {
 //            getCachesNull++;
