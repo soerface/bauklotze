@@ -65,7 +65,7 @@ public class Board {
                 return pos;
             }
             return new int[]{-1, -1};
-        } else {
+        } else if (pos[1] > 0) {
             // this is the block which has a gap on the first field
             // .X.
             // XX.
@@ -102,9 +102,6 @@ public class Board {
     }
 
     private boolean blockPlaceableAt(Block block, int[] position) {
-        if (position[0] < 0 || position[1] < 0) {
-            return false;
-        }
         if (position[0] + block.height > Board.height) {
             return false;
         }
