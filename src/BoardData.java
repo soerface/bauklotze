@@ -83,10 +83,9 @@ public class BoardData {
         if (area.y2 - 1 < iStart) {
             iStart = area.y2 - 1;
         }
-        int j;
 //        long start = System.currentTimeMillis();
         for (int i = iStart; i >= area.y1; i--) {
-            for (j = area.x2 - 1; j >= area.x1; j--) {
+            for (int j = area.x2 - 1; j >= area.x1; j--) {
                 key ^= (data[i] & 1 << j) >> j << pos;
                 pos++;
                 if (pos == 32) {

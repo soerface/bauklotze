@@ -43,7 +43,7 @@ public class Board {
         result = BigInteger.ZERO;
         int[] pos;
         for (Block block : Tetris.blocks) {
-            pos = findValidOffset(block, position);
+            pos = findValidPosition(block, position);
             if (pos[0] != -1) {
                 placeBlockAt(block, pos);
                 result = result.add(calculateMutations(area));
@@ -58,7 +58,7 @@ public class Board {
         return result;
     }
 
-    int[] findValidOffset(Block block, int[] pos) {
+    int[] findValidPosition(Block block, int[] pos) {
         if ((block.data & 1) == 1) {
             if (blockPlaceableAt(block, pos)) {
                 return pos;
