@@ -9,7 +9,6 @@ public class Tetris {
     public static Block[] blocks;
     private static HashMap<BoardData, BigInteger> cache;
     private static BigInteger[][] rectCache;
-    private static BitSet possiblyInCache;
     public static boolean debugPrint = false;
     public static int printDelay;
     public static int setCaches;
@@ -58,7 +57,6 @@ public class Tetris {
 
         Tetris.cache = new HashMap<BoardData, BigInteger>();
         Tetris.rectCache = m > n ? new BigInteger[m][n] : new BigInteger[n][m];
-        Tetris.possiblyInCache = new BitSet(m * n);
         Tetris.getCaches = 0;
         Tetris.setCaches = 0;
         Tetris.setBlocks = 0;
@@ -77,7 +75,6 @@ public class Tetris {
             BoardData copy = new BoardData(Board.boardData);
             Tetris.cache.put(copy, value);
         }
-        possiblyInCache.set(area.freeBlocks(), true);
     }
 
     private static void setCache(BigInteger value, int m, int n) {
@@ -95,9 +92,6 @@ public class Tetris {
         // This method returns null if there is no solution available.
         // "0" as a solution is valid, since not all boards with pre set blocks are solvable!
 //        long start = System.currentTimeMillis();
-        if (!possiblyInCache.get(area.freeBlocks())) {
-            return null;
-        }
         BigInteger result;
         if (area.isEmpty()) {
             result = Tetris.getCache(area.width, area.height);
