@@ -40,6 +40,7 @@ public class Test {
             {new BigInteger("12"), new BigInteger("9"), new BigInteger("20574308184277971")},
             {new BigInteger("12"), new BigInteger("10"), new BigInteger("1830607857363940042")},
             {new BigInteger("12"), new BigInteger("11"), new BigInteger("178792253082742021463")},
+            {new BigInteger("12"), new BigInteger("12"), new BigInteger("17735061025562799941630")},
             {new BigInteger("15"), new BigInteger("1"), new BigInteger("1")},
             {new BigInteger("15"), new BigInteger("2"), new BigInteger("571")},
             {new BigInteger("15"), new BigInteger("3"), new BigInteger("1086567")},
