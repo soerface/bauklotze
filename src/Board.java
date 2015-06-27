@@ -117,36 +117,36 @@ public class Board {
         return true;
     }
 
-    public static void print(BigInteger result, Area area) {
-        print(result, boardData, area);
-    }
-
-    public static void print(BigInteger result, BoardData boardData, Area area) {
-        if (!Tetris.debugPrint) {
-            return;
-        }
-        System.out.println();
-        for (int i = 0; i < Math.max(height, area.height); i++) {
-            for (int j = 0; j < Math.max(width, area.width); j++) {
-                boolean value = boardData.get(i, j);
-                String fontColor = "\u001B[30m"; // black font
-                String content = String.format(" %d ", value ? 1 : 0);
-                int color = 4; // dark bg colors
-                if (i >= area.y1 && i < area.y2 && j >= area.x1 && j < area.x2) {
-                    fontColor = "";
-//                    if (value != 0) {
-//                        color = 10; // bright bg colors
-//                    }
-                }
-                System.out.format("\u001B[%d%dm%s%s\u001B[0m", color, value ? 1 : 0, fontColor, content);
-            }
-            System.out.println();
-        }
-        System.out.format("Solutions: %15d\n", result);
-        try {
-            Thread.sleep(Tetris.printDelay);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+//    public static void print(BigInteger result, Area area) {
+//        print(result, boardData, area);
+//    }
+//
+//    public static void print(BigInteger result, BoardData boardData, Area area) {
+//        if (!Tetris.debugPrint) {
+//            return;
+//        }
+//        System.out.println();
+//        for (int i = 0; i < Math.max(height, area.height); i++) {
+//            for (int j = 0; j < Math.max(width, area.width); j++) {
+//                boolean value = boardData.get(i, j);
+//                String fontColor = "\u001B[30m"; // black font
+//                String content = String.format(" %d ", value ? 1 : 0);
+//                int color = 4; // dark bg colors
+//                if (i >= area.y1 && i < area.y2 && j >= area.x1 && j < area.x2) {
+//                    fontColor = "";
+////                    if (value != 0) {
+////                        color = 10; // bright bg colors
+////                    }
+//                }
+//                System.out.format("\u001B[%d%dm%s%s\u001B[0m", color, value ? 1 : 0, fontColor, content);
+//            }
+//            System.out.println();
+//        }
+//        System.out.format("Solutions: %15d\n", result);
+//        try {
+//            Thread.sleep(Tetris.printDelay);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

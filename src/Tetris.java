@@ -55,12 +55,13 @@ public class Tetris {
         blocks[5] = new Block((short) 25, 2, 2);
 
         Tetris.cache = new HashMap<BoardData, BigInteger>();
-        Tetris.rectCache = m > n ? new BigInteger[m][n] : new BigInteger[n][m];
+//        Tetris.rectCache = m > n ? new BigInteger[m][n] : new BigInteger[n][m];
         Tetris.getCaches = 0;
         Tetris.setCaches = 0;
         Tetris.setBlocks = 0;
         Tetris.fooCounter = 0;
         Board board = new Board(m, n);
+        Tetris.rectCache = new BigInteger[board.height][board.width];
         return board.calculateMutations();
     }
 
@@ -68,7 +69,7 @@ public class Tetris {
     public static void setCache(BigInteger value, Area area) {
         setCaches++;
         if (area.isEmpty()) {
-            Tetris.setCache(value, area.width, area.height);
+            Tetris.setCache(value, area.height, area.width);
         } else {
             Board.boardData.setArea(area);
             BoardData copy = new BoardData(Board.boardData);
@@ -78,13 +79,7 @@ public class Tetris {
 
     private static void setCache(BigInteger value, int m, int n) {
         // decrement since you should pass the width and height of the board to the function
-        m--;
-        n--;
-        if (m > n) {
-            rectCache[m][n] = value;
-        } else {
-            rectCache[n][m] = value;
-        }
+        rectCache[m-1][n-1  ] = value;
     }
 
     public static BigInteger getCache(Area area) {
@@ -93,7 +88,7 @@ public class Tetris {
         long start = System.currentTimeMillis();
         BigInteger result;
         if (area.isEmpty()) {
-            result = Tetris.getCache(area.width, area.height);
+            result = Tetris.getCache(area.height, area.width);
         } else {
             Board.boardData.setArea(area);
             result = Tetris.cache.get(Board.boardData);
@@ -116,12 +111,6 @@ public class Tetris {
 //            return BigInteger.ONE;
 //        }
         // decrement since you should pass the width and height of the board to the function
-        m--;
-        n--;
-        if (m > n) {
-            return rectCache[m][n];
-        } else {
-            return rectCache[n][m];
-        }
+        return rectCache[m-1][n-1];
     }
 }
