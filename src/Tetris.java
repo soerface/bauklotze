@@ -1,5 +1,4 @@
 import java.math.BigInteger;
-import java.util.BitSet;
 import java.util.HashMap;
 
 // After the contest is over, the sourcecode will be available at
@@ -71,7 +70,7 @@ public class Tetris {
         if (area.isEmpty()) {
             Tetris.setCache(value, area.width, area.height);
         } else {
-            Board.boardData.area = area;
+            Board.boardData.setArea(area);
             BoardData copy = new BoardData(Board.boardData);
             Tetris.cache.put(copy, value);
         }
@@ -91,12 +90,12 @@ public class Tetris {
     public static BigInteger getCache(Area area) {
         // This method returns null if there is no solution available.
         // "0" as a solution is valid, since not all boards with pre set blocks are solvable!
-//        long start = System.currentTimeMillis();
+        long start = System.currentTimeMillis();
         BigInteger result;
         if (area.isEmpty()) {
             result = Tetris.getCache(area.width, area.height);
         } else {
-            Board.boardData.area = area;
+            Board.boardData.setArea(area);
             result = Tetris.cache.get(Board.boardData);
             if (result == null) {
                 BoardData copy = new BoardData(Board.boardData);
@@ -106,8 +105,9 @@ public class Tetris {
         }
         if (result != null) {
             getCaches++;
+        } else {
+            Tetris.fooCounter += System.currentTimeMillis() - start;
         }
-//        Tetris.fooCounter += System.currentTimeMillis() - start;
         return result;
     }
 

@@ -1,22 +1,31 @@
 public class BoardData {
     private static int hashStartPosition;
     private int data[];
-    public Area area;
+    private int hash;
+    private Area area;
 
     public BoardData() {
         this.area = new Area(0, 0, Board.width, Board.height);
         data = new int[Board.height];
         int pos = 0;
-        while (Board.height >> pos != 0) {
-            pos++;
+        if (hashStartPosition == 0) {
+            while (Board.height >> pos != 0) {
+                pos++;
+            }
+            hashStartPosition = pos;
         }
-        hashStartPosition = pos;
+        hash = 0;
     }
 
     public BoardData(BoardData boardData) {
         this.area = boardData.area;
         this.data = new int[Board.height];
         System.arraycopy(boardData.data, area.y1, data, area.y1, area.y2 - area.y1);
+    }
+
+    public void setArea(Area area) {
+        this.area = area;
+        hash = 0;
     }
 
     public boolean get(int y, int x) {
@@ -77,7 +86,10 @@ public class BoardData {
 
     @Override
     public int hashCode() {
-        int key = area.height > 3 ? area.height : area.width;
+        if (hash != 0) {
+            return hash;
+        }
+        int key = area.height;
         int pos = hashStartPosition;
         int iStart = area.y1 + 2;
         if (area.y2 - 1 < iStart) {
@@ -94,6 +106,7 @@ public class BoardData {
             }
         }
 //        Tetris.fooCounter += System.currentTimeMillis() - start;
+        hash = key;
         return key;
     }
 }
