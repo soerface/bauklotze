@@ -20,7 +20,7 @@ public class Tetris
 		System.out.print(fit(0, 0, hm, data));
 	}
 	
-	public static BigInteger solve(n, m)
+	public static BigInteger solve(int n, int m)
 	{
 		if(m > n)
 		{
