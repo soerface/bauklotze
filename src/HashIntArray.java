@@ -10,8 +10,6 @@ public class HashIntArray
 		int time = 0;
 		int length = Integer.parseInt(args[0]);
 		int height = Integer.parseInt(args[1]);
-		height = 9;
-		length = 9;
 		if(length > height)
 		{
 			int c = height;
