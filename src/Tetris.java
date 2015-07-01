@@ -15,7 +15,7 @@ public class Tetris
 			height = length;
 			length = c;
 		}
-		HashMap<Integer, BigInteger> hm = new HashMap<Integer, BigInteger>();
+		HashMap<String, BigInteger> hm = new HashMap<String, BigInteger>();
 		char[] data = new char[height*length];
 		System.out.print(fit(0, 0, hm, data));
 	}
