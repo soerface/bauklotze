@@ -1,7 +1,7 @@
 import java.math.BigInteger;
 import java.util.HashMap;
 
-public class Meins
+public class Tetris
 {
 	static int length;
 	static int height;
