@@ -35,7 +35,7 @@ public class HashIntArray
 			j++;
 			if(j >= height)
 			{
-				//System.out.println(toS(a));
+				System.out.println(toS(a)); //print full arrays
 				return BigInteger.valueOf(1);
 			}
 		}
