@@ -2,7 +2,7 @@ import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Arrays;
 
-public class fit
+public class Fit
 {
     public static BigInteger fit(int j, int i, HashMap<String, BigInteger> hm, char[] data) //functional
 	{
