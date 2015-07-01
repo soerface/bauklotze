@@ -20,19 +20,6 @@ public class Tetris
 		System.out.print(fit(0, 0, hm, data));
 	}
 	
-	public static BigInteger solve(int n, int m)
-	{
-		if(m > n)
-		{
-			int c = n;
-			n = m;
-			m = c;
-		}
-		HashMap<Integer, BigInteger> hm = new HashMap<Integer, BigInteger>();
-		char[] data = new char[n*m];
-		return fit(0, 0, hm, data);
-	}
-	
 	public static BigInteger fit(int j, int i, HashMap<String, BigInteger> hm, char[] data) //functional
 	{
 		int pos = j*length+i;
