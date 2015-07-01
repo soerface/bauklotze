@@ -19,6 +19,19 @@ public class Tetris
 		boolean[] data = new boolean[height*length];
 		System.out.print(fit(0, 0, hm, data));
 	}
+	
+	public static BigInteger solve(n, m)
+	{
+		if(m > n)
+		{
+			int c = n;
+			n = m;
+			m = c;
+		}
+		HashMap<Integer, BigInteger> hm = new HashMap<Integer, BigInteger>();
+		boolean[] data = new boolean[n*m];
+		return fit(0, 0, hm, data);
+	}
 
 	private static BigInteger fit(int j, int i, HashMap<Integer, BigInteger> hm, boolean[] data)
 	{
