@@ -20,7 +20,7 @@ public class Tetris
 		char[] data = new char[height*length];
 		Arrays.fill(data, '\u0001');
 		hm.put(new String(data), BigInteger.ONE);
-		Arrays.fill(data, '\u0000');
+		data = new char[height*length];
 		System.out.print(fit(0, 0, hm, data));
 	}
 	
@@ -42,7 +42,7 @@ public class Tetris
 		return fit(0, 0, hm, data);
 	}
     
-    private static BigInteger fit(int j, int i, HashMap<String, BigInteger> hm, char[] data)
+    	private static BigInteger fit(int j, int i, HashMap<String, BigInteger> hm, char[] data)
 	{
 		int pos = j*length+i;
 		while(data[pos] == '\u0001')
