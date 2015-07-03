@@ -73,13 +73,13 @@ public class Mirrow
 					if(i+3 >= length)
 					{
 						hm.put(s, fit(j+1, 0, hm, data));
-						hm.put(new String(mirrow(data)), hm.get(s));
+						hm.put(new String(mirrow(data, 0)), hm.get(s));
 						count = count.add(hm.get(s));
 					}
 					else
 					{
 						hm.put(s, fit(j, i+3, hm, data));
-						hm.put(new String(mirrow(data)), hm.get(s));
+						hm.put(new String(mirrow(data, i+3)), hm.get(s));
 						count = count.add(hm.get(s));
 					}
 				}
@@ -100,13 +100,13 @@ public class Mirrow
 						if(i+2 >= length)
 						{
 							hm.put(s, fit(j+1, 0, hm, data));
-							hm.put(new String(mirrow(data)), hm.get(s));
+							hm.put(new String(mirrow(data, 0)), hm.get(s));
 							count = count.add(hm.get(s));
 						}
 						else
 						{
 							hm.put(s, fit(j, i+2, hm, data));
-							hm.put(new String(mirrow(data)), hm.get(s));
+							hm.put(new String(mirrow(data, i+2)), hm.get(s));
 							count = count.add(hm.get(s));
 						}
 					}
@@ -125,13 +125,13 @@ public class Mirrow
 						if(i+2 >= length)
 						{
 							hm.put(s, fit(j+1, 0, hm, data));
-							hm.put(new String(mirrow(data)), hm.get(s));
+							hm.put(new String(mirrow(data, 0)), hm.get(s));
 							count = count.add(hm.get(s));
 						}
 						else
 						{
 							hm.put(s, fit(j, i+2, hm, data));
-							hm.put(new String(mirrow(data)), hm.get(s));
+							hm.put(new String(mirrow(data, i+2)), hm.get(s));
 							count = count.add(hm.get(s));
 						}
 					}
@@ -156,13 +156,13 @@ public class Mirrow
 					if(i+1 >= length)
 					{
 						hm.put(s, fit(j+1, 0, hm, data));
-						hm.put(new String(mirrow(data)), hm.get(s));
+						hm.put(new String(mirrow(data, 0)), hm.get(s));
 						count = count.add(hm.get(s));
 					}
 					else
 					{
 						hm.put(s, fit(j, i+1, hm, data));
-						hm.put(new String(mirrow(data)), hm.get(s));
+						hm.put(new String(mirrow(data, i+1)), hm.get(s));
 						count = count.add(hm.get(s));
 					}
 				}
@@ -181,13 +181,13 @@ public class Mirrow
 					if(i+1 >= length)
 					{
 						hm.put(s, fit(j+1, 0, hm, data));
-						hm.put(new String(mirrow(data)), hm.get(s));
+						hm.put(new String(mirrow(data, 0)), hm.get(s));
 						count = count.add(hm.get(s));
 					}
 					else
 					{
 						hm.put(s, fit(j, i+1, hm, data));
-						hm.put(new String(mirrow(data)), hm.get(s));
+						hm.put(new String(mirrow(data, i+1)), hm.get(s));
 						count = count.add(hm.get(s));
 					}
 				}
@@ -206,13 +206,13 @@ public class Mirrow
 					if(i+1 >= length)
 					{
 						hm.put(s, fit(j+1, 0, hm, data));
-						hm.put(new String(mirrow(data)), hm.get(s));
+						hm.put(new String(mirrow(data, 0)), hm.get(s));
 						count = count.add(hm.get(s));
 					}
 					else
 					{
 						hm.put(s, fit(j, i+1, hm, data));
-						hm.put(new String(mirrow(data)), hm.get(s));
+						hm.put(new String(mirrow(data, i+1)), hm.get(s));
 						count = count.add(hm.get(s));
 					}
 				}
@@ -224,11 +224,11 @@ public class Mirrow
 		return count;
 	}
 	
-	private static char[] mirrow(char[] data)
+	private static char[] mirrow(char[] data, int c)
 	{
 		char[] x = new char[data.length];
 		int a = 0;
-		for(int i = height-1; i >= 0; i--)
+		for(int i = height-1; i >= c; i--)
 		{
 			for(int j = length-1; j >= 0; j--)
 			{
@@ -236,6 +236,6 @@ public class Mirrow
 				a++;
 			}
 		}
-		return data;
+		return x;
 	}
 }
