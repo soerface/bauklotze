@@ -12,6 +12,5 @@ public static BigInteger solve(int m, int n)
 			char[] data = new char[height*length];
 			Arrays.fill(data, '\u0001');
 			hm.put(new String(data), BigInteger.ONE);
-			Arrays.fill(data, '\u0000');
-			return fit(0, 0, hm, data);
+			return fit(0, 0, hm, new char[height*length]);
 		}
