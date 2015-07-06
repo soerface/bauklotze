@@ -20,11 +20,10 @@ public class ShortVersion
 		char[] data = new char[height*length];
 		Arrays.fill(data, '\u0001');
 		hm.put(new String(data), BigInteger.ONE);
-		data = new char[height*length];
-		System.out.print(fit(0, 0, hm, data));
+		System.out.print(fit(0, 0, hm, new char[height*length]));
 	}
 
-	private static BigInteger fit(int j, int i, HashMap<String, BigInteger> hm, char[] data, int pos)
+	private static BigInteger fit(int j, int i, HashMap<String, BigInteger> hm, char[] data)
 	{
 		String s = new String(data);
 		if (hm.containsKey(s))
@@ -33,6 +32,7 @@ public class ShortVersion
 		}
 		else
 		{
+			int pos = j*length+i;
 			while (data[pos] == '\u0001')
 			{
 				i = i + 1;
@@ -51,7 +51,7 @@ public class ShortVersion
 				if (i + 2 < length && data[pos + 2] == '\u0000')
 				{
 					data[pos + 2] = '\u0001';
-					count = count.add((i + 3 >= length) ? fit(j + 1, 0, hm, data, pos + 3) : fit(j, i + 3, hm, data, pos + 3));
+					count = count.add((i + 3 >= length) ? fit(j + 1, 0, hm, data) : fit(j, i + 3, hm, data));
 					data[pos + 2] = '\u0000';
 				}
 				if (j + 1 < height)
@@ -59,13 +59,13 @@ public class ShortVersion
 					if (data[pos + length] == '\u0000')
 					{
 						data[pos + length] = '\u0001';
-						count = count.add((i + 2 >= length) ? fit(j + 1, 0, hm, data, pos + 2) : fit(j, i + 2, hm, data, pos + 2));
+						count = count.add((i + 2 >= length) ? fit(j + 1, 0, hm, data) : fit(j, i + 2, hm, data));
 						data[pos + length] = '\u0000';
 					}
 					if (data[pos + length + 1] == '\u0000')
 					{
 						data[pos + length + 1] = '\u0001';
-						count = count.add((i + 2 >= length) ? fit(j + 1, 0, hm, data, pos + 2) : fit(j, i + 2, hm, data, pos + 2));
+						count = count.add((i + 2 >= length) ? fit(j + 1, 0, hm, data) : fit(j, i + 2, hm, data));
 						data[pos + length + 1] = '\u0000';
 					}
 				}
@@ -77,19 +77,19 @@ public class ShortVersion
 				if (j + 2 < height && data[pos + 2 * length] == '\u0000')
 				{
 					data[pos + 2 * length] = '\u0001';
-					count = count.add((i + 1 >= length) ? fit(j + 1, 0, hm, data, pos + 1) : fit(j, i + 1, hm, data, pos + 1));
+					count = count.add((i + 1 >= length) ? fit(j + 1, 0, hm, data) : fit(j, i + 1, hm, data));
 					data[pos + 2 * length] = '\u0000';
 				}
 				if (i - 1 >= 0 && data[pos + length - 1] == '\u0000')
 				{
 					data[pos + length - 1] = '\u0001';
-					count = count.add((i + 1 >= length) ? fit(j + 1, 0, hm, data, pos + 1) : fit(j, i + 1, hm, data, pos + 1));
+					count = count.add((i + 1 >= length) ? fit(j + 1, 0, hm, data) : fit(j, i + 1, hm, data));
 					data[pos + length - 1] = '\u0000';
 				}
 				if (i + 1 < length && data[pos + length + 1] == '\u0000')
 				{
 					data[pos + length + 1] = '\u0001';
-					count = count.add(fit(j, i + 1, hm, data, pos + 1));
+					count = count.add(fit(j, i + 1, hm, data));
 					data[pos + length + 1] = '\u0000';
 				}
 				data[pos + length] = '\u0000';
