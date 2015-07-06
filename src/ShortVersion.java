@@ -2,7 +2,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class Tetris
+public class ShortVersion
 {
 	static int length;
 	static int height;
