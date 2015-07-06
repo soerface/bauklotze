@@ -30,73 +30,70 @@ public class Tetris
 		{
 			return hm.get(s);
 		}
-		else
+		int pos = j * length + i;
+		while (data[pos] == '\u0001')
 		{
-			int pos = j*length+i;
-			while (data[pos] == '\u0001')
+			i = i + 1;
+			pos = pos + 1;
+			if (i >= length)
 			{
-				i = i + 1;
-				pos = pos + 1;
-				if (i >= length)
-				{
-					i = 0;
-					j = j + 1;
-				}
+				i = 0;
+				j = j + 1;
 			}
-			BigInteger count = BigInteger.ZERO;
-			data[pos] = '\u0001';
-			if (i + 1 < length && data[pos + 1] == '\u0000')
+		}
+		BigInteger count = BigInteger.ZERO;
+		data[pos] = '\u0001';
+		if (i + 1 < length && data[pos + 1] == '\u0000')
+		{
+			data[pos + 1] = '\u0001';
+			if (i + 2 < length && data[pos + 2] == '\u0000')
 			{
-				data[pos + 1] = '\u0001';
-				if (i + 2 < length && data[pos + 2] == '\u0000')
-				{
-					data[pos + 2] = '\u0001';
-					count = count.add((i + 3 >= length) ? fit(j + 1, 0, hm, data) : fit(j, i + 3, hm, data));
-					data[pos + 2] = '\u0000';
-				}
-				if (j + 1 < height)
-				{
-					if (data[pos + length] == '\u0000')
-					{
-						data[pos + length] = '\u0001';
-						count = count.add((i + 2 >= length) ? fit(j + 1, 0, hm, data) : fit(j, i + 2, hm, data));
-						data[pos + length] = '\u0000';
-					}
-					if (data[pos + length + 1] == '\u0000')
-					{
-						data[pos + length + 1] = '\u0001';
-						count = count.add((i + 2 >= length) ? fit(j + 1, 0, hm, data) : fit(j, i + 2, hm, data));
-						data[pos + length + 1] = '\u0000';
-					}
-				}
-				data[pos + 1] = '\u0000';
+				data[pos + 2] = '\u0001';
+				count = count.add((i + 3 >= length) ? fit(j + 1, 0, hm, data) : fit(j, i + 3, hm, data));
+				data[pos + 2] = '\u0000';
 			}
-			if (j + 1 < height && data[pos + length] == '\u0000')
+			if (j + 1 < height)
 			{
-				data[pos + length] = '\u0001';
-				if (j + 2 < height && data[pos + 2 * length] == '\u0000')
+				if (data[pos + length] == '\u0000')
 				{
-					data[pos + 2 * length] = '\u0001';
-					count = count.add((i + 1 >= length) ? fit(j + 1, 0, hm, data) : fit(j, i + 1, hm, data));
-					data[pos + 2 * length] = '\u0000';
+					data[pos + length] = '\u0001';
+					count = count.add((i + 2 >= length) ? fit(j + 1, 0, hm, data) : fit(j, i + 2, hm, data));
+					data[pos + length] = '\u0000';
 				}
-				if (i - 1 >= 0 && data[pos + length - 1] == '\u0000')
-				{
-					data[pos + length - 1] = '\u0001';
-					count = count.add((i + 1 >= length) ? fit(j + 1, 0, hm, data) : fit(j, i + 1, hm, data));
-					data[pos + length - 1] = '\u0000';
-				}
-				if (i + 1 < length && data[pos + length + 1] == '\u0000')
+				if (data[pos + length + 1] == '\u0000')
 				{
 					data[pos + length + 1] = '\u0001';
-					count = count.add(fit(j, i + 1, hm, data));
+					count = count.add((i + 2 >= length) ? fit(j + 1, 0, hm, data) : fit(j, i + 2, hm, data));
 					data[pos + length + 1] = '\u0000';
 				}
-				data[pos + length] = '\u0000';
 			}
-			data[pos] = '\u0000';
-			hm.put(s, count);
-			return count;
+			data[pos + 1] = '\u0000';
 		}
+		if (j + 1 < height && data[pos + length] == '\u0000')
+		{
+			data[pos + length] = '\u0001';
+			if (j + 2 < height && data[pos + 2 * length] == '\u0000')
+			{
+				data[pos + 2 * length] = '\u0001';
+				count = count.add((i + 1 >= length) ? fit(j + 1, 0, hm, data) : fit(j, i + 1, hm, data));
+				data[pos + 2 * length] = '\u0000';
+			}
+			if (i - 1 >= 0 && data[pos + length - 1] == '\u0000')
+			{
+				data[pos + length - 1] = '\u0001';
+				count = count.add((i + 1 >= length) ? fit(j + 1, 0, hm, data) : fit(j, i + 1, hm, data));
+				data[pos + length - 1] = '\u0000';
+			}
+			if (i + 1 < length && data[pos + length + 1] == '\u0000')
+			{
+				data[pos + length + 1] = '\u0001';
+				count = count.add(fit(j, i + 1, hm, data));
+				data[pos + length + 1] = '\u0000';
+			}
+			data[pos + length] = '\u0000';
+		}
+		data[pos] = '\u0000';
+		hm.put(s, count);
+		return count;
 	}
 }
