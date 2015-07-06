@@ -51,14 +51,7 @@ public class ShortVersion
 				if (i + 2 < length && data[pos + 2] == '\u0000')
 				{
 					data[pos + 2] = '\u0001';
-					if (i + 3 >= length)
-					{
-						count = count.add(fit(j + 1, 0, hm, data, pos + 3));
-					}
-					else
-					{
-						count = count.add(fit(j, i + 3, hm, data, pos + 3));
-					}
+					count = count.add((i + 3 >= length) ? fit(j + 1, 0, hm, data, pos + 3) : fit(j, i + 3, hm, data, pos + 3));
 					data[pos + 2] = '\u0000';
 				}
 				if (j + 1 < height)
@@ -66,27 +59,13 @@ public class ShortVersion
 					if (data[pos + length] == '\u0000')
 					{
 						data[pos + length] = '\u0001';
-						if (i + 2 >= length)
-						{
-							count = count.add(fit(j + 1, 0, hm, data, pos + 2));
-						}
-						else
-						{
-							count = count.add(fit(j, i + 2, hm, data, pos + 2));
-						}
+						count = count.add((i + 2 >= length) ? fit(j + 1, 0, hm, data, pos + 2) : fit(j, i + 2, hm, data, pos + 2));
 						data[pos + length] = '\u0000';
 					}
 					if (data[pos + length + 1] == '\u0000')
 					{
 						data[pos + length + 1] = '\u0001';
-						if (i + 2 >= length)
-						{
-							count = count.add(fit(j + 1, 0, hm, data, pos + 2));
-						}
-						else
-						{
-							count = count.add(fit(j, i + 2, hm, data, pos + 2));
-						}
+						count = count.add((i + 2 >= length) ? fit(j + 1, 0, hm, data, pos + 2) : fit(j, i + 2, hm, data, pos + 2));
 						data[pos + length + 1] = '\u0000';
 					}
 				}
@@ -98,27 +77,13 @@ public class ShortVersion
 				if (j + 2 < height && data[pos + 2 * length] == '\u0000')
 				{
 					data[pos + 2 * length] = '\u0001';
-					if (i + 1 >= length)
-					{
-						count = count.add(fit(j + 1, 0, hm, data, pos + 1));
-					}
-					else
-					{
-						count = count.add(fit(j, i + 1, hm, data, pos + 1));
-					}
+					count = count.add((i + 1 >= length) ? fit(j + 1, 0, hm, data, pos + 1) : fit(j, i + 1, hm, data, pos + 1));
 					data[pos + 2 * length] = '\u0000';
 				}
 				if (i - 1 >= 0 && data[pos + length - 1] == '\u0000')
 				{
 					data[pos + length - 1] = '\u0001';
-					if (i + 1 >= length)
-					{
-						count = count.add(fit(j + 1, 0, hm, data, pos + 1));
-					}
-					else
-					{
-						count = count.add(fit(j, i + 1, hm, data, pos + 1));
-					}
+					count = count.add((i + 1 >= length) ? fit(j + 1, 0, hm, data, pos + 1) : fit(j, i + 1, hm, data, pos + 1));
 					data[pos + length - 1] = '\u0000';
 				}
 				if (i + 1 < length && data[pos + length + 1] == '\u0000')
