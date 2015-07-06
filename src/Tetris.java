@@ -24,24 +24,6 @@ public class Tetris
 		System.out.print(fit(0, 0, hm, data));
 	}
 	
-	public static BigInteger solve(int m, int n)
-	{
-		height = m;
-		length = n;
-		if(length > height)
-		{
-			int c = height;
-			height = length;
-			length = c;
-		}
-		HashMap<String, BigInteger> hm = new HashMap<String, BigInteger>();
-		char[] data = new char[height*length];
-		Arrays.fill(data, '\u0001');
-		hm.put(new String(data), BigInteger.ONE);
-		Arrays.fill(data, '\u0000');
-		return fit(0, 0, hm, data);
-	}
-    
     	private static BigInteger fit(int j, int i, HashMap<String, BigInteger> hm, char[] data)
 	{
 		int pos = j*length+i;
@@ -193,16 +175,8 @@ public class Tetris
 				}
 				else
 				{
-					if(i+1 >= length)
-					{
-						hm.put(s, fit(j+1, 0, hm, data));
-						count = count.add(hm.get(s));
-					}
-					else
-					{
-						hm.put(s, fit(j, i+1, hm, data));
-						count = count.add(hm.get(s));
-					}
+					hm.put(s, fit(j, i+1, hm, data));
+					count = count.add(hm.get(s));
 				}
 				data[pos+length+1] = '\u0000';
 			}
