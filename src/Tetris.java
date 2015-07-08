@@ -18,10 +18,6 @@ public class Tetris {
 		m = n;                                                   
 		n = c;                                                        
 	}
-        if (m > 10 && n > 8) {
-            return TetrisS.solve(m, n);
-        } else {
-            return TetrisL.solve(m, n);
-        }
+	return (m > 10 && n > 8) ? TetrisS.solve(m, n) : TetrisL.solve(m, n);
     }
 }
