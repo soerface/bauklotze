@@ -12,6 +12,6 @@ public class Tetris {
     }
 
     public static BigInteger solve(int m, int n) {
-        return (m > 8 || n > 8) ? TetrisS.solve(m, n) : TetrisL.solve(m, n);
+        return (m > 10 || n > 10) ? TetrisS.solve(m, n) : TetrisL.solve(m, n);
     }
 }
