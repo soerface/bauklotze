@@ -1,5 +1,4 @@
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class Tetris
@@ -18,7 +17,8 @@ public class Tetris
 		}
 		HashMap<String, BigInteger> hm = new HashMap<String, BigInteger>();
 		char[] data = new char[height*length];
-		Arrays.fill(data, '\u0001');
+		for (int i = 0; i < height*length; i++)
+			data[i] = '\u0001';
 		hm.put(new String(data), BigInteger.ONE);
 		System.out.print(fit(0, 0, hm, new char[height*length]));
 	}
