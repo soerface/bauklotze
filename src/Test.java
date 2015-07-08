@@ -152,6 +152,7 @@ public class Test {
         long start;
         long stop;
         long delta;
+        long deltaLukas;
         int loopStart = 0;
         if (args.length == 1) {
             loopStart = Integer.valueOf(args[0]) - 6; // so I can read the line number above
@@ -164,21 +165,25 @@ public class Test {
         }
         for (int i = loopStart; i < Test.example_values.length; i++) {
             BigInteger[] values = Test.example_values[i];
-            start = System.currentTimeMillis();
             int m = values[0].intValue();
             int n = values[1].intValue();
+            start = System.currentTimeMillis();
             BigInteger res = Tetris.solve(m, n);
             stop = System.currentTimeMillis();
             delta = stop - start;
-            if (values[2].compareTo(BigInteger.ZERO) == 0 || res.compareTo(values[2]) == 0) {
+            start = System.currentTimeMillis();
+            BigInteger resLukas = TetrisLukas.solve(m, n);
+            stop = System.currentTimeMillis();
+            deltaLukas = stop - start;
+            if ((values[2].compareTo(BigInteger.ZERO) == 0 || res.compareTo(values[2]) == 0) && res.equals(resLukas)) {
                 if (delta > 200 || true) {
-                    System.out.format("%3d %3d - %6dms mutations: %40d Cache set / get / setBlocks / foocounter: %8d / %8d / %8d / %8d\n", values[0], values[1], delta, res, Tetris.setCaches, Tetris.getCaches, Tetris.setBlocks, Tetris.fooCounter);
-//                    System.out.format("%3d %3d - %6dms mutations: %55d\n", values[0], values[1], delta, res);
+//                    System.out.format("%3d %3d - %6dms mutations: %40d Cache set / get / setBlocks / foocounter: %8d / %8d / %8d / %8d\n", values[0], values[1], delta, res, Tetris.setCaches, Tetris.getCaches, Tetris.setBlocks, Tetris.fooCounter);
+                    System.out.format("%3d %3d - %6dms vs %6dms mutations: %55d\n", values[0], values[1], delta, deltaLukas, res);
 //                    System.out.format("%3d %3d - %6dms mutations: %55d  %10d\n", values[0], values[1], delta, res, Tetris.fooCounter);
                 }
             } else {
                 System.out.format("%3d %3d - ERROR\n", values[0], values[1]);
-                System.out.format("Expected %d, got %d\n", values[2], res);
+                System.out.format("Expected %d, got %d and %d\n", values[2], res, resLukas);
                 return;
             }
             if (i > 1 && i < Test.example_values.length - 1 && Test.example_values[i + 1][0].compareTo(values[0]) != 0 && Test.example_values[i - 1][0].compareTo(values[0]) == 0) {
