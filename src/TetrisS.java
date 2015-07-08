@@ -50,7 +50,7 @@ public class TetrisS {
         TetrisS.setBlocks = 0;
         TetrisS.fooCounter = 0;
         Board board = new Board(m, n);
-        TetrisS.rectCache = new BigInteger[board.height][board.width];
+        TetrisS.rectCache = new BigInteger[Board.height][Board.width];
         return board.calculateMutations();
     }
 
