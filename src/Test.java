@@ -178,7 +178,9 @@ public class Test {
             if ((values[2].compareTo(BigInteger.ZERO) == 0 || res.compareTo(values[2]) == 0) && res.equals(resLukas)) {
                 if (delta > 200 || true) {
 //                    System.out.format("%3d %3d - %6dms mutations: %40d Cache set / get / setBlocks / foocounter: %8d / %8d / %8d / %8d\n", values[0], values[1], delta, res, Tetris.setCaches, Tetris.getCaches, Tetris.setBlocks, Tetris.fooCounter);
-                    System.out.format("%3d %3d - %6dms vs %6dms mutations: %55d\n", values[0], values[1], delta, deltaLukas, res);
+                    String time = String.format("\u001B[3%dm%6dms\u001B[0m", delta > deltaLukas ? 1 : 2, delta);
+                    String timeLukas = String.format("\u001B[3%dm%6dms\u001B[0m", delta < deltaLukas ? 1 : 2, deltaLukas);
+                    System.out.format("%3d %3d - %s vs %s mutations: %55d\n", values[0], values[1], time, timeLukas, res);
 //                    System.out.format("%3d %3d - %6dms mutations: %55d  %10d\n", values[0], values[1], delta, res, Tetris.fooCounter);
                 }
             } else {
