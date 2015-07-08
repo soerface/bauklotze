@@ -5,15 +5,8 @@ public class TetrisL
 {
 	static int length;
 	static int height;
-	
 	public static BigInteger solve(int m, int n)
 	{
-		if(length > height)                                                    
-		{            
-			int c = height;                                                    
-			height = length;                                                   
-			length = c;                                                        
-		}
 		height = m;
 		length = n;
 		HashMap<String, BigInteger> hm = new HashMap<String, BigInteger>();
