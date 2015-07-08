@@ -3,23 +3,21 @@ import java.util.HashMap;
 
 public class TetrisL
 {
-	private static int length;
-	private static int height;
+	static int length;
+	static int height;
 	public static BigInteger solve(int m, int n)
 	{
-		if(n > m)
-		{
-			height = n;
-			length = m;
-		}
-		else
-		{
-			length = m;
-			height = n;
+		height = m;
+		length = n;
+		if(length > height)                                                    
+		{            
+			int c = height;                                                    
+			height = length;                                                   
+			length = c;                                                        
 		}
 		HashMap<String, BigInteger> hm = new HashMap<String, BigInteger>();
 		char[] data = new char[height*length];
-		for (int i = 0; i < height*length; i++)
+		for (int i = 0; i < height*length; i++) 
 			data[i] = '\u0001';
 		hm.put(new String(data), BigInteger.ONE);
 		return fit(0, 0, hm, new char[height*length]);
