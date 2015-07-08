@@ -20,7 +20,7 @@ public class TetrisLukas
 		for (int i = 0; i < height*length; i++)
 			data[i] = '\u0001';
 		hm.put(new String(data), BigInteger.ONE);
-		System.out.print(fit(0, 0, hm, new char[height*length];));
+		System.out.print(fit(0, 0, hm, new char[height*length]));
 	}
 	
 	public static BigInteger solve(int m, int n)
@@ -38,7 +38,7 @@ public class TetrisLukas
 		for (int i = 0; i < height*length; i++)
 			data[i] = '\u0001';
 		hm.put(new String(data), BigInteger.ONE);
-		return fit(0, 0, hm, new char[height*length];);
+		return fit(0, 0, hm, new char[height*length]);
 	}
     
     	private static BigInteger fit(int j, int i, HashMap<String, BigInteger> hm, char[] data)
