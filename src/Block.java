@@ -1,25 +1,19 @@
 public class Block {
-    public int[][] data;
-    public int[][] coordinates;
-    public int width;
+    public short data;
     public int height;
+    public int width;
 
-    public Block(int[][] data) {
+    public Block(short data, int height, int width) {
         this.data = data;
-        this.width = data.length;
-        this.height = data[0].length;
-        this.coordinates = new int[3][2];
-        int k = 0;
-        while (k < 3) {
-            for (int i = 0; i < this.data.length; i++) {
-                for (int j = 0; j < this.data[i].length; j++) {
-                    if (this.data[i][j] != 0) {
-                        this.coordinates[k][0] = i;
-                        this.coordinates[k][1] = j;
-                        k++;
-                    }
-                }
-            }
-        }
+        this.height = height;
+        this.width = width;
+    }
+
+    public boolean get(int y, int x) {
+        return (data & (1 << (y * 3 + x))) != 0;
+    }
+
+    public short get(int y) {
+        return (short) ((data & (7 << (y * 3))) >> y*3);
     }
 }
