@@ -33,12 +33,12 @@ public class TetrisL
 		int pos = j * length + i;
 		while (data[pos] == '\u0001')
 		{
-			i = i + 1;
-			pos = pos + 1;
+			i++;
+			pos++;
 			if (i >= length)
 			{
 				i = 0;
-				j = j + 1;
+				j++;
 			}
 		}
 		BigInteger count = BigInteger.ZERO;
