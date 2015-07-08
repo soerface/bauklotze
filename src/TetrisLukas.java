@@ -1,5 +1,4 @@
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class TetrisLukas
@@ -18,10 +17,10 @@ public class TetrisLukas
 		}
 		HashMap<String, BigInteger> hm = new HashMap<String, BigInteger>();
 		char[] data = new char[height*length];
-		Arrays.fill(data, '\u0001');
+		for (int i = 0; i < height*length; i++)
+			data[i] = '\u0001';
 		hm.put(new String(data), BigInteger.ONE);
-		data = new char[height*length];
-		System.out.print(fit(0, 0, hm, data));
+		System.out.print(fit(0, 0, hm, new char[height*length];));
 	}
 	
 	public static BigInteger solve(int m, int n)
@@ -36,10 +35,10 @@ public class TetrisLukas
 		}
 		HashMap<String, BigInteger> hm = new HashMap<String, BigInteger>();
 		char[] data = new char[height*length];
-		Arrays.fill(data, '\u0001');
+		for (int i = 0; i < height*length; i++)
+			data[i] = '\u0001';
 		hm.put(new String(data), BigInteger.ONE);
-		Arrays.fill(data, '\u0000');
-		return fit(0, 0, hm, data);
+		return fit(0, 0, hm, new char[height*length];);
 	}
     
     	private static BigInteger fit(int j, int i, HashMap<String, BigInteger> hm, char[] data)
