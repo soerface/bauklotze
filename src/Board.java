@@ -35,14 +35,14 @@ public class Board {
         }
         area = new Area(area.x1, position[0], area.x2, area.y2);
 
-        result = Tetris.getCache(area);
+        result = TetrisS.getCache(area);
         if (result != null) {
             return result;
         }
 
         result = BigInteger.ZERO;
         int[] pos;
-        for (Block block : Tetris.blocks) {
+        for (Block block : TetrisS.blocks) {
             pos = findValidPosition(block, position);
             if (pos[0] != -1) {
                 placeBlockAt(block, pos);
@@ -54,7 +54,7 @@ public class Board {
 //            print(result, area);
 //        }
 //        System.out.println(area.height);
-        Tetris.setCache(result, area);
+        TetrisS.setCache(result, area);
         return result;
     }
 
@@ -92,7 +92,7 @@ public class Board {
     }
 
     protected void placeBlockAt(Block block, int[] position) {
-        Tetris.setBlocks++;
+        TetrisS.setBlocks++;
         boardData.toggleBlock(block, position);
     }
 

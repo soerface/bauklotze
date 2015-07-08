@@ -151,13 +151,13 @@ public class Test {
     public static void main(String[] args) {
         long start;
         long stop;
-        long delta;
-        long deltaLukas;
+        long deltaS;
+        long deltaL;
+        long deltaT;
         int loopStart = 0;
         if (args.length == 1) {
             loopStart = Integer.valueOf(args[0]) - 6; // so I can read the line number above
-        }
-        else if (args.length == 2) {
+        } else if (args.length == 2) {
             Test.example_values = new BigInteger[1][3];
             Test.example_values[0][0] = new BigInteger(args[0]);
             Test.example_values[0][1] = new BigInteger(args[1]);
@@ -168,24 +168,26 @@ public class Test {
             int m = values[0].intValue();
             int n = values[1].intValue();
             start = System.currentTimeMillis();
-            BigInteger res = Tetris.solve(m, n);
+            BigInteger resS = TetrisS.solve(m, n);
             stop = System.currentTimeMillis();
-            delta = stop - start;
+            deltaS = stop - start;
             start = System.currentTimeMillis();
-            BigInteger resLukas = TetrisLukas.solve(m, n);
+            BigInteger resL = TetrisL.solve(m, n);
             stop = System.currentTimeMillis();
-            deltaLukas = stop - start;
-            if ((values[2].compareTo(BigInteger.ZERO) == 0 || res.compareTo(values[2]) == 0) && res.equals(resLukas)) {
-                if (delta > 200 || true) {
-//                    System.out.format("%3d %3d - %6dms mutations: %40d Cache set / get / setBlocks / foocounter: %8d / %8d / %8d / %8d\n", values[0], values[1], delta, res, Tetris.setCaches, Tetris.getCaches, Tetris.setBlocks, Tetris.fooCounter);
-                    String time = String.format("\u001B[3%dm%6dms\u001B[0m", delta > deltaLukas ? 1 : 2, delta);
-                    String timeLukas = String.format("\u001B[3%dm%6dms\u001B[0m", delta < deltaLukas ? 1 : 2, deltaLukas);
-                    System.out.format("%3d %3d - %s vs %s mutations: %55d\n", values[0], values[1], time, timeLukas, res);
-//                    System.out.format("%3d %3d - %6dms mutations: %55d  %10d\n", values[0], values[1], delta, res, Tetris.fooCounter);
-                }
+            deltaL = stop - start;
+            start = System.currentTimeMillis();
+            BigInteger resT = Tetris.solve(m, n);
+            stop = System.currentTimeMillis();
+            deltaT = stop - start;
+            if ((values[2].compareTo(BigInteger.ZERO) == 0 || resS.compareTo(values[2]) == 0) && resS.equals(resL) && resS.equals(resT)) {
+//                System.out.format("%3d %3d - %6dms mutations: %40d Cache set / get / setBlocks / foocounter: %8d / %8d / %8d / %8d\n", values[0], values[1], deltaS, resS, Tetris.setCaches, Tetris.getCaches, Tetris.setBlocks, Tetris.fooCounter);
+                String timeS = String.format("\u001B[3%dm%6dms\u001B[0m", deltaS > deltaL ? 1 : 2, deltaS);
+                String timeL = String.format("\u001B[3%dm%6dms\u001B[0m", deltaS < deltaL ? 1 : 2, deltaL);
+                System.out.format("%3d %3d - %s S / %6dms / L %s mutations: %55d\n", values[0], values[1], timeS, deltaT, timeL, resS);
+//                System.out.format("%3d %3d - %6dms mutations: %55d  %10d\n", values[0], values[1], deltaS, resS, Tetris.fooCounter);
             } else {
                 System.out.format("%3d %3d - ERROR\n", values[0], values[1]);
-                System.out.format("Expected %d, got %d and %d\n", values[2], res, resLukas);
+                System.out.format("Expected %d, got %d and %d\n", values[2], resS, resL);
                 return;
             }
             if (i > 1 && i < Test.example_values.length - 1 && Test.example_values[i + 1][0].compareTo(values[0]) != 0 && Test.example_values[i - 1][0].compareTo(values[0]) == 0) {
