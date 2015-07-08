@@ -5,10 +5,16 @@ public class Tetris
 {
 	static int length;
 	static int height;
-	public static void main(String[] args) 
+	public static void main(String[] args)
 	{
-		length = Integer.parseInt(args[0]);
-		height = Integer.parseInt(args[1]);
+		int m = Integer.parseInt(args[0]);
+		int n = Integer.parseInt(args[1]);
+		System.out.print(Tetris.solve(m, n));
+	}
+
+	public static BigInteger solve(int m, int n) {
+		length = m;
+		height = n;
 		if(length > height)
 		{
 			int c = height;
@@ -20,7 +26,7 @@ public class Tetris
 		for (int i = 0; i < height*length; i++)
 			data[i] = '\u0001';
 		hm.put(new String(data), BigInteger.ONE);
-		System.out.print(fit(0, 0, hm, new char[height*length]));
+		return fit(0, 0, hm, new char[height*length]);
 	}
 	
     	private static BigInteger fit(int j, int i, HashMap<String, BigInteger> hm, char[] data)
