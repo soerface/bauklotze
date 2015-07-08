@@ -9,6 +9,11 @@ public class TetrisL
 	{
 		height = m;
 		length = n;
+		if(length > height)                                                    
+		{            
+			height = n;                                                    
+			length = m;                                                      
+		}
 		HashMap<String, BigInteger> hm = new HashMap<String, BigInteger>();
 		char[] data = new char[height*length];
 		for (int i = 0; i < height*length; i++) 
