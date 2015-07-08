@@ -12,13 +12,7 @@ public class Tetris {
     }
 
     public static BigInteger solve(int m, int n) {
-        if(m > n)                                                    
-		{            
-			int c = n;                                                    
-			n = m;                                                   
-			m = c;                                                        
-		}
-        if (m > 10 && n > 8) {
+        if (m > 10 && n > 10) {
             return TetrisS.solve(m, n);
         } else {
             return TetrisL.solve(m, n);
