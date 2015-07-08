@@ -5,209 +5,95 @@ public class TetrisLukas
 {
 	static int length;
 	static int height;
-	public static void main(String[] args) 
-	{
-		length = Integer.parseInt(args[0]);
-		height = Integer.parseInt(args[1]);
-		if(length > height)
-		{
-			int c = height;
-			height = length;
-			length = c;
-		}
-		HashMap<String, BigInteger> hm = new HashMap<String, BigInteger>();
-		char[] data = new char[height*length];
-		for (int i = 0; i < height*length; i++)
-			data[i] = '\u0001';
-		hm.put(new String(data), BigInteger.ONE);
-		System.out.print(fit(0, 0, hm, new char[height*length]));
-	}
-	
 	public static BigInteger solve(int m, int n)
 	{
 		height = m;
 		length = n;
-		if(length > height)
-		{
-			int c = height;
-			height = length;
-			length = c;
+		if(length > height)                                                    
+		{            
+			int c = height;                                                    
+			height = length;                                                   
+			length = c;                                                        
 		}
 		HashMap<String, BigInteger> hm = new HashMap<String, BigInteger>();
 		char[] data = new char[height*length];
-		for (int i = 0; i < height*length; i++)
+		for (int i = 0; i < height*length; i++) 
 			data[i] = '\u0001';
 		hm.put(new String(data), BigInteger.ONE);
 		return fit(0, 0, hm, new char[height*length]);
 	}
-    
-    	private static BigInteger fit(int j, int i, HashMap<String, BigInteger> hm, char[] data)
+	
+	private static BigInteger fit(int j, int i, HashMap<String, BigInteger> hm, char[] data)
 	{
-		int pos = j*length+i;
-		while(data[pos] == '\u0001')
+		String s = new String(data);
+		if (hm.containsKey(s))
 		{
-			i=i+1;
-			pos=pos+1;
-			if(i >=length)
+			return hm.get(s);
+		}
+		int pos = j * length + i;
+		while (data[pos] == '\u0001')
+		{
+			i = i + 1;
+			pos = pos + 1;
+			if (i >= length)
 			{
-				i=0;
-				j=j+1;
+				i = 0;
+				j = j + 1;
 			}
 		}
 		BigInteger count = BigInteger.ZERO;
 		data[pos] = '\u0001';
-		if (i+1 < length && data[pos+1] == '\u0000') 
+		if (i + 1 < length && data[pos + 1] == '\u0000')
 		{
-			data[pos+1] = '\u0001';
-			if (i+2 < length && data[pos+2] == '\u0000') 
+			data[pos + 1] = '\u0001';
+			if (i + 2 < length && data[pos + 2] == '\u0000')
 			{
-				data[pos+2] = '\u0001';
-				String s = new String(data);
-				if(hm.containsKey(s))
-				{
-					count = count.add(hm.get(s));
-				}
-				else
-				{
-					if(i+3 >= length)
-					{
-						hm.put(s, fit(j+1, 0, hm, data));
-						count = count.add(hm.get(s));
-					}
-					else
-					{
-						hm.put(s, fit(j, i+3, hm, data));
-						count = count.add(hm.get(s));
-					}
-				}
-				data[pos+2] = '\u0000';
+				data[pos + 2] = '\u0001';
+				count = count.add((i + 3 < length) ? fit(j, i + 3, hm, data) : fit(j + 1, 0, hm, data));
+				data[pos + 2] = '\u0000';
 			}
-			if (j+1 < height) 
+			if (j + 1 < height)
 			{
 				if (data[pos + length] == '\u0000')
 				{
 					data[pos + length] = '\u0001';
-					String s = new String(data);
-					if (hm.containsKey(s))
-					{
-						count = count.add(hm.get(s));
-					} 
-					else
-					{
-						if(i+2 >= length)
-						{
-							hm.put(s, fit(j+1, 0, hm, data));
-							count = count.add(hm.get(s));
-						}
-						else
-						{
-							hm.put(s, fit(j, i+2, hm, data));
-							count = count.add(hm.get(s));
-						}
-					}
+					count = count.add((i + 2 < length) ? fit(j, i + 2, hm, data) : fit(j + 1, 0, hm, data));
 					data[pos + length] = '\u0000';
 				}
 				if (data[pos + length + 1] == '\u0000')
 				{
 					data[pos + length + 1] = '\u0001';
-					String s = new String(data);
-					if (hm.containsKey(s))
-					{
-						count = count.add(hm.get(s));
-					} 
-					else
-					{
-						if(i+2 >= length)
-						{
-							hm.put(s, fit(j+1, 0, hm, data));
-							count = count.add(hm.get(s));
-						}
-						else
-						{
-							hm.put(s, fit(j, i+2, hm, data));
-							count = count.add(hm.get(s));
-						}
-					}
+					count = count.add((i + 2 < length) ? fit(j, i + 2, hm, data) : fit(j + 1, 0, hm, data));
 					data[pos + length + 1] = '\u0000';
 				}
 			}
-			data[pos+1] = '\u0000';
+			data[pos + 1] = '\u0000';
 		}
-		if (j + 1 < height && data[pos+length] == '\u0000') 
+		if (j + 1 < height && data[pos + length] == '\u0000')
 		{
-			data[pos+length] = '\u0001';
-			if (j + 2 < height && data[pos+2*length] == '\u0000') 
+			data[pos + length] = '\u0001';
+			if (j + 2 < height && data[pos + 2 * length] == '\u0000')
 			{
-				data[pos+2*length] = '\u0001';
-				String s = new String(data);
-				if(hm.containsKey(s))
-				{
-					count = count.add(hm.get(s));
-				}
-				else
-				{
-					if(i+1 >= length)
-					{
-						hm.put(s, fit(j+1, 0, hm, data));
-						count = count.add(hm.get(s));
-					}
-					else
-					{
-						hm.put(s, fit(j, i+1, hm, data));
-						count = count.add(hm.get(s));
-					}
-				}
-				data[pos+2*length] = '\u0000';
+				data[pos + 2 * length] = '\u0001';
+				count = count.add((i + 1 < length) ? fit(j, i + 1, hm, data) : fit(j + 1, 0, hm, data));
+				data[pos + 2 * length] = '\u0000';
 			}
-			if (i - 1 >= 0 && data[pos+length-1] == '\u0000') 
+			if (i - 1 >= 0 && data[pos + length - 1] == '\u0000')
 			{
-				data[pos+length-1] = '\u0001';
-				String s = new String(data);
-				if(hm.containsKey(s))
-				{
-					count = count.add(hm.get(s));
-				}
-				else
-				{
-					if(i+1 >= length)
-					{
-						hm.put(s, fit(j+1, 0, hm, data));
-						count = count.add(hm.get(s));
-					}
-					else
-					{
-						hm.put(s, fit(j, i+1, hm, data));
-						count = count.add(hm.get(s));
-					}
-				}
-				data[pos+length-1] = '\u0000';
+				data[pos + length - 1] = '\u0001';
+				count = count.add((i + 1 < length) ? fit(j, i + 1, hm, data) : fit(j + 1, 0, hm, data));
+				data[pos + length - 1] = '\u0000';
 			}
-			if (i + 1 < length && data[pos+length+1] == '\u0000') 
+			if (i + 1 < length && data[pos + length + 1] == '\u0000')
 			{
-				data[pos+length+1] = '\u0001';
-				String s = new String(data);
-				if(hm.containsKey(s))
-				{
-					count = count.add(hm.get(s));
-				}
-				else
-				{
-					if(i+1 >= length)
-					{
-						hm.put(s, fit(j+1, 0, hm, data));
-						count = count.add(hm.get(s));
-					}
-					else
-					{
-						hm.put(s, fit(j, i+1, hm, data));
-						count = count.add(hm.get(s));
-					}
-				}
-				data[pos+length+1] = '\u0000';
+				data[pos + length + 1] = '\u0001';
+				count = count.add(fit(j, i + 1, hm, data));
+				data[pos + length + 1] = '\u0000';
 			}
-			data[pos+length] = '\u0000';
+			data[pos + length] = '\u0000';
 		}
 		data[pos] = '\u0000';
+		hm.put(s, count);
 		return count;
 	}
 }
