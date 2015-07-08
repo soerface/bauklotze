@@ -179,7 +179,7 @@ public class Test {
             BigInteger resT = Tetris.solve(m, n);
             stop = System.currentTimeMillis();
             deltaT = stop - start;
-            if ((values[2].compareTo(BigInteger.ZERO) == 0 || resS.compareTo(values[2]) == 0) && resS.equals(resL) && resS.equals(resT)) {
+            if ((values[2].compareTo(BigInteger.ZERO) == 0 || resT.compareTo(values[2]) == 0) && resS.equals(resT) && resL.equals(resT)) {
 //                System.out.format("%3d %3d - %6dms mutations: %40d Cache set / get / setBlocks / foocounter: %8d / %8d / %8d / %8d\n", values[0], values[1], deltaS, resS, Tetris.setCaches, Tetris.getCaches, Tetris.setBlocks, Tetris.fooCounter);
                 String timeS = String.format("\u001B[3%dm%6dms\u001B[0m", deltaS > deltaL ? 1 : 2, deltaS);
                 String timeL = String.format("\u001B[3%dm%6dms\u001B[0m", deltaS < deltaL ? 1 : 2, deltaL);
