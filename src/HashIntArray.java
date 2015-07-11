@@ -27,13 +27,22 @@ public class HashIntArray
 
 	private static BigInteger fit(int[][] a, int height, int length, int j, int i, HashMap<String, BigInteger> hm) 
 	{ 
+		System.out.println(toS(a)); //print arrays
+		try
+		{
+			Thread.sleep(1000);
+		}
+		catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
 		if(i >= length)
 		{
 			i=0;
 			j++;
 			if(j >= height)
 			{
-				System.out.println(toS(a)); //print full arrays
+				//System.out.println(toS(a)); //print full arrays
 				return BigInteger.valueOf(1);
 			}
 		}
