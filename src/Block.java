@@ -9,7 +9,7 @@ public class Block {
         this.width = width;
     }
 
-    public boolean get(int y, int x) {
-        return data[y][x] != 0;
+    public int get(int y, int x) {
+        return data[y][x];
     }
 }

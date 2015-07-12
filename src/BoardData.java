@@ -32,13 +32,13 @@ public class BoardData {
         hash = 0;
     }
 
-    public boolean get(int y, int x) {
-        return data[y][x] != 0;
+    public int get(int y, int x) {
+        return data[y][x];
     }
 
 
-    public void set(int y, int x, boolean value) {
-        data[y][x] = value ? 1 : 0;
+    public void set(int y, int x, int value) {
+        data[y][x] = value;
     }
 
     public void mirrorData() {
@@ -62,7 +62,7 @@ public class BoardData {
         if (area.width != boardData.area.width) return false;
         for (int i = area.y1; i < area.y2; i++) {
             for (int j = area.x1; j < area.x2; j++) {
-                if (data[i][j] != boardData.data[i][j]) {
+                if ((data[i][j] == 0 ? 0 : 1) != (boardData.data[i][j] == 0 ? 0 : 1)) {
                     return false;
                 }
             }

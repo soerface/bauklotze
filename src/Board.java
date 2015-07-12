@@ -59,7 +59,7 @@ public class Board {
     }
 
     int[] findValidPosition(Block block, int[] pos) {
-        if (block.get(0, 0)) {
+        if (block.get(0, 0) != 0) {
             if (blockPlaceableAt(block, pos)) {
                 return pos;
             }
@@ -81,7 +81,7 @@ public class Board {
     int[] findNextPosition(Area area) {
         for (int i = area.y1; i < area.y2; i++) {
             for (int j = area.x1; j < area.x2; j++) {
-                if (!boardData.get(i, j)) {
+                if (boardData.get(i, j) == 0) {
                     return new int[]{i, j};
                 }
             }
@@ -92,8 +92,9 @@ public class Board {
     protected void placeBlockAt(Block block, int[] position) {
         for (int i = 0; i < block.height; i++) {
             for (int j = 0; j < block.width; j++) {
-                if (block.get(i, j)) {
-                    boardData.set(i+position[0], j+position[1], true);
+                int value = block.get(i, j);
+                if (value != 0) {
+                    boardData.set(i+position[0], j+position[1], value);
                 }
             }
         }
@@ -102,8 +103,8 @@ public class Board {
     protected void removeBlockAt(Block block, int[] position) {
         for (int i = 0; i < block.height; i++) {
             for (int j = 0; j < block.width; j++) {
-                if (block.get(i, j)) {
-                    boardData.set(i+position[0], j+position[1], false);
+                if (block.get(i, j) != 0) {
+                    boardData.set(i+position[0], j+position[1], 0);
                 }
             }
         }
@@ -119,7 +120,7 @@ public class Board {
         // check if there is already a block
         for (int i = 0; i < block.height; i++) {
             for (int j = 0; j < block.width; j++) {
-                if (block.get(i, j) && boardData.get(i+position[0], j+position[1])) {
+                if (block.get(i, j) != 0 && boardData.get(i+position[0], j+position[1]) != 0) {
                     return false;
                 }
             }
