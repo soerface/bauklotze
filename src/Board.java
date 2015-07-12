@@ -7,7 +7,6 @@ public class Board {
     public static int width;
     // this variables are just for debugging output
     public static BigInteger totalResult;
-    public static long progress;
 
     public Board(int m, int n) {
         if (m < 3 || n > m) {
@@ -22,12 +21,10 @@ public class Board {
 
     public BigInteger calculateMutations() {
         totalResult = BigInteger.ZERO;
-        progress = 0;
         return calculateMutations(new Area(0, 0, width, height));
     }
 
     public BigInteger calculateMutations(Area area) {
-        Board.progress++;
         if (Tetris.printDelay > 100) {
             Tetris.printDelay -= 50;
         }
@@ -35,9 +32,6 @@ public class Board {
         int[] position;
         position = findNextPosition(area);
         if (position == null) {
-            if (Board.progress < 50) {
-                print();
-            }
             totalResult = totalResult.add(BigInteger.ONE);
             return BigInteger.ONE;
         }
@@ -45,13 +39,6 @@ public class Board {
 
         result = Tetris.getCache(area);
         if (result != null) {
-            for (int i = 0; i < 4 && Tetris.printDelay > 0; i++) {
-                int tmp = Tetris.printDelay;
-                Tetris.printDelay = Math.max(Tetris.printDelay / 10, 100);
-                print(true);
-                print();
-                Tetris.printDelay = tmp;
-            }
             totalResult = totalResult.add(result);
             return result;
         }
@@ -59,29 +46,15 @@ public class Board {
         result = BigInteger.ZERO;
         int[] pos;
         for (Block block : Tetris.blocks) {
-            for (int i = 0; i < 4 && Tetris.printDelay > 0 && Board.progress < 10; i++) {
-                int tmp = Tetris.printDelay;
-                Tetris.printDelay = Math.max(Tetris.printDelay / 10, 100);
-                print(position, block);
-                print(block);
-                Tetris.printDelay = tmp;
-            }
-            if (Board.progress < 50) {
-                print(position, block);
-            }
             pos = findValidPosition(block, position);
             if (pos[0] != -1) {
                 placeBlockAt(block, pos);
                 print(position);
                 result = result.add(calculateMutations(area));
                 removeBlockAt(block, pos);
-                print();
+                print(position);
             }
         }
-//        if (area.height == 7) {
-//            print(result, area);
-//        }
-//        System.out.println(area.height);
         Tetris.setCache(result, area);
         return result;
     }

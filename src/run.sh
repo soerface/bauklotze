@@ -1,1 +1,1 @@
-javac *.java && java Tetris 4 6 1000
+javac *.java && java Tetris 4 12 100
