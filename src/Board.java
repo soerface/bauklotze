@@ -5,8 +5,9 @@ public class Board {
     public static BoardData boardData;
     public static int height;
     public static int width;
-    // this variable is just for debugging output
+    // this variables are just for debugging output
     public static BigInteger totalResult;
+    public static int blinks;
 
     public Board(int m, int n) {
         if (m < 3 || n > m) {
@@ -21,6 +22,7 @@ public class Board {
 
     public BigInteger calculateMutations() {
         totalResult = BigInteger.ZERO;
+        blinks = 0;
         return calculateMutations(new Area(0, 0, width, height));
     }
 
@@ -29,9 +31,9 @@ public class Board {
         int[] position;
         position = findNextPosition(area);
         if (position == null) {
-            result = area.isFull() ? BigInteger.ONE : BigInteger.ZERO;
+            print(true);
             totalResult = totalResult.add(BigInteger.ONE);
-            return result;
+            return BigInteger.ONE;
         }
         area = new Area(area.x1, position[0], area.x2, area.y2);
 
@@ -44,21 +46,22 @@ public class Board {
         result = BigInteger.ZERO;
         int[] pos;
         for (Block block : Tetris.blocks) {
-            for (int i = 0; i < 3 && totalResult.compareTo(BigInteger.valueOf(10)) < 0; i++) {
+            for (int i = 0; i < 4 && Board.blinks < 50; i++) {
                 int tmp = Tetris.printDelay;
-                Tetris.printDelay = 100;
-                print(area, position, block);
-                print(area, block);
+                Tetris.printDelay /= 10;
+                print(position, block);
+                print(block);
                 Tetris.printDelay = tmp;
             }
-            print(area, position, block);
+            Board.blinks++;
+            print(position, block);
             pos = findValidPosition(block, position);
             if (pos[0] != -1) {
                 placeBlockAt(block, pos);
-                print(area, position);
+                print(position);
                 result = result.add(calculateMutations(area));
                 removeBlockAt(block, pos);
-                print(area);
+                print();
             }
         }
 //        if (area.height == 7) {
@@ -140,34 +143,44 @@ public class Board {
         return true;
     }
 
-    public static void print(Area area) {
-        print(area, new int[]{-1, -1}, null);
+    public static void print() {
+        print(new int[]{-1, -1}, null);
     }
 
-    public static void print(Area area, int[] highlightPosition) {
-        print(area, highlightPosition, null);
+    public static void print(boolean success) {
+        print(new int[]{-1, -1}, null, success);
     }
 
-    public static void print(Area area, Block block) {
-        print(area, new int[]{-1, -1}, block);
+    public static void print(int[] highlightPosition) {
+        print(highlightPosition, null);
     }
 
-    public static void print(Area area, int[] highlightPosition, Block block) {
+    public static void print(Block block) {
+        print(new int[]{-1, -1}, block);
+    }
+
+    public static void print(int[] highlightPosition, Block block) {
+        print(highlightPosition, block, false);
+    }
+
+    public static void print(int[] highlightPosition, Block block, boolean success) {
         if (Tetris.printDelay <= 0) {
             return;
         }
         System.out.println();
-        for (int i = 0; i < Math.max(height, area.height); i++) {
-            for (int j = 0; j < Math.max(width, area.width); j++) {
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
                 int value = boardData.get(i, j);
                 String content = String.format(" %d ", value);
                 int color = value;
-                if (i >= area.y1 && i < area.y2 && j >= area.x1 && j < area.x2) {
-                    if (i == highlightPosition[0] && j == highlightPosition[1]) {
+                if (i == highlightPosition[0] && j == highlightPosition[1]) {
                         color = 7;
-                    }
                 }
-                System.out.format("\u001B[4%dm%s\u001B[0m", color, content);
+                if (success) {
+                    System.out.format("\u001B[30;102m%s\u001B[0m", content);
+                } else {
+                    System.out.format("\u001B[4%dm%s\u001B[0m", color, content);
+                }
             }
             if (block != null && i < block.height) {
                 System.out.print("  ");
