@@ -43,7 +43,7 @@ public class Board {
         }
         area = new Area(area.x1, position[0], area.x2, area.y2);
 
-//        result = Tetris.getCache(area);
+        result = Tetris.getCache(area);
         if (result != null) {
             for (int i = 0; i < 4 && Tetris.printDelay > 0; i++) {
                 int tmp = Tetris.printDelay;
