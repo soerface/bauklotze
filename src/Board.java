@@ -7,7 +7,7 @@ public class Board {
     public static int width;
     // this variables are just for debugging output
     public static BigInteger totalResult;
-    public static int blinks;
+    public static long progress;
 
     public Board(int m, int n) {
         if (m < 3 || n > m) {
@@ -22,39 +22,53 @@ public class Board {
 
     public BigInteger calculateMutations() {
         totalResult = BigInteger.ZERO;
-        blinks = 0;
+        progress = 0;
         return calculateMutations(new Area(0, 0, width, height));
     }
 
     public BigInteger calculateMutations(Area area) {
-        BigInteger result;
+        Board.progress++;
+        if (Tetris.printDelay > 100) {
+            Tetris.printDelay -= 50;
+        }
+        BigInteger result = null;
         int[] position;
         position = findNextPosition(area);
         if (position == null) {
-            print(true);
+            if (Board.progress < 50) {
+                print();
+            }
             totalResult = totalResult.add(BigInteger.ONE);
             return BigInteger.ONE;
         }
         area = new Area(area.x1, position[0], area.x2, area.y2);
 
 //        result = Tetris.getCache(area);
-//        if (result != null) {
-//            totalResult = totalResult.add(result);
-//            return result;
-//        }
+        if (result != null) {
+            for (int i = 0; i < 4 && Tetris.printDelay > 0; i++) {
+                int tmp = Tetris.printDelay;
+                Tetris.printDelay = Math.max(Tetris.printDelay / 10, 100);
+                print(true);
+                print();
+                Tetris.printDelay = tmp;
+            }
+            totalResult = totalResult.add(result);
+            return result;
+        }
 
         result = BigInteger.ZERO;
         int[] pos;
         for (Block block : Tetris.blocks) {
-            for (int i = 0; i < 4 && Board.blinks < 50; i++) {
+            for (int i = 0; i < 4 && Tetris.printDelay > 0 && Board.progress < 10; i++) {
                 int tmp = Tetris.printDelay;
-                Tetris.printDelay /= 10;
+                Tetris.printDelay = Math.max(Tetris.printDelay / 10, 100);
                 print(position, block);
                 print(block);
                 Tetris.printDelay = tmp;
             }
-            Board.blinks++;
-            print(position, block);
+            if (Board.progress < 50) {
+                print(position, block);
+            }
             pos = findValidPosition(block, position);
             if (pos[0] != -1) {
                 placeBlockAt(block, pos);
@@ -176,7 +190,7 @@ public class Board {
                 if (i == highlightPosition[0] && j == highlightPosition[1]) {
                         color = 7;
                 }
-                if (success) {
+                if (success && value != 0) {
                     System.out.format("\u001B[30;102m%s\u001B[0m", content);
                 } else {
                     System.out.format("\u001B[4%dm%s\u001B[0m", color, content);
