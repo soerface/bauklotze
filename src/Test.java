@@ -153,7 +153,7 @@ public class Test {
         long stop;
         long deltaS;
         long deltaL;
-        long deltaT;
+        long delta;
         int loopStart = 0;
         if (args.length == 1) {
             loopStart = Integer.valueOf(args[0]) - 6; // so I can read the line number above
@@ -168,26 +168,16 @@ public class Test {
             int m = values[0].intValue();
             int n = values[1].intValue();
             start = System.currentTimeMillis();
-            BigInteger resS = TetrisS.solve(m, n);
+            BigInteger res = Tetris.solve(m, n);
             stop = System.currentTimeMillis();
-            deltaS = stop - start;
-            start = System.currentTimeMillis();
-            BigInteger resL = TetrisL.solve(m, n);
-            stop = System.currentTimeMillis();
-            deltaL = stop - start;
-            start = System.currentTimeMillis();
-            BigInteger resT = Tetris.solve(m, n);
-            stop = System.currentTimeMillis();
-            deltaT = stop - start;
-            if ((values[2].compareTo(BigInteger.ZERO) == 0 || resT.compareTo(values[2]) == 0) && resS.equals(resT) && resL.equals(resT)) {
+            delta = stop - start;
+            if ((values[2].compareTo(BigInteger.ZERO) == 0 || res.compareTo(values[2]) == 0)) {
 //                System.out.format("%3d %3d - %6dms mutations: %40d Cache set / get / setBlocks / foocounter: %8d / %8d / %8d / %8d\n", values[0], values[1], deltaS, resS, Tetris.setCaches, Tetris.getCaches, Tetris.setBlocks, Tetris.fooCounter);
-                String timeS = String.format("\u001B[3%dm%6dms\u001B[0m", deltaS > deltaL ? 1 : 2, deltaS);
-                String timeL = String.format("\u001B[3%dm%6dms\u001B[0m", deltaS < deltaL ? 1 : 2, deltaL);
-                System.out.format("%3d %3d - %s S / %6dms / L %s mutations: %55d\n", values[0], values[1], timeS, deltaT, timeL, resS);
+                System.out.format("%3d %3d - %6dms mutations: %55d\n", values[0], values[1], delta, res);
 //                System.out.format("%3d %3d - %6dms mutations: %55d  %10d\n", values[0], values[1], deltaS, resS, Tetris.fooCounter);
             } else {
                 System.out.format("%3d %3d - ERROR\n", values[0], values[1]);
-                System.out.format("Expected %d, got %d and %d\n", values[2], resS, resL);
+                System.out.format("Expected %d, got %d\n", values[2], res);
                 return;
             }
             if (i > 1 && i < Test.example_values.length - 1 && Test.example_values[i + 1][0].compareTo(values[0]) != 0 && Test.example_values[i - 1][0].compareTo(values[0]) == 0) {

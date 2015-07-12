@@ -12,7 +12,7 @@ public class Generate {
         Callable<BigInteger> callable = new Callable<BigInteger>() {
             @Override
             public BigInteger call() throws Exception {
-                return TetrisS.solve(Generate.m, Generate.n);
+                return Tetris.solve(Generate.m, Generate.n);
             }
         };
         if (args.length == 1) {
@@ -50,7 +50,7 @@ public class Generate {
                 } catch (InterruptedException e) {
                     System.out.println("interrupted");
                 }
-                System.out.format("%3d %3d - %sms mutations: %s %10d\n", Generate.m, Generate.n, delta, mutations, TetrisS.fooCounter);
+                System.out.format("%3d %3d - %sms mutations: %s %10d\n", Generate.m, Generate.n, delta, mutations, Tetris.fooCounter);
 //                System.out.format("%3d %3d - %sms mutations: %s\n", Generate.m, Generate.n, delta, mutations);
             }
             System.out.println();
