@@ -50,7 +50,7 @@ public class Generate {
                 } catch (InterruptedException e) {
                     System.out.println("interrupted");
                 }
-                System.out.format("%3d %3d - %sms mutations: %s %10d\n", Generate.m, Generate.n, delta, mutations, Tetris.fooCounter);
+                System.out.format("%3d %3d - %sms mutations: %s\n", Generate.m, Generate.n, delta, mutations);
 //                System.out.format("%3d %3d - %sms mutations: %s\n", Generate.m, Generate.n, delta, mutations);
             }
             System.out.println();

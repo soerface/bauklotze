@@ -59,7 +59,7 @@ public class Board {
     }
 
     int[] findValidPosition(Block block, int[] pos) {
-        if ((block.data & 1) == 1) {
+        if (block.get(0, 0)) {
             if (blockPlaceableAt(block, pos)) {
                 return pos;
             }
@@ -92,12 +92,23 @@ public class Board {
     }
 
     protected void placeBlockAt(Block block, int[] position) {
-        Tetris.setBlocks++;
-        boardData.toggleBlock(block, position);
+        for (int i = 0; i < block.height; i++) {
+            for (int j = 0; j < block.width; j++) {
+                if (block.get(i, j)) {
+                    boardData.set(i+position[0], j+position[1], true);
+                }
+            }
+        }
     }
 
     protected void removeBlockAt(Block block, int[] position) {
-        boardData.toggleBlock(block, position);
+        for (int i = 0; i < block.height; i++) {
+            for (int j = 0; j < block.width; j++) {
+                if (block.get(i, j)) {
+                    boardData.set(i+position[0], j+position[1], false);
+                }
+            }
+        }
     }
 
     private boolean blockPlaceableAt(Block block, int[] position) {
@@ -108,9 +119,11 @@ public class Board {
             return false;
         }
         // check if there is already a block
-        for (int i = 0; i < block.height && i < 2; i++) {
-            if ((block.get(i) << position[1] & boardData.get(i + position[0])) != 0) {
-                return false;
+        for (int i = 0; i < block.height; i++) {
+            for (int j = 0; j < block.width; j++) {
+                if (block.get(i, j) && boardData.get(i+position[0], j+position[1])) {
+                    return false;
+                }
             }
         }
         // there was no collision with the board / placed outside of area; block can be placed
@@ -122,7 +135,7 @@ public class Board {
 //    }
 //
 //    public static void print(BigInteger result, BoardData boardData, Area area) {
-//        if (!Tetris.debugPrint) {
+//        if (Tetris.printDelay <= 0) {
 //            return;
 //        }
 //        System.out.println();

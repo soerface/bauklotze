@@ -48,12 +48,6 @@ public class BoardData {
         data[y] = row;
     }
 
-    public void toggleBlock(Block block, int[] position) {
-        for (int i = 0; i < block.height; i++) {
-            data[i + position[0]] ^= block.get(i) << position[1];
-        }
-    }
-
     public void mirrorData() {
         int[] newData = new int[Board.height];
         for (int i = area.y1; i < area.y2; i++) {
