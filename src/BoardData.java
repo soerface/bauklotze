@@ -1,12 +1,12 @@
 public class BoardData {
     private static int hashStartPosition;
-    private int data[];
+    private int data[][];
     private int hash;
     private Area area;
 
     public BoardData() {
         this.area = new Area(0, 0, Board.width, Board.height);
-        data = new int[Board.height];
+        data = new int[Board.height][Board.width];
         int pos = 0;
         if (hashStartPosition == 0) {
             while (Board.height >> pos != 0) {
@@ -18,9 +18,13 @@ public class BoardData {
     }
 
     public BoardData(BoardData boardData) {
-        this.area = boardData.area;
-        this.data = new int[Board.height];
-        System.arraycopy(boardData.data, area.y1, data, area.y1, area.y2 - area.y1);
+        area = boardData.area;
+        data = new int[Board.height][Board.width];
+        for (int i = area.y1; i < area.y2; i++) {
+            for (int j = area.x1; j < area.x2; j++) {
+                data[i][j] = boardData.data[i][j];
+            }
+        }
     }
 
     public void setArea(Area area) {
@@ -29,33 +33,19 @@ public class BoardData {
     }
 
     public boolean get(int y, int x) {
-        return (data[y] & 1 << x) != 0;
+        return data[y][x] != 0;
     }
 
-    public int get(int y) {
-        return data[y];
-    }
 
     public void set(int y, int x, boolean value) {
-        if (value) {
-            data[y] |= 1 << x;
-        } else {
-            data[y] &= ~(1 << x);
-        }
-    }
-
-    public void set(int y, int row) {
-        data[y] = row;
+        data[y][x] = value ? 1 : 0;
     }
 
     public void mirrorData() {
-        int[] newData = new int[Board.height];
+        int[][] newData = new int[Board.height][Board.width];
         for (int i = area.y1; i < area.y2; i++) {
             for (int j = area.x1; j < area.x2; j++) {
-                newData[i] |= ((data[i] & 1 << j) >> j) << (area.x2 - (j - area.x1) - 1);
-                // For better reading:
-                // long bit = (data[i] & 1 << j) >> j;
-                // newData[i] |= bit << (area.x2 - (j - area.x1) - 1);
+                newData[i][j] = data[i][area.x2 - j - 1];
             }
         }
         data = newData;
@@ -71,8 +61,10 @@ public class BoardData {
         if (area.height != boardData.area.height) return false;
         if (area.width != boardData.area.width) return false;
         for (int i = area.y1; i < area.y2; i++) {
-            if (data[i] != boardData.data[i]) {
-                return false;
+            for (int j = area.x1; j < area.x2; j++) {
+                if (data[i][j] != boardData.data[i][j]) {
+                    return false;
+                }
             }
         }
         return true;
@@ -92,7 +84,7 @@ public class BoardData {
 //        long start = System.currentTimeMillis();
         for (int i = iStart; i >= area.y1; i--) {
             for (int j = area.x2 - 1; j >= area.x1; j--) {
-                key ^= (data[i] & 1 << j) >> j << pos;
+                key ^= (data[i][j] != 0 ? 1 : 0) << pos;
                 pos++;
                 if (pos == 32) {
                     pos = hashStartPosition;

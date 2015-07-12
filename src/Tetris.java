@@ -13,7 +13,7 @@ public class Tetris {
         int m = Integer.parseInt(args[0]);
         int n = Integer.parseInt(args[1]);
         Tetris.printDelay = args.length > 2 ? Integer.parseInt(args[2]) : 0;
-        System.out.format("Result: %d", Tetris.solve(m, n));
+        System.out.format("Result: %d\n", Tetris.solve(m, n));
     }
 
     public static BigInteger solve(int m, int n) {
